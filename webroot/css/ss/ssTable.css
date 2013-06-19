@@ -1,0 +1,9 @@
+.table{
+	width:100%;
+	float:none;
+}
+.index th,.index td{
+	font-size:12px;
+	width:auto;
+	padding:0px 4px;
+}

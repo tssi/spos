@@ -1,0 +1,9 @@
+.ss-filter ul.ss-filter-criterion{
+	margin:0px;
+	z-index:5;
+}
+ul.ss-filter-criterion li{
+	display:block;
+	padding:0px;
+	background-image:none;
+}

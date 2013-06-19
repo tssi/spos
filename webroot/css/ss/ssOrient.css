@@ -1,0 +1,71 @@
+.fLeft{
+	float:left;
+}
+.fRight{
+	float:right;
+}
+.fClear{
+	float: none;
+	clear: both;
+	margin: 0;
+	padding: 0;
+	border: none;
+	font-size: 1px
+}
+
+.taLeft{
+	text-align:left;
+}
+.taRight{
+	text-align:right;
+}
+.taCenter{
+	text-align:center !important;
+}
+.posAbsolute{
+	position:absolute !important;
+}
+.posRelative{
+	position:relative !important;
+}
+.aLeft{
+	position:absolute !important;
+	left:0px;
+}
+.aRight{
+	position:absolute !important;
+	right:0px;
+}
+.aBottom{
+	position:absolute !important;
+	bottom:0px;
+}
+.aTop{
+	position:absolute !important;
+	top:0px;
+}
+.mMiddle{
+	margin: 25% 0px
+}
+.nmAll{
+	margin:0px !important;
+}
+.mAll{
+	margin: 4px !important;
+}
+
+.nmLeft{
+	margin-left:0px !important;
+}
+.nmRight{
+	margin-right:0px !important;
+}
+.nmTop{
+	margin-top:0px !important;
+}
+.nmBottom{
+	margin-bottom:0px !important;
+}
+.mCenter{
+	margin: 0 auto !important;
+}

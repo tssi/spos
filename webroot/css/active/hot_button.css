@@ -1,0 +1,28 @@
+.hot_button.skinless{
+	background: none;
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+.hot_button.neat,.hot_button.status{
+	padding: 1px;
+	background-color: #EEE;
+	border: 1px solid #999;
+	border-bottom-color: #888;
+    width: 35px;
+}
+.hot_button.status{
+   width: auto;
+    height: 21px;
+}
+.hot_button.selected,.hot_button.neat:active{
+	background: #D1A91F;
+	border-color:#aa8a18;
+	color:white;
+}
+
+.hot_button.active{
+	background: #53A72E;
+	border-color: #1F5707;
+	color:white;
+}

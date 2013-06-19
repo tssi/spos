@@ -1,0 +1,143 @@
+<?php
+	echo $this->Html->script(array('ui/uiSmartTable','ui/uiInputNumeric','ui/uiCollapsible','form/formValidation','form/formNeat','record/recordDatagrid','biz/remit'));
+	echo $this->Html->css(array('ui/uiSmartTable','ui/uiCollapsible','ui/uiIScroll','form/formValidation','form/formNeat','form/formNeatCanteen','record/recordDatagrid','record/recordSearch'));
+?>
+<style>
+	.w238px{
+		width: 238px !important;
+	}
+</style>
+
+<div id="dialog" class="dialogBox"></div>
+<div class='tab'>
+	
+	
+	<h2 class="recordTitle tab-header b1saqua pad4 bgAqua tcWhite fsSmall padLeft txtShadow taCenter">
+						Remittance
+					</h2>
+	
+	<?php echo $this->Form->create('Remittance', array('action'=>'add'));?>
+	<div class='tab-content'>
+	
+		<div class="canteen form formNeat w95 mCenter ">
+			<div class='fLeft w40 classic soft id'>
+				<?php echo $this->Form->input('created', array('type'=>'text', 'label'=>'Time'));?>
+			</div>
+			<div class='fClear'></div>
+			
+		</div>
+	
+		<div class="canteen form formNeat w95 mCenter">
+			<div class='fLeft w40 classic soft'>
+				<?php echo $this->Form->input('cashier',array('type'=>'hidden','label'=>'Cashier ID', 'value'=>$user['id'], 'readonly'=>'readonly'));?>
+				<?php echo $this->Form->input('cashier_name',array('label'=>'Cashier Name','value'=>$user['first_name'].' '.$user['middle_name'].' '.$user['last_name']));?>
+			</div>
+			<div class='fLeft w40 classic soft'>
+				<?php echo $this->Form->input('collector',array('type'=>'hidden','label'=>'Collector ID', 'value'=>''));?>
+			</div>
+			<div class='fRight w40 classic soft'>
+				<?php echo $this->Form->input('collector_name',array('label'=>'Collector Name', 'class'=>'collectorAuto'));?>
+			</div>
+			<div class='fClear'></div>
+			
+		</div>
+		
+		<hr>
+		<div class="canteen form formNeat w95 mCenter " id='Remittances'>
+			<div class='fLeft w100 classic soft '>
+				<?php echo $this->Form->input('sales_amount',array('class'=>"w238px monetary", 'readonly'=>'readonly'));?>
+				<div class='fwb fsSmall bgLime w100 taCenter pbtm'>Remittance</div>
+				<?php echo $this->Form->input('Previous',array('class'=>"w238px monetary numeric", 'readonly'=>'readonly'));?>
+				<?php echo $this->Form->input('remitted',array('class'=>"w238px monetary numeric",'label'=>'Current'));?>
+			</div>
+			<div class='fRight w50 classic soft'>
+				<?php echo $this->Form->input('total ' ,array('class'=>" monetary numeric"));?>
+			</div>
+			<div class='fClear'></div>
+		</div>
+		<hr>
+		<div class="canteen form formNeat w95 mCenter">
+			<div class='fLeft w50 classic soft'>
+				
+				<?php echo $this->Form->input('cash_in_box',array('label'=>'Cash in Box', 'class'=>'monetary numeric', 'readonly'=>'readonly'));?>
+			
+			</div>
+			
+			<div class="fRight pt5 topaz pbtm pRight">
+						<?php echo $this->Form->submit('Cancel',array('type'=>'button','class'=>'selected fwb','id'=>'cancel_button'));?>
+			</div>
+			<div class="fRight pt5 pbtm pRight">
+						<?php echo $this->Form->submit('Save',array('type'=>'button','class'=>'selected fwb submit-button' ,'id'=>'save_button','disabled'=>'disabled'));?>
+			</div>
+			
+			<div class='fClear'></div>
+		</div>
+		
+	</div>
+	<?php echo $this->Form->end();?>
+	
+	
+</div>
+<div class="record metro tab nmLeft w75 mCenter" >
+	<h2 class="recordTitle tab-header b1saqua pad4 bgAqua tcWhite fsSmall padLeft txtShadow taCenter">
+		View Remittances 
+	</h2>
+	<?php echo $this->Form->create('Remittance', array('action'=>'view'));?>
+		<div class="tab-content nmBottom posRelative ">
+				<div class="recordHeader pbtm btmShadow">
+					<div class="fLeft w100 recordHeader">
+						<div class="fLeft w100">
+							<div class="fLeft w15 bgLime">Date</div>
+							<div class="fLeft w10 ">Time</div>
+							<div class="fLeft w15 bgLime">Cash</div>
+							<div class="fLeft w15 ">Prepaid</div>
+							<div class="fLeft w15 bgLime">Charge</div>
+							<div class="fLeft w10 ">Others</div>
+							<div class="fLeft w15 bgLime">Total</div>					
+						</div>
+					</div>
+				</div>
+				
+				<div class="iscroll w100" id="remittance_view">
+					<div class="iscrollWrapper">							
+						<ul class="recordDatagrid on w100 b1sg nbLeft nbRight">
+							<li class="mainInput">
+								<div class="pbtm btmShadow">
+									<div class='fLeft w50'>
+										<div class="fLeft w50 VIEWdate">
+												<?php echo $this->Form->input('Remmitance.%.date',array('type'=>'text','id'=>false, 'label'=>false, 'readonly'=>'readonly')); ?>
+										</div>
+										<div class="fRight w50 VIEWtime">
+												<?php echo $this->Form->input('Remmitance.%.time',array('type'=>'text','id'=>false, 'label'=>false, 'readonly'=>'readonly')); ?>
+										</div>
+										<div class="fClear"></div>
+									</div>
+									<div class='fRight w50'>	
+										<div class='fLeft w70'>
+											<div class="fLeft w50 VIEWcash">
+													<?php echo $this->Form->input('Remmitance.%.cash',array('type'=>'text','id'=>false, 'label'=>false, 'readonly'=>'readonly')); ?>
+											</div>
+											<div class="fRight w50 VIEWcharge">
+													<?php echo $this->Form->input('Remmitance.%.charge',array('type'=>'text','id'=>false, 'label'=>false, 'readonly'=>'readonly')); ?>
+											</div><div class="fClear"></div>
+										</div>
+										<div class='fRight w30'>
+											<div class="fRight w100 VIEWtotal">
+													<?php echo $this->Form->input('Remmitance.%.total',array('type'=>'text','id'=>false, 'label'=>false, 'class'=>'monetary', 'readonly'=>'readonly')); ?>
+											</div>
+											<div class="fClear"></div>
+										</div>	
+									</div>
+									<div class="fClear"></div>
+								</div>
+							</li>
+						</ul>		
+						</div>
+					</div>
+				</div>
+					
+			</div>	
+	<?php echo $this->Form->end();?>
+	
+	
+</div>

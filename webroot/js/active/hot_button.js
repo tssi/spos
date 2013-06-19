@@ -1,0 +1,12 @@
+$(document).ready(function(){
+	$('.hot_button').live('click',function(e){
+		e.preventDefault();
+		$(this).blur();
+	});
+	$('.hot_button.neat').live('click',function(e){
+		$(this).toggleClass('selected');
+	});
+	$('.hot_button.status').live('click',function(e){
+		$(this).toggleClass('active');
+	});
+});

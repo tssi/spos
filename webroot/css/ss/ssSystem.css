@@ -1,0 +1,30 @@
+#flashMessage {
+	border:1px #ccc solid;
+	background-color:white;
+	padding:3px;
+}
+#schoolLogo{
+	width:130px;
+	height:130px;
+}
+#systemLogo{
+	position: absolute;
+	top: 40px;
+	right: 50px;
+}
+#userPane{
+	position: absolute;
+	right: 16px;
+	bottom: 4px;
+}
+#loginPane{
+	width:70px !important;
+}
+#loginHolder{
+	background-image: url('/isms/img/page_sg.jpg');
+	background-repeat: repeat-x;
+	padding:9px;
+	width:150px;
+	height:350px;
+	margin: 5px;
+}
