@@ -1002,9 +1002,16 @@ $(document).ready(function(){
 		});
 		
 		THIS.bind('blur', function(){
+			onblurselect()
+		});
+		THIS.bind('change', function(){
+			onblurselect();
+		});
+		
+		function onblurselect(){
 			var emptyField = $('div.dgForm select option[value="null"]:selected');
 			emptyField = emptyField.length;
-			var inputs = $('div.dgForm input');
+			var inputs = $('div.dgForm input,div.dgForm select');
 			var emptyExist;
 			
 			$.each(inputs, function(ctr, input){
@@ -1017,11 +1024,7 @@ $(document).ready(function(){
 			
 			if (emptyExist == undefined){
 				emptyExist = false;
-			}
-			
-			
-			
-			
+			}			
 			if(!emptyExist && !emptyField){
 				$('.ui-dialog-buttonset button:first').show();
 			}
@@ -1066,12 +1069,9 @@ $(document).ready(function(){
 					$('.dgForm .esrp input').val(esrp).blur();
 					$('.dgForm .srp input').val(esrp).blur();
 				}
-			};
+			}
+		}
 		
-			
-		
-		
-		});
 	});
 	
     $('.desc input').livequery(function(){

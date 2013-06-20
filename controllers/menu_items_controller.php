@@ -213,4 +213,10 @@ class MenuItemsController extends AppController {
 		$units = $this->MenuItem->Unit->find('list',array('fields'=>array('Unit.id','Unit.alias')));
 		$this->set(compact('units'));
 	}
+	
+	function update(){
+		$this->MenuItem->saveAll($this->data);
+		echo json_encode($this->data);
+		exit();
+	}
 }

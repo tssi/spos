@@ -67,6 +67,9 @@
 							<li class="mainInput">
 								<div class="fLeft w55">
 									<div class="fLeft w25">
+										<div class="hide ID">
+											<?php echo $this->Form->input('Product.%.id',array('type'=>'hidden','readonly'=>'readonly','id'=>false)); ?>
+										</div>
 										<div class="hide productType ">
 											<?php echo $this->Form->input('Product.%.product_type_id',array('type'=>'hidden','id'=>false)); ?>
 										</div>
@@ -246,8 +249,8 @@
 										<div class="hide VIEWproductType ">
 											<?php echo $this->Form->input('Product.%.product_type_id',array('type'=>'hidden','readonly'=>'readonly','id'=>false)); ?>
 										</div>
-										<div class="hide VIEWID">
-												<?php echo $this->Form->input('Product.%.id',array('type'=>'hidden','readonly'=>'readonly','id'=>false)); ?>
+										<div class="hide VIEWID ID">
+											<?php echo $this->Form->input('Product.%.id',array('type'=>'hidden','readonly'=>'readonly','id'=>false)); ?>
 										</div>
 										<div class="fLeft w100 VIEWitemCode">												
 											<?php echo $this->Form->input('Product.%.item_code',array('label'=>false,'id'=>false,'readonly'=>'readonly', 'frm'=>'#itemCheck', 'linkto'=>'#ProductItemCode', 'class'=>'ajax unique numeric ')); ?>

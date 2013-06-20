@@ -117,10 +117,10 @@
 		<div class="tab-content on nmBottom posRelative ">
 			<div class="recordHeader pbtm btmShadow">
 						<div class="fLeft w60">
-							<div class="fLeft w40">
+							<div class="fLeft w30">
 							Item Code
 							</div>
-							<div class="fRight w60 ">
+							<div class="fRight w70 ">
 							Description
 							</div>
 							<div class="fClear"></div>
@@ -130,10 +130,10 @@
 								Price
 							</div>
 							<div class="fRight w70">
-								<div class="fLeft w60">
+								<div class="fLeft w40">
 								Unit
 								</div>
-								<div class="fRight w40 taLeft">
+								<div class="fRight w55 taLeft">
 								Est. Cost
 								</div>
 							</div>
@@ -148,27 +148,30 @@
 						<li class="mainInput">
 							<div class="pbtm btmShadow">
 								<div class="fLeft w60">
-									<div class="fLeft w40 VIEWitemCode">
+									<div class="hide VIEWID">
+										<?php echo $this->Form->input('MenuItem.%.id',array('type'=>'hidden','readonly'=>'readonly','id'=>false)); ?>
+									</div>
+									<div class="fLeft w30 VIEWitemCode">
 										<?php echo $this->Form->input('MenuItem.%.item_code',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'unique ajax numeric','frm'=>'#menuCheck', 'linkto'=>'#MenuItemItemCode')); ?>
 									</div>
-									<div class="fRight w60 VIEWdesc">
-										<?php echo $this->Form->input('MenuItem.%.name',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'unique ajax','frm'=>'#nameCheck', 'linkto'=>'#MenuItemName')); ?>
+									<div class="fRight w70 VIEWdesc">
+										<?php echo $this->Form->input('MenuItem.%.name',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'unique ajax editable','frm'=>'#nameCheck', 'linkto'=>'#MenuItemName')); ?>
 									</div><div class="fClear"></div>
 								</div>
 								
 								<div class="fRight w40">
 									<div class="fLeft w35 VIEWprice money">
-										<?php echo $this->Form->input('MenuItem.%.selling_price',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'numeric monetary')); ?>
+										<?php echo $this->Form->input('MenuItem.%.selling_price',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'numeric monetary editable')); ?>
 									</div>
 									<div class="fRight w65 ">
 										<div class="fleft w40 VIEWunit">
 											<?php echo $this->Form->input('MenuItem.%.unit_id',array('type'=>'text','label'=>false,'id'=>false,'readonly'=>'readonly','class'=>'option', 'disabled'=>true)); ?>
 										</div>
 										<div class="fleft w45 VIEWavg">
-											<?php echo $this->Form->input('MenuItem.%.avg_price',array('label'=>false,'id'=>false,'class'=>'option')); ?>
+											<?php echo $this->Form->input('MenuItem.%.avg_price',array('label'=>false,'id'=>false,'class'=>'option editable','readonly'=>'readonly')); ?>
 										</div>
 										<div class="fleft w15 taCenter action">
-											<a class="edit-menu_item">
+											<a class="edit">
 												<img src="/canteen/img/icons/pencil.png"></img>
 											</a>
 										</div>

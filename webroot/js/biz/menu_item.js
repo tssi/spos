@@ -77,12 +77,13 @@ $(document).ready(function(){
 	
 	function getMenu(){
 		$.getJSON(
-				'/canteen/menu_items/findMenu/',
-				function(data){
-					console.log(data);
-				  var source = [];
-					  //Prepare data structure
-				  $.each(data, function(ctr,obj){
+			'/canteen/menu_items/findMenu/',
+			function(data){	
+				//console.log(data);
+				var source = [];
+				//Prepare data structure
+				$.each(data, function(ctr,obj){
+					var id = obj.MenuItem.id;
 					var desc= obj.MenuItem.name;
 					var price = ssUtil.roundNumber(obj.MenuItem.selling_price,2);
 					var avg = ssUtil.roundNumber(obj.MenuItem.avg_price,2);
@@ -92,6 +93,7 @@ $(document).ready(function(){
 					var unit = obj.Unit.alias;
 					
 					var aggr={};           
+						aggr['div.VIEWID input']=id;
 						aggr['div.VIEWdesc input']=desc;
 						aggr['div.VIEWquantity input']=qty;
 						aggr['div.VIEWprice input']=price;
@@ -100,16 +102,14 @@ $(document).ready(function(){
 						aggr['div.VIEWunit input']=unit;
 					source.push(aggr);  
 				});
-					//Pass data to populate_grid event
-					$('#menuList_view ul.recordDataGrid').trigger('populate_grid',{'data':source});
-					 $('#menuList_view ul.recordDataGrid').bind('hide', function(){
-						$('#menuList_view ul.recordDatagrid li.mainInput').hide();
-						});
-					$('#menuList_view ul.recordDatagrid').trigger('hide');
-				  });
+				//Pass data to populate_grid event
+				$('#menuList_view ul.recordDataGrid').trigger('populate_grid',{'data':source});
+				$('#menuList_view ul.recordDataGrid').bind('hide', function(){
+					$('#menuList_view ul.recordDatagrid li.mainInput').hide();
+				});
+				$('#menuList_view ul.recordDatagrid').trigger('hide');
+			});
 	};
-	
-
 	getMenu();
 	
 	//restore defaults
@@ -127,22 +127,22 @@ $(document).ready(function(){
 	
 	
 	$('div.itemCode .input input.ajax, div.desc .input input.ajax').live('error',function(evt,args){
-            var SELF = $(this);
-			SELF.removeAttr('disabled');
-			SELF.val('').focus(); 
-            var button = {};
-			$('#menuList ul.recordDatagrid').trigger('update_grid');
-    		button.BACK = function() {
-			SELF.val('').focus();
-				$('.error-message').remove();
-    			$(this).dialog('destroy');
-    		};
-    		$('#dialog').trigger('pop-it', {
-    			'title': 'Notification',
-    			'msg': args.msg,
-    			'button': button,
-    			'modal': true
-    		});
+		var SELF = $(this);
+		SELF.removeAttr('disabled');
+		SELF.val('').focus(); 
+		var button = {};
+		$('#menuList ul.recordDatagrid').trigger('update_grid');
+		button.BACK = function() {
+		SELF.val('').focus();
+			$('.error-message').remove();
+			$(this).dialog('destroy');
+		};
+		$('#dialog').trigger('pop-it', {
+			'title': 'Notification',
+			'msg': args.msg,
+			'button': button,
+			'modal': true
+		});
  
     });
 	
@@ -250,5 +250,44 @@ $(document).ready(function(){
 		input.trigger('check_valid');
 	});
    
+   
+   //Edit
+	$('.edit').livequery('click',function(){
+		var row = $(this).parents('li:first');
+		row.find('.editable').removeAttr('readonly','readonly');
+		row.find('.VIEWdesc input').focus().select();
+		row.find('.action').html('<a class="save-editable"><img src="'+BASE_URL+'img/icons/disk.png"></img></a>');
+	});
+	
+	//Save(Edit)Update
+	$('.save-editable').livequery('click',function(){
+		var row = $(this).parents('li:first');
+		row.find('.editable').attr('readonly','readonly');
+		row.find('.action').html('<a class="edit"><img src="'+BASE_URL+'img/icons/pencil.png"></img></a>');
+		var id = row.find('.VIEWID input').val();
+		var desc = row.find('.VIEWdesc input').val();
+		var srp = row.find('.VIEWprice input').val();
+		var epp = row.find('.VIEWavg input').val();
+		$.ajax({
+			type:'POST',
+			url: BASE_URL+'menu_items/edit',
+			data:{'data':{'MenuItem':{'id':id,'name':desc,'selling_price':srp,'avg_price':epp}}},
+			success:function(data){
+				console.log(data);
+				$('#dialog').dialog({
+					title:'Notify',
+					modal:true,
+					closeOnEscape: false,
+					open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},
+					buttons:{
+							Back:function(e, a){
+								$(this).dialog('destroy');
+							},	
+						}
+				});
+				$('#dialog').html('Menu item successfully updated!');
+			}
+		});
+	});
 });
 
