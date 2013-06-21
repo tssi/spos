@@ -404,150 +404,72 @@ $(document).ready(function(){
 		$(document).trigger('restore_defaults');
 	}); 
     
-	//MarkIt
+	
 	$('#inventoryList .markIt').live('focus', function(e,a){
-		var SELF = $(this);
-		var row = $(this).parents('li:first');
-		if(SELF.val()==''){
-			MarkIt(SELF,row);
-		}
-	});
-	$('#productView .markIt').live('focus', function(e,a){
-		var SELF = $(this);
-		var row = $(this).parents('li:first');
-		MarkIt(SELF,row);
-	});
-	
-	
-	function MarkIt(SELF,row){
-		var id = row.find('.ID input').val();
-		var title;
-		var dg;
-		if(id != ""){
-			$.ajax({
-				type:'POST',
-				dataType: 'json',
-				url: BASE_URL+'products/getByProductId',
-				data:{'data':{'Product':{'id':id}}},
-				success:function(json){
-						title = 'Estimated Purchase Price'; 
-						dg = '<div class="dgForm fwb">';			
-						dg+='<div class="fLeft w45 pt5">Estimated Purchase Price:</div>';
-						dg+='<div class="avgPrice fRight w55"><input value="'+json.Product.avg_price+'" class="monetary numeric taRight nextnode"/></div>';
-						dg+='<div class="fClear"></div>';
-						dg+='<div class="fLeft w45 pt5">Markup Unit:</div>';
-						dg+='<div class="emUnit fRight w55"><select class="nextnode">';
-						if(json.Product.markup_unit){
-							dg+='<option value="%">%</option>';
-							dg+='<option value="1">Php.</option>';
-						}else{
-							dg+='<option value="1">Php.</option>';
-							dg+='<option value="%">%</option>';
-						}
-						dg+='</select></div>';
-						dg+='<div class="fClear"></div>';
-						dg+='<div class="fLeft w45 pt5">Estimated Markup:</div>';
-						dg+='<div class="em fRight w55"><input value="'+json.Product.markup+'" class=" numeric taRight nextnode"/></div>';
-						dg+='<div class="fClear"></div>';
-						dg+='</div>';
-						buildmodal(title,dg,SELF,row);
-				}
-			});
-		}else{
-				title = 'Estimated Purchase Price'; 
-				dg = '<div class="dgForm fwb">';			
-				dg+='<div class="fLeft w45 pt5">Estimated Purchase Price:</div>';
-				dg+='<div class="avgPrice fRight w55"><input class="monetary numeric taRight nextnode"/></div>';
-				dg+='<div class="fClear"></div>';
-				dg+='<div class="fLeft w45 pt5">Markup Unit:</div>';
-				dg+='<div class="emUnit fRight w55"><select class="nextnode">';
-				dg+='<option value="1">Php.</option>';
-				dg+='<option value="%">%</option>';
-				dg+='</select></div>';
-				dg+='<div class="fClear"></div>';
-				dg+='<div class="fLeft w45 pt5">Estimated Markup:</div>';
-				dg+='<div class="em fRight w55"><input class=" numeric taRight nextnode"/></div>';
-				dg+='<div class="fClear"></div>';
-				dg+='</div>';
-				buildmodal(title,dg,SELF,row);
-
-		}	
+	var SELF = $(this);
+	//console.log(SELF);
+	if(SELF.val()==''){
+		var dg = '<div class="dgForm fwb">';
+			
+			dg+='<div class="fLeft w45 pt5">Estimated Purchase Price:</div>';
+			dg+='<div class="avgPrice fRight w55"><input class="monetary numeric taRight nextnode"/></div>';
+			dg+='<div class="fClear"></div>';
+			
+			dg+='<div class="fLeft w45 pt5">Markup Unit:</div>';
+			dg+='<div class="emUnit fRight w55"><select class="nextnode">';
+			dg+='<option value="1">Php.</option>';
+			dg+='<option value="%">%</option>';
+			dg+='</select></div>';
+			dg+='<div class="fClear"></div>';
+			
+			dg+='<div class="fLeft w45 pt5">Estimated Markup:</div>';
+			dg+='<div class="em fRight w55"><input class=" numeric taRight nextnode"/></div>';
+			dg+='<div class="fClear"></div>';
+			
+			dg+='</div>';
+			
+			var button = {};
 		
-	}
-	
-	function buildmodal(title,dg,SELF,row){
-		console.log(title);					
-		var button = {};
-		button.OK = function(){
-			var avgPrice = parseFloat($('div.dgForm .avgPrice input').val());
-			var em = parseFloat($('div.dgForm .em input').val());
-			var emUnit = $('div.dgForm .emUnit select').val();
-			if (avgPrice !='' && em !='' && emUnit!=''){
-				SELF.parents('li:first').find('div.em input').val(em);
-				SELF.parents('li:first').find('div.emUnit input').val(emUnit);
-				SELF.parents('li:first').find('div.avgPrice input').val(avgPrice);
-				SELF.parents('li:first').find('div.avgPrice input').blur();
-				SELF.parents('li:first').find('div.avgPrice input').trigger('keypress',{'which':13});
-				if(emUnit == '%'){
-					SELF.parents('li:first').find('div.price input').val((avgPrice+(avgPrice*(em/100))).toFixed(2));
-				}
-				if(emUnit == 1 ){
-					SELF.parents('li:first').find('div.price input').val((avgPrice+em).toFixed(2));
-				}
-				$(this).dialog('destroy');
-			}				
-		}
-		button.CANCEL =function(){
-			$(this).dialog('destroy');
-			SELF.parents('li:first').find('div.avgPrice input').blur();
-		}
-		$('#myDialog').trigger('pop-it', {
-			'title': title,
-			'msg': dg,
-			'button': button,
-			'modal': true
-		});
-		$('.dgForm .avgPrice input:first').select();
-	}
-	
-	//SRP
-	$('#productView .VIEWprice input').live('change', function(){
-		var row = $(this).parents('li:first');
-		var THIS = $(this);				
-		var button = {};
-		var epp = parseFloat(row.find('.avgPrice input').val());
-		var srp = parseFloat(row.find('.price input').val());
-		if(epp > srp){
-			var msg = "EPP must not less than SRP!";
-			button.Back =function(){
-				$(this).dialog('destroy');
-				THIS.val(oldSRP);
-			}
-		}else{
-			var msg = "Change SRP?";
 			button.OK = function(){
-				row.find('.ow input').val('O');
-				$(this).dialog('destroy');
-			}
-			button.CANCEL =function(){
-				row.find('.ow input').val('');
-				$(this).dialog('destroy');
-				THIS.val(oldSRP);
-			}
-		}
-		$('#myDialog').trigger('pop-it', {
-			'title': 'Notify',
-			'msg': msg,
-			'button': button,
-			'modal': true
-		});
-	});
-	var oldSRP;
-	$('#productView .VIEWprice input').live('focus', function(){
-		oldSRP = $(this).val();
-	});
+				var avgPrice = parseInt($('div.dgForm .avgPrice input').val());
+				var em = parseInt($('div.dgForm .em input').val());
+				var emUnit = $('div.dgForm .emUnit select').val();
 
+				if (avgPrice !='' && em !='' && emUnit!=''){
+					SELF.parents('li:first').find('div.em input').val(em);
+					SELF.parents('li:first').find('div.emUnit input').val(emUnit);
+					SELF.parents('li:first').find('div.avgPrice input').val(avgPrice);
+					SELF.parents('li:first').find('div.avgPrice input').blur();
+					SELF.parents('li:first').find('div.avgPrice input').trigger('keypress',{'which':13});
+					if(emUnit == '%'){
+						SELF.parents('li:first').find('div.price input').val((avgPrice+(avgPrice*(em/100))).toFixed(2));
+					}
+					if(emUnit == 1 ){
+						SELF.parents('li:first').find('div.price input').val((avgPrice+em).toFixed(2));
+					}
+					
+					$(this).dialog('destroy');
+				}				
+			};
+			
+			button.CANCEL =function(){
+				$(this).dialog('destroy');
+				SELF.parents('li:first').find('div.avgPrice input').blur();
+			}
+			
+			$('#myDialog').trigger('pop-it', {
+				'title': 'Estimated Purchase Price',
+				'msg': dg,
+				'button': button,
+				'modal': true
+			});
+		$('.dgForm .avgPrice input:first').select();
 	
+	}
+	
+});
+
+
     $('.itemcode input').livequery(function(){
 		var THIS = this;
 		$(THIS).bind('keydown',function(e){
@@ -617,28 +539,23 @@ $(document).ready(function(){
 	$('.edit-product').livequery('click',function(){
 		var row = $(this).parents('li:first');
 		row.find('.editable').removeAttr('readonly','readonly');
-		row.find('.VIEWavg input').addClass('markIt');
 		row.find('.VIEWdesc input').focus().select();
 		row.find('.action').html('<a class="save-product"><img src="'+BASE_URL+'img/icons/disk.png"></img></a>');
 	});
 	//Save(Edit)Update
 	$('.save-product').livequery('click',function(){
 		var row = $(this).parents('li:first');
-		row.find('.VIEWavg input').removeClass('markIt');
-		row.find('.editable').attr('readonly','readonly').attr('onfocus','blur()');
+		row.find('.editable').attr('readonly','readonly');
 		row.find('.action').html('<a class="edit-product"><img src="'+BASE_URL+'img/icons/pencil.png"></img></a>');
 		var id = row.find('.VIEWID input').val();
 		var desc = row.find('.VIEWdesc input').val();
 		var qty = row.find('.VIEWquantity input').val();
 		var srp = row.find('.VIEWprice input').val();
 		var epp = row.find('.VIEWavg input').val();
-		var em = row.find('.em input').val();
-		var ow = row.find('.ow input').val();
-		var emUnit = row.find('.emUnit input').val();
 			$.ajax({
 				type:'POST',
 				url: BASE_URL+'products/update',
-				data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp,'markup':em,'markup_unit':emUnit,'ow':ow}}},
+				data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp}}},
 				success:function(data){
 				console.log(data);
 					$('#myDialog').dialog({

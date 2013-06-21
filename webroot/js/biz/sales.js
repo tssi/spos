@@ -120,35 +120,35 @@ $(document).ready(function(e){
 						$(this).parent().children().children(".ui-dialog-titlebar-close").hide();// Hide close button
 					},
 					buttons:{
-							'CONTINUE':function(){
-								$(this).dialog('destroy');
-								
-								var addCash = ssUtil.roundNumber(total-creditLimit,2);
-								var paymentCharge ={};
-								var paymentCash ={};
-								paymentType=[];
-								paymentCharge['SalesPayment']={};
-								paymentCharge['SalesPayment']['payment_type_id']=3;
-								paymentCharge['SalesPayment']['amount']=charge;
-								
-								paymentCash['SalesPayment']={};
-								paymentCash['SalesPayment']['payment_type_id']=1;
-								paymentCash['SalesPayment']['amount']=addCash;
-								paymentType.push(paymentCharge);
-								paymentType.push(paymentCash);
-								$('#charge').val(ssUtil.roundNumber(creditLimit,2)).attr('readonly','readonly');
-								$('#added_cash').val(addCash);
-								//$('.forSale').show();
-								$('#SalePayment').val($.toJSON(paymentType));
-								//$('#description').focus();
-								//saveFlag =false;
-								
-							},
-							'CANCEL':function(){
-								$(this).dialog('destroy');
-								$('#itemsSold .recordDatagrid li:last').remove();
-								$('#total').trigger('auto_compute');
-							}
+						'CONTINUE':function(){
+							$(this).dialog('destroy');
+							
+							var addCash = ssUtil.roundNumber(total-creditLimit,2);
+							var paymentCharge ={};
+							var paymentCash ={};
+							paymentType=[];
+							paymentCharge['SalesPayment']={};
+							paymentCharge['SalesPayment']['payment_type_id']=3;
+							paymentCharge['SalesPayment']['amount']=charge;
+							
+							paymentCash['SalesPayment']={};
+							paymentCash['SalesPayment']['payment_type_id']=1;
+							paymentCash['SalesPayment']['amount']=addCash;
+							paymentType.push(paymentCharge);
+							paymentType.push(paymentCash);
+							$('#charge').val(ssUtil.roundNumber(creditLimit,2)).attr('readonly','readonly');
+							$('#added_cash').val(addCash);
+							//$('.forSale').show();
+							$('#SalePayment').val($.toJSON(paymentType));
+							//$('#description').focus();
+							//saveFlag =false;
+							
+						},
+						'CANCEL':function(){
+							$(this).dialog('destroy');
+							$('#itemsSold .recordDatagrid li:last').remove();
+							$('#total').trigger('auto_compute');
+						}
 					}
 				});
 				$('#dialog').html('<center><br/><img src="/canteen/img/icons/exclamation.png" /><br/><br/><strong> Exceeded credit limit!<br/>Do you want to continue?</strong><br/><br/></center>');
@@ -166,7 +166,7 @@ $(document).ready(function(e){
 				$('#SalePayment').val($.toJSON(paymentType));
 			}
 			
-			console.log(paymentType);
+			////console.log(paymentType);
 		}
 		if(MODE=='CS'){
 			var paymentCash ={};
@@ -181,7 +181,7 @@ $(document).ready(function(e){
 		if(MODE=='PR'){
 			$('#description').blur();
 			var prepaid = ssUtil.roundNumber(creditLimit,2);
-			console.log(creditLimit);
+			////console.log(creditLimit);
 			if(total>creditLimit){
 				$('#dialog').dialog({
 					title:'Notification',
@@ -237,7 +237,7 @@ $(document).ready(function(e){
 				$('#SalePayment').val($.toJSON(paymentType));
 			}
 			
-			console.log(paymentType);
+			////console.log(paymentType);
 		}
 	
 	});
@@ -249,30 +249,31 @@ $(document).ready(function(e){
        var desc = !$.trim($('#description').val()) =='';  
        if (keyHit==13){
             if (matched.length==1){
-				//console.log(matched);
+				////console.log(matched);
                 if(desc){
                     matched.click();
                     $('#description').val('');
                 }
 				
             }else{//if no match on the item code
-				$('#description').val('').blur();
+				$('#description').val('').focus();
+				if(desc){
+					$('#dialog').dialog({
+						title:'Warning',
+						modal:true,
+						closeOnEscape: true,
+						open: function(event, ui){
+						$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
+						buttons:{
+							Back:function(e, a){
+								$(this).dialog('destroy');
+								$('#description').focus();
+							}
+						}
+					});
+					$('#dialog').html('No match found!');
+				}
 				
-				$('#dialog').dialog({
-					title:'Warning',
-					modal:true,
-					closeOnEscape: true,
-					open: function(event, ui){
-					
-					$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
-					buttons:{Back:function(e, a){
-						//$(this).focus();
-						$(this).dialog('destroy');
-						$('#description').focus();
-						
-					}}
-				});
-				$('#dialog').html('No match found!');
 				
 				
 			}      
@@ -551,7 +552,7 @@ $(document).ready(function(e){
 							}
 							
 							if(exist){
-								console.log(creditLimit);
+								////console.log(creditLimit);
 								if(creditLimit > 0){
 									allowCashiering = true;
 								}else{
@@ -625,7 +626,7 @@ $(document).ready(function(e){
 						success:function(z){
 							$('#dialog').dialog('destroy');
 							var exist=false;
-							console.log(z);
+							////console.log(z);
 							if(z.Buyer.Employee){
 								try{
 									$('#SaleName').val(z.Buyer.Employee.full_name);
@@ -698,7 +699,7 @@ $(document).ready(function(e){
 							}
 							
 							if(exist){
-								console.log(creditLimit);
+								////console.log(creditLimit);
 								if(creditLimit > 0){
 									allowCashiering = true;
 								}else{
@@ -754,29 +755,31 @@ $(document).ready(function(e){
 	
 	//Done button
 	$('#done_button').click(function(){
-		console.log('done');
+		////console.log('done');
 		var total = $('#total').val();
 		if($('#save_button').attr('disabled')){ //if save button is disabled
 			if(!$('#done_button').attr('disabled')){
 				$('#description').blur();
+				$('#amount_received').focus();
+				
+				if(MODE=='CH'){
+					//$('#charge').val(total).blur();
+					$('#charge').removeAttr('readonly').select();
+				}
+				if(MODE=='CS'){
+					$('#amount_received').removeAttr('readonly').val('').focus();
+					$('#save_button').attr('disabled','disabled').parent().parent().removeClass('topaz');
+				}
+				if(MODE=='PR'){
+					//$('#charge').val(total).blur();
+					$('#prepaid').removeAttr('readonly').select();
+				}
 			}
-			if(MODE=='CH'){
-				//$('#charge').val(total).blur();
-				$('#charge').removeAttr('readonly').select();
-			}
-			if(MODE=='CS'){
-				$('#amount_received').removeAttr('readonly').val('').focus();
-				$('save_button').attr('disabled','disabled').parent().parent().removeClass('topaz');
-			}
-			if(MODE=='PR'){
-				//$('#charge').val(total).blur();
-				$('#prepaid').removeAttr('readonly').select();
-			}
+			
 		}
 		$('#done_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
 	});
-	
-	//Printing and saving
+	saving
 	$('#SaleAddForm').bind('formNeat_sucess',function(evt,args){
 	
 		var data= $.parseJSON(args.data);
@@ -829,7 +832,8 @@ $(document).ready(function(e){
  	//Restore Default
 	$(document).bind('restore_defaults', function() {
 		allowCashiering = false;
-		$('.trans').hide(); //transactions hide
+
+	//Printing and 		$('.trans').hide(); //transactions hide
 		$('#SalePaymentTypeId input').removeClass('selected');
 		$('.recordDatagrid li.mainInput').hide(); 
 		$('#prepaid_button').removeAttr("disabled").parent().parent().addClass('ruby');
@@ -883,7 +887,7 @@ $(document).ready(function(e){
 			var source = [];
 			//Prepare data structure
 			$.each(data, function(ctr,obj){
-			//console.log(data);
+			////console.log(data);
 				if(obj.Product){
 					var desc= obj.Product.name;
 					var price = obj.Product.selling_price;
@@ -899,7 +903,7 @@ $(document).ready(function(e){
 					aggr['div.item_code input']=code;
 				source.push(aggr);  
 			});
-			 console.log(source);
+			// //console.log(source);
 			 
 			$('#counterItems_ui ul.recordDataGrid').trigger('populate_grid',{'data':source,'new_class':['dynamicInput','clickInput','productItem']});
 			
@@ -907,8 +911,8 @@ $(document).ready(function(e){
 			$.getJSON(ssUtil.cch_brk('/canteen/daily_menus/findDailyMenu/'+TODAY+''),
 				function(data){
 				  source = [];
-				  //console.log(data);
-				  //console.log(data.length);
+				  ////console.log(data);
+				  ////console.log(data.length);
 				  if(data.length>0){
 					  $.each(data, function(ctr,obj){
 						  var desc= obj.MenuItem.name;
@@ -957,19 +961,18 @@ $(document).ready(function(e){
 	
 	//Shorcut key designation
 	$(document).keydown(function(e){
+		console.log(e);
 		if(allowKey){
 			if(e.which==DONE){ //If F10 is hit
 				$('#done_button').click();
-				
-			};
-			
+			}
 			if(e.which==ESC){ //if Esc is hit
 				$('#description').blur();
 				if (MODE=='CH'){
 					$('#SaleBuyer, #SaleName').val('');
 				}
 				$(document).trigger('restore_defaults');
-			};
+			}
 
 			if(e.which==F7){
 				$(document).trigger('restore_defaults');
@@ -986,8 +989,8 @@ $(document).ready(function(e){
 			}
 		}
 	
-		 if(e.which==commit){ //if Enter is hit
-			console.log('saveFlag: ',saveFlag);
+		if(e.which==commit){ //if Enter is hit
+			////console.log('saveFlag: ',saveFlag);
 			if(saveFlag){
 				if(!($('#save_button').attr('disabled'))){
 					if (MODE=='CS'){
@@ -1001,7 +1004,7 @@ $(document).ready(function(e){
 						}
 					}
 					if (MODE=='CH'){
-						console.log('keydown enter');
+						////console.log('keydown enter');
 						if(!($('#save_button').attr('disabled'))){
 							$('#description').blur();
 							$('#save_button').trigger('click');
@@ -1009,7 +1012,7 @@ $(document).ready(function(e){
 						}
 					}
 					if (MODE=='PR'){
-						console.log('keydown enter');
+						////console.log('keydown enter');
 						if(!($('#save_button').attr('disabled'))){
 							$('#description').blur();
 							$('#save_button').trigger('click');
@@ -1057,7 +1060,7 @@ $(document).ready(function(e){
 		
 	$('#charge').live('keydown', function(e){
 		if(e.which == commit){
-			console.log('charge keydown on enter!!');
+			////console.log('charge keydown on enter!!');
 			$('#charge').blur();
 			charge_validate();
 		}
@@ -1086,16 +1089,16 @@ $(document).ready(function(e){
 	
 	$('#prepaid').live('keydown', function(e){
 		if(e.which == commit){
-			console.log('prepaid keydown on enter!!');
+			////console.log('prepaid keydown on enter!!');
 			$('#prepaid').blur();
 			charge_validate();
 		}
 	});
 	
 	function charge_validate(){ //on charge validation
-		console.log('charge validate');
+		////console.log('charge validate');
 		if(MODE=='CH'){
-			console.log('charge');
+			////console.log('charge');
 			var chargeAmt = parseFloat($('#charge').val());
 			var due = parseFloat($('#total').val());
 			
@@ -1107,7 +1110,7 @@ $(document).ready(function(e){
 				
 				if(chargeAmt<=creditLimit){ // if charge is within the bounds of credit balance
 						if(!byPass){ //
-							//console.log('if(chargeAmt<=creditLimit)');
+							////console.log('if(chargeAmt<=creditLimit)');
 							if(chargeAmt < due){ //if not full credit
 								$('#dialog').dialog({
 									title:'Notification',
@@ -1140,12 +1143,12 @@ $(document).ready(function(e){
 							if(chargeAmt == due){
 								$('#charge').blur();
 								$('#save_button').removeAttr('disabled').parent().parent().addClass('topaz');
-								console.log('chargeAmt == due');
+								////console.log('chargeAmt == due');
 								saveFlag =true;
 							}
 						}else{
 							byPass = false;
-							console.log('inside bypass');
+							////console.log('inside bypass');
 						}
 					}else{
 						
@@ -1179,7 +1182,7 @@ $(document).ready(function(e){
 										$('#added_cash').val(addCash);
 										$('.forSale').show();
 										$('.cash_added').show()
-										console.log(paymentType);
+										////console.log(paymentType);
 										$('#SalePayment').val($.toJSON(paymentType));
 										byPass=true;
 										$('#amount_received').removeAttr('readonly').select();
@@ -1198,7 +1201,7 @@ $(document).ready(function(e){
 					}
 				
 			}
-			console.log(paymentType);
+			////console.log(paymentType);
 		}
 		if(MODE=='PR'){
 			var prepaidAmt = parseFloat($('#prepaid').val());
@@ -1212,7 +1215,7 @@ $(document).ready(function(e){
 				
 				if(prepaidAmt<=creditLimit){ // if prepaid is within the bounds of prepaid balance
 						if(!byPass){ //
-							//console.log('if(prepaidAmt<=creditLimit)');
+							////console.log('if(prepaidAmt<=creditLimit)');
 							if(prepaidAmt < due){ //if not full credit
 								$('#dialog').dialog({
 									title:'Notification',
@@ -1245,12 +1248,12 @@ $(document).ready(function(e){
 							if(prepaidAmt == due){
 								$('#prepaid').blur();
 								$('#save_button').removeAttr('disabled').parent().parent().addClass('topaz');
-								console.log('prepaidAmt == due');
+								////console.log('prepaidAmt == due');
 								saveFlag =true;
 							}
 						}else{
 							byPass = false;
-							console.log('inside bypass');
+							////console.log('inside bypass');
 						}
 					}else{
 						
@@ -1284,7 +1287,7 @@ $(document).ready(function(e){
 										$('#added_cash').val(addCash);
 										$('.forSale').show();
 										$('.cash_added').show()
-										console.log(paymentType);
+										//////console.log(paymentType);
 										$('#SalePayment').val($.toJSON(paymentType));
 										byPass=true;
 										$('#amount_received').removeAttr('readonly').select();
@@ -1298,15 +1301,10 @@ $(document).ready(function(e){
 							}
 						});
 						$('#dialog').html('<center><br/><img src="/canteen/img/icons/exclamation.png" /><br/><br/><strong> Exceeded credit limit!<br/>Do you want to continue?</strong><br/><br/></center>');
-						
-						
 					}
-				
 			}
-		
 		}
 	}
-	
 	function dialog_box(args){
 		$('#dialog').dialog({
 			title:'Notification',

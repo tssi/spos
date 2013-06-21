@@ -32,29 +32,29 @@ $(document).ready(function(){
 	
 	//datepicker
 	$('.datepicker').datepicker({ 
-			dateFormat: 'yy-mm-dd',
-			destroyed: true,
-			yearRange: "-50:+0",
-			changeMonth: true,
-			changeYear: true,
-			onSelect: function(dateText, inst) {
-				var source = '#'+inst.id;
-				if($(source).hasClass('hasstaledate')){
-					if(daydiff(new Date(),parseDate(dateText))*-1>165){
-						$('#check_alert').dialog({
-								modal:true,
-								title: 'Warning',
-								buttons: {
-									OK: function(){
-										$(source).val('').focus();
-										$(this).dialog('destroy');
-									}
+		dateFormat: 'yy-mm-dd',
+		destroyed: true,
+		yearRange: "-50:+0",
+		changeMonth: true,
+		changeYear: true,
+		onSelect: function(dateText, inst) {
+			var source = '#'+inst.id;
+			if($(source).hasClass('hasstaledate')){
+				if(daydiff(new Date(),parseDate(dateText))*-1>165){
+					$('#check_alert').dialog({
+							modal:true,
+							title: 'Warning',
+							buttons: {
+								OK: function(){
+									$(source).val('').focus();
+									$(this).dialog('destroy');
 								}
-							});
-					}
+							}
+						});
 				}
 			}
-		});
+		}
+	});
 	
 	$(".datepicker").datepicker('setDate', new Date());
 	
@@ -586,150 +586,155 @@ $(document).ready(function(){
 	
 	
 	function triggerThis(obj,evt){
-			var Li = $(obj).parents('li:first');
-			var units = Li.find('div.unit select:first').parent().html();
+		var Li = $(obj).parents('li:first');
+		var units = Li.find('div.unit select:first').parent().html();
+		var desc = $(obj).parents('li:first').find('div .desc input:first').val();
+		var code = $(obj).parents('li:first').find('div .itemcode input:first').val();
+		if (code=='' && $(obj).val()!=''){
+			$(this).dialog('destroy');
+			var msg ='<center><strong>Product description not found!<br /><br />Do you want to add this product?</strong></center>';
+			var button = {};
+			button.YES = function(){
+				var dgbox = '<div class="dgForm fwb">';
+				dgbox+='<div class="fLeft w45 pt5">Product Type:</div>';
+				dgbox+='<div class="type fRight w55">' +prodtype +'</div>';
+				dgbox+='<div class="fClear"></div>';
+				
+				dgbox+='<div class="fLeft w45 pt5">Item Code:</div>';
+				dgbox+='<div class="itemcode fRight w55"><input value="(Auto)" class ="taRight" readonly/></div>';
+				dgbox+='<div class="fClear"></div>';
+				
+				dgbox+='<div class="fLeft w45 pt5">Description:</div>';
+				dgbox+='<div class="desc fRight w55"><input id="dgProductName" maxlength="50" class="productAuto ajax unique taRight" linkto="#ProductName" frm="#nameCheck" value="'+desc+'" readonly/>';
+				dgbox+='</div>';
+				dgbox+='<div class="fClear"></div>';
 			
-			var desc = $(obj).parents('li:first').find('div .desc input:first').val();
-			var code = $(obj).parents('li:first').find('div .itemcode input:first').val();
-			if (code=='' && $(obj).val()!=''){
-				$(this).dialog('destroy');
-				var msg ='<center><strong>Product description not found!<br /><br />Do you want to add this product?</strong></center>';
+				dgbox+='<div class="fLeft w45 pt5">Unit:</div>';
+				dgbox+='<div class="unit fRight w55">'+units+'</div>';
+				dgbox+='<div class="fClear"></div>';
+				
+				dgbox+='<div class="fLeft w45 pt5">Qty:</div>';
+				dgbox+='<div class="qty fRight w55"><input class ="taRight numeric"/></div>';
+				dgbox+='<div class="fClear"></div>';			
+				
+				dgbox+='<div class="fLeft w45 pt5">Purchase Price/Unit:</div>';
+				dgbox+='<div class="pp fRight w55"><input class="monetary numeric taRight"/></div>';
+				dgbox+='<div class="fClear"></div>';
+				
+				dgbox+='<div class="fLeft w45 pt5">Amount:</div>';
+				dgbox+='<div class="amount fRight w55"><input readonly="readonly" class="monetary numeric taRight"/></div>';
+				dgbox+='<div class="fClear"></div>';
+									
+				dgbox+='<div class="fLeft w45 pt5">Estimated Markup:</div>';
+				dgbox+='<div class="em fRight w55"><input class="numeric taRight"/></div>';
+				dgbox+='<div class="fClear"></div>';
+				
+				dgbox+='<div class="fLeft w45 pt5">Markup Unit:</div>';
+				dgbox+='<div class="emUnit fRight w55"><select>';
+				dgbox+='<option value="1">Php.</option>';
+				dgbox+='<option value="%">%</option>';
+				dgbox+='</select></div>';
+				dgbox+='<div class="fClear"></div>';
+				
+				dgbox+='<div class="fLeft w45 pt5">Estimated SRP:</div>';
+				dgbox+='<div class="esrp fRight w55"><input readonly="readonly" class="monetary numeric taRight"/></div>';
+				dgbox+='<div class="fClear"></div>';
+				
+				dgbox+='<div class="fLeft w45 pt5">SRP:</div>';
+				dgbox+='<div class="srp fRight w55"><input  class="monetary numeric taRight"/></div>';
+				dgbox+='<div class="fClear"></div>';
+				
 				var button = {};
-				button.YES = function(){
-					var dgbox = '<div class="dgForm fwb">';
-					dgbox+='<div class="fLeft w45 pt5">Product Type:</div>';
-					dgbox+='<div class="type fRight w55">' +prodtype +'</div>';
-					dgbox+='<div class="fClear"></div>';
-					
-					dgbox+='<div class="fLeft w45 pt5">Item Code:</div>';
-					dgbox+='<div class="itemcode fRight w55"><input value="(Auto)" class ="taRight" readonly/></div>';
-					dgbox+='<div class="fClear"></div>';
-					
-					dgbox+='<div class="fLeft w45 pt5">Description:</div>';
-					dgbox+='<div class="desc fRight w55"><input id="dgProductName" maxlength="50" class="productAuto ajax unique taRight" linkto="#ProductName" frm="#nameCheck" value="'+desc+'" readonly/>';
-					dgbox+='</div>';
-					dgbox+='<div class="fClear"></div>';
+				button.OK = function(){
+					var prodCode = $('div.dgForm .itemcode input:first').val();
+					var prodType = $('div.dgForm .type select:first').val();
+					var prodDesc = $('div.dgForm .desc input:first').val();
+					var prodUnit = $('div.dgForm .unit select:first').val();
+					var prodQty = $('div.dgForm .qty input:first').val();
+					var prodPp = $('div.dgForm .pp input:first').val();
+					var prodAmt = $('div.dgForm .amount input:first').val();
+					var prodSrp = $('div.dgForm .srp input:first').val();
+					var prodASrp = $('div.dgForm .esrp input:first').val();
+					var prodMarkup = $('div.dgForm .em input:first').val();
+					var prodMarkupUnit = $('div.dgForm .emUnit select:first').val();
 				
-					dgbox+='<div class="fLeft w45 pt5">Unit:</div>';
-					dgbox+='<div class="unit fRight w55">'+units+'</div>';
-					dgbox+='<div class="fClear"></div>';
+					$('#addProduct > #ProductItemCode').val(prodCode);
+					$('#addProduct > #ProductName').val(prodDesc);
+					$('#addProduct > #ProductUnitId').val(prodUnit);
+					$('#addProduct > #ProductQty').val(prodQty);
+					$('#addProduct > #ProductSellingPrice').val(prodSrp);
+					$('#addProduct > #ProductAvgPrice').val(prodASrp);
+					$('#addProduct > #ProductProductTypeId').val(prodType);
+					$('#addProduct > #ProductMarkup').val(prodMarkup);
+					$('#addProduct > #ProductMarkupUnit').val(prodMarkupUnit);
 					
-					dgbox+='<div class="fLeft w45 pt5">Qty:</div>';
-					dgbox+='<div class="qty fRight w55"><input class ="taRight numeric"/></div>';
-					dgbox+='<div class="fClear"></div>';			
-					
-					dgbox+='<div class="fLeft w45 pt5">Purchase Price/Unit:</div>';
-					dgbox+='<div class="pp fRight w55"><input class="monetary numeric taRight"/></div>';
-					dgbox+='<div class="fClear"></div>';
-					
-					dgbox+='<div class="fLeft w45 pt5">Amount:</div>';
-					dgbox+='<div class="amount fRight w55"><input readonly="readonly" class="monetary numeric taRight"/></div>';
-					dgbox+='<div class="fClear"></div>';
-					
-					
-					dgbox+='<div class="fLeft w45 pt5">Estimated Markup:</div>';
-					dgbox+='<div class="em fRight w55"><input class="numeric taRight"/></div>';
-					dgbox+='<div class="fClear"></div>';
-					
-					dgbox+='<div class="fLeft w45 pt5">Markup Unit:</div>';
-					dgbox+='<div class="emUnit fRight w55"><select>';
-					dgbox+='<option value="1">Php.</option>';
-					dgbox+='<option value="%">%</option>';
-					dgbox+='</select></div>';
-					dgbox+='<div class="fClear"></div>';
+					$(Li[0]).find('div.epp input').attr('epp',prodPp).val(prodPp);
+					$(Li[0]).find('div.amt input').attr('amt',prodAmt).val(prodAmt);					
+					$(Li[0]).find('div.pp input').attr('pp',prodPp).val(prodPp);
+					$(Li[0]).find('div.rsrp input').attr('rsrp',prodSrp).val(prodSrp);
 					
 					
-					dgbox+='<div class="fLeft w45 pt5">Estimated SRP:</div>';
-					dgbox+='<div class="esrp fRight w55"><input readonly="readonly" class="monetary numeric taRight"/></div>';
-					dgbox+='<div class="fClear"></div>';
-					
-					dgbox+='<div class="fLeft w45 pt5">SRP:</div>';
-					dgbox+='<div class="srp fRight w55"><input  class="monetary numeric taRight"/></div>';
-					dgbox+='<div class="fClear"></div>';
-					
-					
-					var button = {};
-					button.OK = function(){
-						var prodCode = $('div.dgForm .itemcode input:first').val();
-						var prodType = $('div.dgForm .type select:first').val();
-						var prodDesc = $('div.dgForm .desc input:first').val();
-						var prodUnit = $('div.dgForm .unit select:first').val();
-						var prodQty = $('div.dgForm .qty input:first').val();
-						var prodSrp = $('div.dgForm .srp input:first').val();
-						var prodASrp = $('div.dgForm .esrp input:first').val();
-						var prodMarkup = $('div.dgForm .em input:first').val();
-						var prodMarkupUnit = $('div.dgForm .emUnit select:first').val();
-					
-						$('#addProduct > #ProductItemCode').val(prodCode);
-						$('#addProduct > #ProductName').val(prodDesc);
-						$('#addProduct > #ProductUnitId').val(prodUnit);
-						$('#addProduct > #ProductQty').val(prodQty);
-						$('#addProduct > #ProductSellingPrice').val(prodSrp);
-						$('#addProduct > #ProductAvgPrice').val(prodASrp);
-						$('#addProduct > #ProductProductTypeId').val(prodType);
-						$('#addProduct > #ProductMarkup').val(prodMarkup);
-						$('#addProduct > #ProductMarkupUnit').val(prodMarkupUnit);
-						
-						$('#addProduct').ajaxSubmit({
-							success: function(data){
-								//console.log(data);
-								var msg =$.parseJSON(data);
-								var prod = msg.data;
-								var button = {};
-								button.OK = function() {
-									var source = [];
-									var aggr={};           
-									aggr['div.itemcode input']=prod.Product.item_code;
-									aggr['div.desc input']=prod.Product.name;
-									aggr['div.csr input']=prod.Product.selling_price;
-									aggr['div.qty input']=prod.Product.qty;
-									source.push(aggr);
-									$('#receiving ul.recordDataGrid').trigger('fill_this_grid',{'data':source, 'row':Li});
-									$(Li[0]).find('div.pp input').attr('old_pp',prod.Product.avg_price);
-									$(Li[0]).find('div.rsrp input').attr('markup',prod.Product.markup);
-									$(Li[0]).find('div.rsrp input').attr('markup-unit',prod.Product.markup_unit);
-									$(Li[0]).find('div.itemcode input').attr('valid','1');
-									$(Li[0]).find('div.itemcode input').removeClass('b1sCheri');
-									$(Li[0]).find('div.itemcode input').removeClass('bgCheri');
-									$(this).dialog('destroy');
-								};
-								$('#myDialog').trigger('pop-it', {
-									'title': 'Notification',
-									'msg': msg.msg,
-									'button': button,
-									'modal': true
-								});
-								$('.ui-dialog-buttonset button:first').show();
-							}
-						});
-					};
-					button.CANCEL = function() {
-						$(this).dialog('destroy');
-						Li.find('div.desc input:first').val('').select();
-					};
-					
-					$('#myDialog').trigger('pop-it',{
-						'title': 'Adding Product',
-						'msg': dgbox,
-						'button': button,
-						'modal': true
+					$('#addProduct').ajaxSubmit({
+						success: function(data){
+							//console.log(data);
+							var msg =$.parseJSON(data);
+							var prod = msg.data;
+							var button = {};
+							button.OK = function() {
+								var source = [];
+								var aggr={};           
+								aggr['div.itemcode input']=prod.Product.item_code;
+								aggr['div.desc input']=prod.Product.name;
+								aggr['div.app input']=prod.Product.avg_price;
+								aggr['div.csr input']=prod.Product.selling_price;
+								aggr['div.qty input']=prod.Product.qty;
+								source.push(aggr);
+								$('#receiving ul.recordDataGrid').trigger('fill_this_grid',{'data':source, 'row':Li});
+								$(Li[0]).find('div.pp input').attr('old_pp',prod.Product.avg_price);
+								$(Li[0]).find('div.rsrp input').attr('markup',prod.Product.markup);
+								$(Li[0]).find('div.rsrp input').attr('markup-unit',prod.Product.markup_unit);
+								$(Li[0]).find('div.itemcode input').attr('valid','1');
+								$(Li[0]).find('div.itemcode input').removeClass('b1sCheri');
+								$(Li[0]).find('div.itemcode input').removeClass('bgCheri');
+								$(this).dialog('destroy');
+							};
+							$('#myDialog').trigger('pop-it', {
+								'title': 'Notification',
+								'msg': msg.msg,
+								'button': button,
+								'modal': true
+							});
+							$('.ui-dialog-buttonset button:first').show();
+						}
 					});
-					
 				};
-			    button.NO = function(){
+				button.CANCEL = function() {
 					$(this).dialog('destroy');
+					Li.find('div.desc input:first').val('').select();
 				};
 				
-				$('#myDialog').trigger('pop-it', {
-					'title': 'Notification',
-					'msg': msg,
+				$('#myDialog').trigger('pop-it',{
+					'title': 'Adding Product',
+					'msg': dgbox,
 					'button': button,
 					'modal': true
 				});
-				$('.ui-dialog-buttonset button:first').show();
+				
+			};
+			button.NO = function(){
+				$(this).dialog('destroy');
 			};
 			
-		};
+			$('#myDialog').trigger('pop-it', {
+				'title': 'Notification',
+				'msg': msg,
+				'button': button,
+				'modal': true
+			});
+			$('.ui-dialog-buttonset button:first').show();
+		}
+		
+	};
 	
 	var proceed =0; //to avoid dialog box overriding
 	//if any input or select blurred
@@ -992,45 +997,46 @@ $(document).ready(function(){
 		});
 	});
 	
-	//adding product controller
+	//Adding product controller
 	$('div.dgForm select, div.dgForm input').livequery(function(){
 		$('.ui-dialog-buttonset button:first').hide();
 		var THIS = $(this);
 		
 		THIS.bind('focus', function(){
-			$('.ui-dialog-buttonset button:first').hide();
-		});
-		
-		THIS.bind('blur', function(){
-			onblurselect()
+			//$('.ui-dialog-buttonset button:first').hide();
+			addingproductbuilder(THIS);
 		});
 		THIS.bind('change', function(){
-			onblurselect();
+			addingproductbuilder(THIS);
+		});
+		THIS.bind('keydown', function(){
+			addingproductbuilder(THIS);
+		});
+		THIS.bind('keyup', function(){
+			addingproductbuilder(THIS);
+		});
+		THIS.bind('blur', function(){
+			addingproductbuilder(THIS);
 		});
 		
-		function onblurselect(){
+		function addingproductbuilder(THIS){
 			var emptyField = $('div.dgForm select option[value="null"]:selected');
 			emptyField = emptyField.length;
-			var inputs = $('div.dgForm input,div.dgForm select');
+			var inputs = $('div.dgForm input');
 			var emptyExist;
-			
 			$.each(inputs, function(ctr, input){
-				//console.log($(input).val());
 				if($(input).val()==""){
 					emptyExist=true;
 					$('.ui-dialog-buttonset button:first').hide();
 				}
 			});
-			
 			if (emptyExist == undefined){
 				emptyExist = false;
-			}			
+			}
 			if(!emptyExist && !emptyField){
 				$('.ui-dialog-buttonset button:first').show();
 			}
 			console.log('emptyExist:',emptyExist);
-			
-			//console.log(THIS.parent());
 			if(THIS.parent().hasClass('qty') || THIS.parent().hasClass('pp')){
 				var qty = $('.dgForm .qty input').val();
 				var pp = $('.dgForm .pp input').val();
@@ -1050,7 +1056,7 @@ $(document).ready(function(){
 			if(THIS.parent().hasClass('em') || THIS.parent().hasClass('emUnit')){
 				//console.log('qty or pp');
 				var pp = parseFloat($('.dgForm .pp input').val());
-				var em = parseInt($('.dgForm .em input').val());
+				var em = parseFloat($('.dgForm .em input').val());
 				var emUnit = $('.dgForm .emUnit select').val();
 				var esrp;
 				
@@ -1059,7 +1065,6 @@ $(document).ready(function(){
 				}else{
 					esrp=pp+em;
 				}
-				//console.log('esrp: ', esrp);
 				isNaN(esrp) ? esrp=0.0 : esrp=parseFloat(esrp);
 				if(esrp==0){
 					esrp='';
@@ -1071,6 +1076,7 @@ $(document).ready(function(){
 				}
 			}
 		}
+		
 		
 	});
 	
