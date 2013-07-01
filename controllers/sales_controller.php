@@ -15,15 +15,14 @@ class SalesController extends AppController {
 					'SopPpTran', 
 					'SopPpVal',
 					'Charge201',
-					'Prepaid201',);
+					'Prepaid201',
+					'MenuItem',
+					);
 
 	function index(){
 		$this->Employee->find('list');
 		$paymentTypes = $this->PaymentType->find('list');
 		$this->set(compact('paymentTypes'));
-		
-	
-		
 	}
 
 	function view($id = null){
@@ -64,7 +63,8 @@ class SalesController extends AppController {
 						'name' => $this->data['SaleDetail'][$t]['name'],
 						'qty' => $this->data['SaleDetail'][$t]['qty'],
 						'price' => $this->data['SaleDetail'][$t]['price'],
-						'amount' => $this->data['SaleDetail'][$t]['amount']
+						'amount' => $this->data['SaleDetail'][$t]['amount'],
+						'is_setmeal' => $this->data['SaleDetail'][$t]['is_setmeal'],
 					);
 				}else{
 					$newSaleDetail[$index]['qty']+=$this->data['SaleDetail'][$t]['qty'];
@@ -102,7 +102,7 @@ class SalesController extends AppController {
 						if($this->SopCgeTran->save($chargeTransaction)){
 							$bal = $this->SopCgeVal->findByCharge201Id($chAcount['Charge201']['id']);
 							$this->SopCgeVal->id = $bal['SopCgeVal']['id'];
-							$this->SopCgeVal->save(
+														$this->SopCgeVal->save(
 											array(
 												'SopCgeVal'=>array(
 													'charge201_id'=>$chAcount['Charge201']['id'],
@@ -228,10 +228,7 @@ class SalesController extends AppController {
 	}
 	
 	function sale_or(){
-		//pr($this->data);
 		$invoice_no=$this->data['Sale']['id'];
-		
-				
 		$joins=array(
 					 array(
 						'table'=>'menu_items',
@@ -247,19 +244,22 @@ class SalesController extends AppController {
 					),
 				);
 		$fields=array('SaleDetail.item_code',
-		'Sale.id',
-		'SaleDetail.amount',
-		'SaleDetail.qty',
-		'Sale.total',
-		'Sale.amount_received',
-		'Produkto.name',
-		'MenuItem.name',);
+						'Sale.id',
+						'SaleDetail.amount',
+						'SaleDetail.qty',
+						'SaleDetail.is_setmeal',
+						'Sale.total',
+						'Sale.amount_received',
+						'Produkto.name',
+						'MenuItem.name',
+						'Produkto.unit_id',
+						'MenuItem.unit_id',
+					);
 		
 		$details= $this->Sale->SaleDetail->find('all',array('conditions'=>array('Sale.id'=>$invoice_no),'joins'=>$joins,'fields'=>$fields));
 		$header = $this->Sale->find('first',array('conditions'=>array('Sale.id'=>$invoice_no)));
-		
+
 		$this->set(compact('details','invoice_no', 'header'));
-		
 		$this->layout='pdf';
 		$this->render();
 	}
@@ -315,7 +315,9 @@ class SalesController extends AppController {
 		
 		
         $conditions = array("Sale.created >=" =>$fromDate,
-							"Sale.created <=" =>$toDate);
+							"Sale.created <=" =>$toDate,
+							"SaleDetail.is_setmeal !="=>1
+							);
 		
 		
 		if(!empty($byCashier)){
@@ -323,6 +325,10 @@ class SalesController extends AppController {
 		}
 		
 		$daily = $this->Sale->SaleDetail->find('all', array('conditions'=>$conditions, 'fields'=>$field, 'joins'=>$join, 'recursive'=>2));
+		 $conditions = array("Sale.created >=" =>$fromDate,
+							"Sale.created <=" =>$toDate,
+							);
+		
 		$dailySale = $this->Sale->find('all', array('conditions'=>$conditions));
 		
 		
@@ -479,8 +485,5 @@ class SalesController extends AppController {
 		$this->Employee->find('list');
 		$paymentTypes = $this->PaymentType->find('list');
 		$this->set(compact('paymentTypes'));
-		
-	
-		
 	}
 }

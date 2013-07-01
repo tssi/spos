@@ -86,7 +86,15 @@
 				
 				<div class="fLeft w100 metro trans">
 					<div class="fRight w38">			
-						<div class="fLeft w50 pt5 taRight topaz"><?php echo $this->Form->submit('Save (Enter)',array('type'=>'button','class'=>'selected fwb submit-button wideButton', 'disabled'=>true,'id'=>'save_button'));?></div>		
+						<div class="fLeft w50 pt5 taRight topaz">
+							<div class="fLeft w10 loader" style="display:none">
+								<img src="/canteen/img/icons/loader.gif" class="text-right "/>
+							</div>
+							<div class="fRight w90">
+								<?php echo $this->Form->submit('Save (Enter)',array('type'=>'button','class'=>'selected fwb submit-button wideButton', 'disabled'=>true,'id'=>'save_button'));?>
+							</div>	
+							<div class="fClear"></div>							
+						</div>		
 						<div class="fRight w50 pt5 topaz"><?php echo $this->Form->submit('Cancel (Esc)',array('type'=>'button','class'=>'selected fwb wideButton','id'=>'cancel_button'));?></div>	
 						<div class="fClear"></div>
 					</div>
@@ -166,6 +174,7 @@
 											<li class="mainInput">
 												<div class="fLeft w55">
 													<div class="fLeft w75 hide item_code"><div class="input"><?php echo $this->Form->input('SaleDetail.%.item_code',array('type'=>'hidden','id'=>false,'value'=>'X')); ?></div></div>
+													<div class="fLeft w75 hide is_setmeal"><div class="input"><?php echo $this->Form->input('SaleDetail.%.is_setmeal',array('type'=>'hidden','id'=>false,'value'=>'X')); ?></div></div>
 													<div class="fLeft w75 desc"><?php echo $this->Form->input('SaleDetail.%.name',array('readonly'=>'readonly','label'=>false,'id'=>false,'value'=>'X')); ?></div>
 													<div class="fRight w25 qty"><?php echo $this->Form->input('SaleDetail.%.qty',array('readonly'=>'readonly','label'=>false,'id'=>false,'value'=>'X')); ?></div>
 												</div>								
@@ -174,7 +183,7 @@
 														<div class="fLeft w50 price"><?php echo $this->Form->input('SaleDetail.%.price',array('readonly'=>'readonly','label'=>false,'id'=>false,'value'=>'X')); ?></div>
 														<div class="fLeft w50 amount"><?php echo $this->Form->input('SaleDetail.%.amount',array('readonly'=>'readonly','label'=>false,'id'=>false,'value'=>'X')); ?></div>
 													</div>
-													<div class="fRight w20 ">
+													<div class="fRight w20 xDel">
 														<a class="recordDelete" href="#">X</a>
 													</div>
 												</div>							
@@ -207,10 +216,25 @@
 		<div class="iscroll w100 hide" id="counterItems_ui">
 		<div class="iscrollWrapper">
 			<ul class="recordDatagrid  on w100  b1sg  nbLeft  nbRight">
-				<li class="mainInput">
+				<li class="mainInput">		
+					<div class="fLeft hide id">
+						<div class="input">
+							<?php echo $this->Form->input('Product.%.id',array('readonly'=>'readonly','value'=>'','label'=>false, 'type'=>'hidden','id'=>false)); ?>
+						</div>
+					</div>
 					<div class="fLeft hide item_code">
 						<div class="input">
-							<?php echo $this->Form->input('Product.%.item_code',array('readonly'=>'readonly','value'=>'x','label'=>false, 'type'=>'hidden','id'=>false)); ?>
+							<?php echo $this->Form->input('Product.%.item_code',array('readonly'=>'readonly','label'=>false, 'type'=>'hidden','id'=>false)); ?>
+						</div>
+					</div>
+					<div class="fLeft hide is_setmeal">
+						<div class="input">
+							<?php echo $this->Form->input('Product.%.is_setmeal',array('readonly'=>'readonly','value'=>'0','label'=>false, 'type'=>'hidden','id'=>false)); ?>
+						</div>
+					</div>
+					<div class="fLeft hide unit">
+						<div class="input">
+							<?php echo $this->Form->input('Product.%.unit_id',array('readonly'=>'readonly','value'=>'','label'=>false, 'type'=>'hidden','id'=>false)); ?>
 						</div>
 					</div>
 					<div class="fLeft w75 desc">

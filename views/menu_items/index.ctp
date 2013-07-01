@@ -11,12 +11,11 @@
 </style>
 
 <div id="dialog"></div>
-<div class="form formNeat w75  mCenter">
+<div class="form formNeat wWider  mCenter">
 	<?php echo $this->Form->create('MenuItem',array('action'=>'add'));?>
 	<div class="tab record metro nmLeft w100 mCenter">
-			<?php echo $this->Form->create('MenuItem',array('action'=>'add'));?>
 					<h2 class="tab-header recordTitle  b1saqua pad4 bgAqua tcWhite fsSmall padLeft txtShadow taCenter h11 hdrAdd">
-						Add Menu 
+						Add Single Menu 
 					</h2>
 				<div class="tab-content off nmBottom posRelative ">
 					<div class="recordHeader pbtm btmShadow">
@@ -47,8 +46,7 @@
 					</div>
 				
 					<div class="iscroll w100" id="menuList">
-						<div class="iscrollWrapper">
-								
+						<div class="iscrollWrapper">			
 							<ul class="recordDatagrid on w100 h175px b1sg  nbLeft  nbRight">
 								<li class="mainInput">
 									<div class="pbtm btmShadow">
@@ -106,7 +104,7 @@
 					</div><div class="fClear"></div>
 				</div>
 			</div><div class="fClear "></div>
-			<?php echo $this->Form->end(); ?>
+	<?php echo $this->Form->end(); ?>
 	
 	
 	
@@ -117,10 +115,10 @@
 		<div class="tab-content on nmBottom posRelative ">
 			<div class="recordHeader pbtm btmShadow">
 						<div class="fLeft w60">
-							<div class="fLeft w30">
+							<div class="fLeft w40">
 							Item Code
 							</div>
-							<div class="fRight w70 ">
+							<div class="fRight w60 ">
 							Description
 							</div>
 							<div class="fClear"></div>
@@ -130,10 +128,10 @@
 								Price
 							</div>
 							<div class="fRight w70">
-								<div class="fLeft w40">
+								<div class="fLeft w60">
 								Unit
 								</div>
-								<div class="fRight w55 taLeft">
+								<div class="fRight w40 taLeft">
 								Est. Cost
 								</div>
 							</div>
@@ -146,49 +144,41 @@
 						
 					<ul class="recordDatagrid on w100 h175px b1sg  nbLeft  nbRight">
 						<li class="mainInput">
-							<div class="pbtm btmShadow">
-								<div class="fLeft w60">
-									<div class="hide VIEWID">
-										<?php echo $this->Form->input('MenuItem.%.id',array('type'=>'hidden','readonly'=>'readonly','id'=>false)); ?>
-									</div>
-									<div class="fLeft w30 VIEWitemCode">
-										<?php echo $this->Form->input('MenuItem.%.item_code',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'unique ajax numeric','frm'=>'#menuCheck', 'linkto'=>'#MenuItemItemCode')); ?>
-									</div>
-									<div class="fRight w70 VIEWdesc">
-										<?php echo $this->Form->input('MenuItem.%.name',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'unique ajax editable','frm'=>'#nameCheck', 'linkto'=>'#MenuItemName')); ?>
-									</div><div class="fClear"></div>
-								</div>
-								
-								<div class="fRight w40">
-									<div class="fLeft w35 VIEWprice money">
-										<?php echo $this->Form->input('MenuItem.%.selling_price',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'numeric monetary editable')); ?>
-									</div>
-									<div class="fRight w65 ">
-										<div class="fleft w40 VIEWunit">
-											<?php echo $this->Form->input('MenuItem.%.unit_id',array('type'=>'text','label'=>false,'id'=>false,'readonly'=>'readonly','class'=>'option', 'disabled'=>true)); ?>
+									<div class="pbtm btmShadow">
+										<div class="fLeft w60">
+											<div class="fLeft w40 VIEWitemCode">
+												<?php echo $this->Form->input('MenuItem.%.item_code',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'unique ajax numeric','frm'=>'#menuCheck', 'linkto'=>'#MenuItemItemCode')); ?>
+											</div>
+											<div class="fRight w60 VIEWdesc">
+												<?php echo $this->Form->input('MenuItem.%.name',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'unique ajax','frm'=>'#nameCheck', 'linkto'=>'#MenuItemName')); ?>
+											</div><div class="fClear"></div>
 										</div>
-										<div class="fleft w45 VIEWavg">
-											<?php echo $this->Form->input('MenuItem.%.avg_price',array('label'=>false,'id'=>false,'class'=>'option editable','readonly'=>'readonly')); ?>
-										</div>
-										<div class="fleft w15 taCenter action">
-											<a class="edit">
-												<img src="/canteen/img/icons/pencil.png"></img>
-											</a>
-										</div>
+										
+										<div class="fRight w40">
+											<div class="fLeft w35 VIEWprice money">
+												<?php echo $this->Form->input('MenuItem.%.selling_price',array('label'=>false,'id'=>false, 'readonly'=>'readonly', 'class'=>'numeric monetary')); ?>
+											</div>
+											<div class="fRight w65 ">
+												<div class="fleft w50 VIEWunit">
+													<?php echo $this->Form->input('MenuItem.%.unit_id',array('type'=>'text','label'=>false,'id'=>false,'readonly'=>'readonly','class'=>'option', 'disabled'=>true)); ?>
+												</div>
+												<div class="fleft w50 VIEWavg">
+													<?php echo $this->Form->input('MenuItem.%.avg_price',array('label'=>false,'id'=>false,'class'=>'option')); ?>
+												</div>
+											</div>
+											
+											<div class="fClear"></div>
+										</div><div class="fClear"></div>
 									</div>
-									
-									<div class="fClear"></div>
-								</div><div class="fClear"></div>
-							</div>
-						</li>
+								</li>
 					</ul>	
 				</div>
 			</div>			
 		</div>
 	</div>
 	<div class="fClear"></div>
-	<div class="fLeft pt5 topaz">
-		<?php echo $this->Form->submit("Back",array('type'=>'button','class'=>'selected fwb goto-button'));?>
+	<div class="fLeft pt5 topaz hide">
+		<?php echo $this->Form->submit('Back',array('type'=>'button','class'=>'selected fwb goto-button'));?>
 	</div>		
 	<div class="fClear"></div>
 

@@ -91,7 +91,7 @@ li.clickInput .current input{
 							<div class="w100 ">
 								<?php echo $this->Form->input('Search', array('class'=>'uiSmartSearch','search-on'=>'#masterList ul.recordDataGrid li.clickInput','id'=>'desc')); ?>
 							</div>
-							<div class="taRight pt5 topaz">
+							<div class="taRight pt5 topaz hide">
 								<?php echo $this->Form->submit('Menus',array('type'=>'button','class'=>'selected fwb goto-button'));?>
 							</div>	
 						</div>
@@ -132,7 +132,7 @@ li.clickInput .current input{
 									</div>
 									<div class="fRight w55">
 										<div class="fLeft w40 ">App. Srv.</div>
-										<div class="fLeft w60 ">Srv. Left</div>
+										<div class="fRight w59 text-left">Srv. Left</div>
 										<div class="fClear"></div>
 									</div>
 									<div class="fClear"></div>
@@ -184,7 +184,7 @@ li.clickInput .current input{
 															<div class="fLeft w70">
 																<div class="fLeft w50 appSrv money">
 																	<div class="input text required">
-																		<?php echo $this->Form->input('DailyMenu.%.approx_srv',array('readonly'=>'readonly','label'=>false,'id'=>false, 'value'=>'X','class'=>'editable')); ?>
+																		<?php echo $this->Form->input('DailyMenu.%.approx_srv',array('readonly'=>'readonly','label'=>false,'id'=>false, 'value'=>'X','class'=>'editable numeric')); ?>
 																	</div>
 																</div>
 																<div class="fRight w50 srvLeft money">

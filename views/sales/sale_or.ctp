@@ -31,22 +31,24 @@ foreach($header['SalePayment'] as $mode){
 
 for($q=0;$q<count($details);$q++){
 		$code = $details[$q]['SaleDetail']['item_code'];
-		
+	
 		if(empty($details[$q]['Produkto']['name'])){
-				$details[$q]['Produkto']['name']=$details[$q]['MenuItem']['name'];
-			}
-		
+			$details[$q]['Produkto']['name']=$details[$q]['MenuItem']['name'];
+			$details[$q]['Produkto']['unit_id']=$details[$q]['MenuItem']['unit_id'];
+			
+		}
+
 		$data = array(
-							'SaleDetail'=>array(
-									'qty'=>$details[$q]['SaleDetail']['qty'],
-									'amount'=>$details[$q]['SaleDetail']['amount']
-							),
-							
-							'Sale'=>$details[$q]['Sale'],
-							'Produkto'=>array(
-													'name'=>$details[$q]['Produkto']['name']
-									
-							)
+						'SaleDetail'=>array(
+								'qty'=>$details[$q]['SaleDetail']['qty'],
+								'amount'=>$details[$q]['SaleDetail']['amount'],
+								'is_setmeal'=>$details[$q]['SaleDetail']['is_setmeal']
+						),
+						'Sale'=>$details[$q]['Sale'],
+						'Produkto'=>array(
+									'name'=>$details[$q]['Produkto']['name'],
+									'unit_id'=>$details[$q]['Produkto']['unit_id'],
+						),
 					);
 			
 		if(!isset($temp[$code])){
@@ -55,21 +57,21 @@ for($q=0;$q<count($details);$q++){
 		}else{
 			$temp[$code]['SaleDetail']['qty']+=$data['SaleDetail']['qty'];
 			$temp[$code]['SaleDetail']['amount']+=$data['SaleDetail']['amount'];
+			$temp[$code]['SaleDetail']['is_setmeal']+=$data['SaleDetail']['is_setmeal'];
 			
 		}
 		
 } 
 
 
-
 $details = $temp;
 $invoice_dtl=array();
 foreach($details as $details){
 	$data =  array(
-					//'item' =>$details['MenuItem']['name'],
-					'items' =>$details['Produkto']['name'],
+					'item' =>$details['Produkto']['name'],
 					'qty' =>$details['SaleDetail']['qty'],
 					'price'=> $details['SaleDetail']['amount'],
+					'is_setmeal'=> $details['SaleDetail']['is_setmeal'],
 				);
 	array_push($invoice_dtl,$data);	
 }	

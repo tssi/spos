@@ -2,13 +2,16 @@
 class MenuItemsController extends AppController {
 
 	var $name = 'MenuItems';
-	var $uses = array('MenuItem', 'Counter', 'Product');
+	var $uses = array('MenuItem', 'Counter', 'Product','SetMeal');
 	var $components = array('RequestHandler');
 
 	function index() {
 		$this->MenuItem->recursive = 0;
 		//$this->set('menuItems', $this->paginate());	
-		$units = $this->MenuItem->Unit->find('list',array('fields'=>array('Unit.id','Unit.alias')));
+		$units = $this->MenuItem->Unit->find('list',array(
+												'fields'=>array('Unit.id','Unit.alias'),
+												'conditions'=>array('Unit.id != '=>'7'),
+											));
 		$this->set(compact('units'));
 	}
 
@@ -18,8 +21,7 @@ class MenuItemsController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		$this->set('menuItem', $this->MenuItem->read(null, $id));
-	}
-
+	}	
 	function add(){
 		if (!empty($this->data)) {
 			if(isset($this->data['MenuItem'][0])){
@@ -39,30 +41,72 @@ class MenuItemsController extends AppController {
 					elseif (empty($itemcode)){
 						unset($this->data['MenuItem'][$i]);
 					}
+				} 
+				if ($this->MenuItem->saveAll($this->data['MenuItem'])) {
+						if($this->RequestHandler->isAjax()){
+							$response['status'] = 1;
+							$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; The menu has been saved';
+							$response['data'] = $this->data;
+							echo json_encode($response);
+							exit();
+						}else{ 
+							$this->Session->setFlash(__('The menu has been saved', true));
+						}
+					} else {
+						if($this->RequestHandler->isAjax()){
+							$response['status'] = -1;
+							$response['msg'] = '<img src="/canteen/img/icons/exclamation.png" />&nbsp; The menu could not be saved. Please, try again.';
+							$response['data'] = $this->data;
+							echo json_encode($response);
+							exit();
+						}else{
+						$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
+						}
+					}				
+			}else{//Set Meal
+				if($this->data['MenuItem']['unit_id']=='7'){	
+					
+					$this->SetMeal->deleteAll(array('SetMeal.menu_item_id' => $this->data['MenuItem']['id']), true);	
+					
+					array_shift($this->data['SetMeal']);
+					$itemcode = trim($this->data['MenuItem']['item_code']);
+					if($itemcode=='(Auto)'){
+						$name = $this->data['MenuItem']['name'];
+						$cast = ucwords(strtolower($name));
+						$this->data['MenuItem']['name'] = $cast;
+						
+						$prefixInHouse = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRFXINH')));
+						$prefixInMenu = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRFXMNU')));
+						$counter = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'MENUITM')));
+						$this->data['MenuItem']['item_code']=$prefixInHouse['Counter']['value'].$prefixInMenu['Counter']['value'].$counter['Counter']['value'];
+						$this->Counter->doIncrement('MENUITM',1);					
+					}
+					if ($this->MenuItem->saveAll($this->data)) {
+						if($this->RequestHandler->isAjax()){
+							$response['status'] = 1;
+							$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; Set meal has been saved';
+							$response['data'] = $this->data;
+							echo json_encode($response);
+							exit();
+						}else{ 
+							$this->Session->setFlash(__('Set meal has been saved', true));
+						}
+					} else {
+						if($this->RequestHandler->isAjax()){
+							$response['status'] = -1;
+							$response['msg'] = '<img src="/canteen/img/icons/exclamation.png" />&nbsp; Set meal could not be saved. Please, try again.';
+							$response['data'] = $this->data;
+							echo json_encode($response);
+							exit();
+						}else{
+						$this->Session->setFlash(__('Set meal could not be saved. Please, try again.', true));
+						}
+					}				
 				}
+				
 			}
 			
-			if ($this->MenuItem->saveAll($this->data['MenuItem'])) {
-				if($this->RequestHandler->isAjax()){
-					$response['status'] = 1;
-					$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; The menu has been saved';
-					$response['data'] = $this->data;
-					echo json_encode($response);
-					exit();
-				}else{ 
-					$this->Session->setFlash(__('The menu has been saved', true));
-				}
-			} else {
-				if($this->RequestHandler->isAjax()){
-					$response['status'] = -1;
-					$response['msg'] = '<img src="/canteen/img/icons/exclamation.png" />&nbsp; The menu could not be saved. Please, try again.';
-					$response['data'] = $this->data;
-					echo json_encode($response);
-					exit();
-				}else{
-				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
-				}
-			}
+			
 		}
 	}
 
@@ -111,6 +155,7 @@ class MenuItemsController extends AppController {
 		echo json_encode($menus);
 		exit();
 	}
+   
 	function check(){
         if ($this->RequestHandler->isAjax()) {
 			if(!empty($this->data)){
@@ -208,15 +253,15 @@ class MenuItemsController extends AppController {
 		exit();
 	}
 	
-	function hot_meals() {
-		$this->MenuItem->recursive = 0;
-		$units = $this->MenuItem->Unit->find('list',array('fields'=>array('Unit.id','Unit.alias')));
-		$this->set(compact('units'));
+	function getComponents(){
+		if ($this->RequestHandler->isAjax()) {
+			$id = $this->data['id'];
+			$data = $this->MenuItem->find('first',array('recursive'=>2,
+							'conditions'=>array('MenuItem.id'=>$id),
+			));
+			echo json_encode($data);
+			exit();
+		}
 	}
 	
-	function update(){
-		$this->MenuItem->saveAll($this->data);
-		echo json_encode($this->data);
-		exit();
-	}
 }

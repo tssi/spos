@@ -57,7 +57,7 @@
 	border-radius:3px;
 }
 .formneat .metro.soft div.input, .formneat .classic.soft div.input input, .formneat .classic.soft div.input select , .formneat .metro.soft div.input select{
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #C1CEB4), color-stop(0.05, white), color-stop(1, #f8f8f8));
+	/* background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #C1CEB4), color-stop(0.05, white), color-stop(1, #f8f8f8)); */
 }
 .formneat .classic .input label{
 	font-size:10.5px;

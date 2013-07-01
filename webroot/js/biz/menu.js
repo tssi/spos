@@ -1,5 +1,6 @@
 var BASE_URL ='/'+window.location.pathname.split('/')[1]+'/';
 $(document).ready(function(){
+	$('.uiNotify').wrap('<span style="display:none"/>');// hide notify
     $('.recordDatagrid li.mainInput').hide();
     var RECORD_SPEED = 'slow';
     var menuItemsURL = '/canteen/menu_items';
@@ -89,7 +90,7 @@ $(document).ready(function(){
 		  $.each(data, function(ctr,obj){
 			  var desc= obj.MenuItem.name;
 			  var price = obj.DailyMenu.selling_price;
-			  var avg = obj.DailyMenu.avg_price;
+			  var avg = obj.MenuItem.avg_price;
 			  var unit = obj.MenuItem.Unit.alias;
 			  var id = obj.MenuItem.id;
 			  var itemcode = obj.MenuItem.item_code;

@@ -4,8 +4,8 @@ $(document).ready(function(){
 	var ERROR_FLAG=-1;
 	$('.uiNotify ').hide();
 	$('div.unit select').val(4);
-	
-	 
+	$('.uiNotify').wrap('<span style="display:none"/>');// hide notify
+
 	$('.hdrAdd').live('click', function(){
 			$('#menuList .itemCode input:last').focus();
 	});
@@ -35,7 +35,6 @@ $(document).ready(function(){
 					//console.log('key: ',productDesc);
 				},
 				success:function(data){
-					//try{
 					//console.log($.parseJSON(data));
 					var prod = $.parseJSON(data);
 					$.each(prod, function(c,o){
@@ -47,7 +46,6 @@ $(document).ready(function(){
 					})
 					//console.log('source: ',source);
 					$('.menuAuto').autocomplete('option','source',source);
-					//}
 				}
 			});
 			return;
@@ -101,12 +99,12 @@ $(document).ready(function(){
 					source.push(aggr);  
 				});
 					//Pass data to populate_grid event
-					$('#menuList_view ul.recordDataGrid').trigger('populate_grid',{'data':source});
-					 $('#menuList_view ul.recordDataGrid').bind('hide', function(){
+				$('#menuList_view ul.recordDataGrid').trigger('populate_grid',{'data':source});
+					$('#menuList_view ul.recordDataGrid').bind('hide', function(){
 						$('#menuList_view ul.recordDatagrid li.mainInput').hide();
-						});
+					});
 					$('#menuList_view ul.recordDatagrid').trigger('hide');
-				  });
+				});
 	};
 	
 
@@ -118,11 +116,12 @@ $(document).ready(function(){
 		$('li.dynamicInput div.itemCode .input input').removeClass('unique'); 
 		$('.formNeat .picker .submit input').removeClass('selected');
 		$('.formNeat .picker .submit input:not(.selected)').removeAttr('disabled','');
-		$('.recordDatagrid').find('li input[type="text"]').removeAttr('readonly').removeAttr('valid').val('').removeClass('b1sCheri').removeClass('bgCheri');
+		$('#menuList .recordDatagrid').find('li input[type="text"]').removeAttr('readonly').removeAttr('valid').val('').removeClass('b1sCheri').removeClass('bgCheri');
 		$('.recordDatagrid li.dynamicInput').fadeOut(RECORD_SPEED,function(){
 			$('.recordDatagrid li.dynamicInput').remove();
 		});
-		$('div.unit select').val(4);
+		$('#menuList_view .recordDatagrid li.dynamicInput').find('input').attr('readonly','readonly');
+		$('div.unit select').val(4);//force unit_id
 	});
 	
 	

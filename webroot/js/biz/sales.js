@@ -32,18 +32,92 @@ $(document).ready(function(e){
 		});
 	});
 	
+	//delete Set Meal dataGrid
+	$('.recordDatagrid .SetMeal  a.recordDelete').live('click',function(){
+		var THIS =$(this).parents('li:first').attr('set-ctr');
+		$('[set-ctr='+THIS+']').remove();
+	
+	}); 
+	
+	function getSetMeal(menuitem_id,data,set_ctr){
+		$.ajax({
+			url:ssUtil.cch_brk('/canteen/menu_items/getComponents'),
+			type:'POST',
+			dataType:'json',
+			data:{'data':{'id':menuitem_id}},
+			success:function(json){
+				$('#itemsSold ul.recordDataGrid').trigger('populate_grid',{'data':data}).trigger('update_grid');
+				$('#itemsSold ul.recordDataGrid li:last').addClass('SetMeal').attr('set-ctr',set_ctr);
+				$('#itemsSold ul.recordDataGrid li:last').find('.xDel').html('<a class="recordDelete" href="#">X</a>');
+				$('#itemsSold ul.recordDataGrid li:last').find('.desc input').removeClass('mLeft10px');
+				
+				$.each(json.SetMeal,function(i,o){
+				
+					var source = [];
+				 	if(!(o.SetComponentMenuItem instanceof Array)){
+						var desc= o.SetComponentMenuItem.name;
+						var qty= o.qty;
+						var price = '';
+						var code = o.SetComponentMenuItem.item_code;
+						var aggr={};
+						aggr['div.desc input']=desc;
+						aggr['div.qty input']=qty;
+						aggr['div.amount input']='';
+						aggr['div.price input']='';
+						aggr['div.item_code input']=code;
+						aggr['div.is_setmeal input']='1';
+						source.push(aggr);
+					}
+					if(!(o.SetComponentProduct instanceof Array)){
+						var desc= o.SetComponentProduct.name;
+						var qty= o.qty;
+						var price = '';
+						var code = o.SetComponentProduct.item_code;
+						var aggr={};
+						aggr['div.desc input']=desc;
+						aggr['div.qty input']=qty;
+						aggr['div.amount input']='';
+						aggr['div.price input']='';
+						aggr['div.item_code input']=code;
+						aggr['div.is_setmeal input']='1';
+						source.push(aggr);
+					}
+						console.log(source);
+					$('#itemsSold ul.recordDataGrid').trigger('populate_grid',{'data':source}).trigger('update_grid');
+					$('#itemsSold ul.recordDataGrid li:last').addClass('SetMeal SetMealItem');
+					$('#itemsSold ul.recordDataGrid li:last').find('.recordDelete').remove();
+					$('#itemsSold ul.recordDataGrid li:last').find('.desc input').addClass('mLeft10px');
+				});
+				allowKey = true;
+			}
+		});
+	}
+				
+	var set_ctr=0;
 	//Respond when clickInput is clicked
 	$('#counterItems ul.recordDatagrid li.clickInput').live('clicked',function(evt,args){
-		if (allowCashiering){
+		if (allowCashiering){    
 			var data = [];
 			var obj = args.obj;
+			console.log(obj);
+			
 			var qty = $('#qty').val();
 			var amount = ssUtil.roundNumber(obj['div.price input']*qty,2);    
 			obj['div.qty input']=qty;
 			obj['div.amount input'] = amount;
-			data.push(obj);		
+			data.push(obj);
 			if($('.picker input.selected').length){
-				$('#itemsSold ul.recordDataGrid').trigger('populate_grid',{'data':data});//Populate #itemsSold list with the collected data
+				if(obj['div.unit input']==7){
+					set_ctr++;
+					var menuitem_id= obj['div.id input'];
+					getSetMeal(menuitem_id,data,set_ctr);
+				}else{
+					$('#itemsSold ul.recordDataGrid').trigger('populate_grid',{'data':data});//Populate #itemsSold list with the collected data
+					$('#itemsSold ul.recordDataGrid li:last').removeClass('SetMeal').removeAttr('set-ctr');
+					$('#itemsSold ul.recordDataGrid li:last').find('.xDel').html('<a class="recordDelete" href="#">X</a>');
+					$('#itemsSold ul.recordDataGrid li:last').find('.desc input').removeClass('mLeft10px');
+					
+				}
 				$('#save_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
 			}
 			else{
@@ -102,8 +176,11 @@ $(document).ready(function(e){
 		var total= 0;
 		var list = $('#itemsSold ul.recordDataGrid li.dynamicInput');
 		list.each(function(ctr,obj){
-			var amount= parseFloat($(obj).find('div.amount input').val());
-			total+=amount;
+		//console.log($(obj).find('div.amount input').val());	
+			if($(obj).find('div.amount input').val()!=''){
+				var amount= parseFloat($(obj).find('div.amount input').val());
+				total+=amount;
+			}
 		});
 		$('#total').val(ssUtil.roundNumber(total,2));
         $('#qty').trigger('default');
@@ -284,8 +361,7 @@ $(document).ready(function(e){
 	$("#amount_received").keypress(function(e,a){
 		if(e.which==commit){
 			$("#amount_received").trigger('blur');
-		
-		};
+		}
 	});
 	
 	$('#qty').keypress(function(e,o){
@@ -293,107 +369,105 @@ $(document).ready(function(e){
 			$('#description').select();
 		
 		}
-	
 	});
 	
 	//Validation for amount receive
 	 $("#amount_received").blur(function(){
-		if (MODE =='CS'){
-			var total = parseFloat($('#total').val());
-			var amount_received = parseFloat($("#amount_received").val());
-			var change = parseFloat(amount_received - total);
-			if(!isNaN(amount_received)){
-				$('#amount_received').val(ssUtil.roundNumber(amount_received,2));
-				if(amount_received < total){
-					$('#amount_received').addClass('bgNone').addClass('b1sCheri').addClass('bgCheri');
-					$('#save_button').attr('disabled','disabled');
-					dialog_box(this);
-					$('#dialog').html('Insufficient amount received...');
-				}else{
-					$('#amount_received').removeClass('bgNone').removeClass('b1sCheri').removeClass('bgCheri');
-					var change_txt = ssUtil.roundNumber(change,2);
-					if(change<1 && change>0){
-						change_txt = '0'+change_txt;
+		var THIS = parseFloat($(this).val());
+		if(THIS){
+			if (MODE =='CS'){
+				var total = parseFloat($('#total').val());
+				var amount_received = parseFloat($("#amount_received").val());
+				var change = parseFloat(amount_received - total).toFixed(2);
+				if(!isNaN(amount_received)){
+					$('#amount_received').val(ssUtil.roundNumber(amount_received,2));
+					if(amount_received < total){
+						$('#amount_received').addClass('bgNone b1sCheri bgCheri');
+						$('#change').val('0.00');
+						$('#save_button').attr('disabled','disabled');
+						dialog_box(this);
+						$('#dialog').html('Insufficient amount received...');
 					}else{
-						$('#change').val(change_txt);
+						$('#amount_received').removeClass('bgNone b1sCheri bgCheri');
+						$('#change').val(change);
+						$('#save_button').removeAttr('disabled').parent().parent().addClass('topaz');
 					}
-					$('#save_button').removeAttr('disabled','').parent().parent().addClass('topaz');
 				}
 			}
-		}
-		if (MODE =='CH'){
-			var totalAddedCash = parseFloat($('#added_cash').val());
-			var amount_received = parseFloat($("#amount_received").val());
-			var change = parseFloat(amount_received - totalAddedCash);
-			if(!isNaN(amount_received)){
-				$('#amount_received').val(ssUtil.roundNumber(amount_received,2));
-				if(amount_received < totalAddedCash){
-					$('#amount_received').addClass('bgNone').addClass('b1sCheri').addClass('bgCheri');
-					$('#save_button').attr('disabled','disabled');
-					dialog_box(this);
-					$('#dialog').html('Insufficient amount received...');
-					
-				}else{
-					$('#amount_received').removeClass('bgNone').removeClass('b1sCheri').removeClass('bgCheri');
-					var change_txt = ssUtil.roundNumber(change,2);
-					if(change<1 && change>0){
-						change_txt = '0'+change_txt;
+			if (MODE =='CH'){
+				var totalAddedCash = parseFloat($('#added_cash').val());
+				var amount_received = parseFloat($("#amount_received").val());
+				var change = parseFloat(amount_received - totalAddedCash);
+				if(!isNaN(amount_received)){
+					$('#amount_received').val(ssUtil.roundNumber(amount_received,2));
+					if(amount_received < totalAddedCash){
+						$('#amount_received').addClass('bgNone').addClass('b1sCheri').addClass('bgCheri');
+						$('#save_button').attr('disabled','disabled');
+						dialog_box(this);
+						$('#dialog').html('Insufficient amount received...');
+						
 					}else{
-						$('#change').val(change_txt);
+						$('#amount_received').removeClass('bgNone').removeClass('b1sCheri').removeClass('bgCheri');
+						var change_txt = ssUtil.roundNumber(change,2);
+						if(change<1 && change>0){
+							change_txt = '0'+change_txt;
+						}else{
+							$('#change').val(change_txt);
+						}
+						var paymentCharge ={};
+						var paymentCash ={};
+						paymentType=[];
+						paymentCharge['SalesPayment']={};
+						paymentCharge['SalesPayment']['payment_type_id']=3;
+						paymentCharge['SalesPayment']['amount']=parseFloat($('#charge').val());
+						
+						paymentCash['SalesPayment']={};
+						paymentCash['SalesPayment']['payment_type_id']=1;
+						paymentCash['SalesPayment']['amount']=parseFloat($('#added_cash').val());
+						paymentType.push(paymentCharge);
+						paymentType.push(paymentCash);
+						proceedCharge = true;
+						$('#SalePayment').val($.toJSON(paymentType));
+						$('#save_button').removeAttr('disabled','').parent().parent().addClass('topaz');
 					}
-					var paymentCharge ={};
-					var paymentCash ={};
-					paymentType=[];
-					paymentCharge['SalesPayment']={};
-					paymentCharge['SalesPayment']['payment_type_id']=3;
-					paymentCharge['SalesPayment']['amount']=parseFloat($('#charge').val());
-					
-					paymentCash['SalesPayment']={};
-					paymentCash['SalesPayment']['payment_type_id']=1;
-					paymentCash['SalesPayment']['amount']=parseFloat($('#added_cash').val());
-					paymentType.push(paymentCharge);
-					paymentType.push(paymentCash);
-					proceedCharge = true;
-					$('#SalePayment').val($.toJSON(paymentType));
-					$('#save_button').removeAttr('disabled','').parent().parent().addClass('topaz');
 				}
 			}
-		}
-		if (MODE =='PR'){
-			var totalAddedCash = parseFloat($('#added_cash').val());
-			var amount_received = parseFloat($("#amount_received").val());
-			var change = parseFloat(amount_received - totalAddedCash);
-			if(!isNaN(amount_received)){
-				$('#amount_received').val(ssUtil.roundNumber(amount_received,2));
-				if(amount_received < totalAddedCash){
-					$('#amount_received').addClass('bgNone').addClass('b1sCheri').addClass('bgCheri');
-					$('#save_button').attr('disabled','disabled');
-					dialog_box(this);
-					$('#dialog').html('Insufficient amount received...');
-					
-				}else{
-					$('#amount_received').removeClass('bgNone').removeClass('b1sCheri').removeClass('bgCheri');
-					var change_txt = ssUtil.roundNumber(change,2);
-					if(change<1 && change>0){
-						change_txt = '0'+change_txt;
+			if (MODE =='PR'){
+				var totalAddedCash = parseFloat($('#added_cash').val());
+				var amount_received = parseFloat($("#amount_received").val());
+				var change = parseFloat(amount_received - totalAddedCash);
+				if(!isNaN(amount_received)){
+					$('#amount_received').val(ssUtil.roundNumber(amount_received,2));
+					if(amount_received < totalAddedCash){
+						$('#amount_received').addClass('bgNone').addClass('b1sCheri').addClass('bgCheri');
+						$('#save_button').attr('disabled','disabled');
+						dialog_box(this);
+						$('#dialog').html('Insufficient amount received...');
+						
 					}else{
-						$('#change').val(change_txt);
+						$('#amount_received').removeClass('bgNone').removeClass('b1sCheri').removeClass('bgCheri');
+						var change_txt = ssUtil.roundNumber(change,2);
+						if(change<1 && change>0){
+							change_txt = '0'+change_txt;
+						}else{
+							$('#change').val(change_txt);
+						}
+						var paymentPrepaid ={};
+						var paymentCash ={};
+						paymentType=[];
+						paymentPrepaid['SalesPayment']={};
+						paymentPrepaid['SalesPayment']['payment_type_id']=2;
+						paymentPrepaid['SalesPayment']['amount']=parseFloat($('#prepaid').val());
+						
+						paymentCash['SalesPayment']={};
+						paymentCash['SalesPayment']['payment_type_id']=1;
+						paymentCash['SalesPayment']['amount']=parseFloat($('#added_cash').val());
+						paymentType.push(paymentPrepaid);
+						paymentType.push(paymentCash);
+						proceedCharge = true;
+						$('#SalePayment').val($.toJSON(paymentType));
+						$('#save_button').removeAttr('disabled','').parent().parent().addClass('topaz');
 					}
-					var paymentPrepaid ={};
-					var paymentCash ={};
-					paymentType=[];
-					paymentPrepaid['SalesPayment']={};
-					paymentPrepaid['SalesPayment']['payment_type_id']=2;
-					paymentPrepaid['SalesPayment']['amount']=parseFloat($('#prepaid').val());
-					
-					paymentCash['SalesPayment']={};
-					paymentCash['SalesPayment']['payment_type_id']=1;
-					paymentCash['SalesPayment']['amount']=parseFloat($('#added_cash').val());
-					paymentType.push(paymentPrepaid);
-					paymentType.push(paymentCash);
-					proceedCharge = true;
-					$('#SalePayment').val($.toJSON(paymentType));
-					$('#save_button').removeAttr('disabled','').parent().parent().addClass('topaz');
 				}
 			}
 		}
@@ -779,9 +853,8 @@ $(document).ready(function(e){
 		}
 		$('#done_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
 	});
-	saving
+	//Print Pop-up after saved
 	$('#SaleAddForm').bind('formNeat_sucess',function(evt,args){
-	
 		var data= $.parseJSON(args.data);
 		var invoice_no = data.data.Sale.id;
 		$('#invoice_no').val(invoice_no);
@@ -792,27 +865,18 @@ $(document).ready(function(e){
 			open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button		
 			buttons:{
 				Yes:function(){
-					
 					$('#print_invoice').submit();
-					
-					
 					$(document).trigger('restore_defaults');
 					$(this).dialog('destroy');
 					},
 				No:function(){
-					
-					
 					$(document).trigger('restore_defaults');
 					$(this).dialog('destroy');
-					//$('#notify').html('Transaction has been saved!').addClass('bgCheri').addClass('b1sCheri').fadeIn('slow').delay(2500).fadeOut('slow');
-					}
-				
+					}				
 			}
 		});
 		$('#dialog').html('Print Receipt?');
 		$('.ui-dialog-buttonset button:contains("No")').focus();
-		//$('#dialog').focus();
-		//$(document).trigger('restore_defaults');
 	}); 
 	
 	$('#by').live('change',function(){
@@ -828,12 +892,14 @@ $(document).ready(function(e){
 	$("#cancel_button").click(function(){
 		$(document).trigger({'type':'keydown','which':ESC});
 	});
-
+	$('#save_button').click(function(){
+		$('.loader').fadeIn('slow');
+	});
+	
  	//Restore Default
 	$(document).bind('restore_defaults', function() {
 		allowCashiering = false;
-
-	//Printing and 		$('.trans').hide(); //transactions hide
+		//Printing and 	$('.trans').hide(); //transactions hide
 		$('#SalePaymentTypeId input').removeClass('selected');
 		$('.recordDatagrid li.mainInput').hide(); 
 		$('#prepaid_button').removeAttr("disabled").parent().parent().addClass('ruby');
@@ -846,7 +912,6 @@ $(document).ready(function(e){
 		$('#done_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
 		$('#save_button').attr("disabled","disabled").parent().parent().removeClass('topaz');;
 		$('#charge').val('');
-		
 		//Clean Item Sold column
 		$('#itemsSold ul.recordDatagrid li.dynamicInput').fadeOut(RECORD_SPEED,function(){
 			$('#itemsSold ul.recordDatagrid li.dynamicInput').remove();
@@ -859,13 +924,11 @@ $(document).ready(function(e){
             $(a).attr('id',id);
             obj[key]='#'+id;
         });
-		
 		$("#counterItems ul.recordDataGrid").empty();
 		obj = ssUtil.sortObject(obj);
         $.each(obj, function(i,o){
 			$("#counterItems ul.recordDataGrid").append($(o).clone());
 		});
-		
 		$('#SaleBuyer, #SaleName').val('');
 	}); 
 	
@@ -892,76 +955,82 @@ $(document).ready(function(e){
 					var desc= obj.Product.name;
 					var price = obj.Product.selling_price;
 					var code = obj.Product.item_code;
+					var unit = obj.Product.unit_id;
+					var id = obj.Product.id;
+					
 				}else{
 					var desc= obj.Perishable.name;
 					var price = obj.Perishable.selling_price;
 					var code = obj.Perishable.item_code;
+					var unit = obj.Perishable.unit_id;
+					var id = obj.Perishable.id;
 				}
 				var aggr={};           
 					aggr['div.desc input']=desc;
 					aggr['div.price input']=ssUtil.roundNumber(price,2);
 					aggr['div.item_code input']=code;
+					aggr['div.unit input']=unit;
+					aggr['div.id input']=id;
 				source.push(aggr);  
 			});
-			// //console.log(source);
+			//console.log(source);
 			 
 			$('#counterItems_ui ul.recordDataGrid').trigger('populate_grid',{'data':source,'new_class':['dynamicInput','clickInput','productItem']});
 			
 			//Pass data to populate_grid event
 			$.getJSON(ssUtil.cch_brk('/canteen/daily_menus/findDailyMenu/'+TODAY+''),
 				function(data){
-				  source = [];
-				  ////console.log(data);
-				  ////console.log(data.length);
-				  if(data.length>0){
-					  $.each(data, function(ctr,obj){
-						  var desc= obj.MenuItem.name;
-						  var price = obj.DailyMenu.selling_price;
-						  var code = obj.MenuItem.item_code;
-						  var aggr={};
-						  aggr['div.desc input']=desc;
-						  aggr['div.price input']=ssUtil.roundNumber(price,2);
-						  aggr['div.item_code input']=code;
-						  source.push(aggr);
-					  });
+					source = [];
+					////console.log(data);
+					if(data.length>0){
+						$.each(data, function(ctr,obj){
+							var desc= obj.MenuItem.name;
+							var price = obj.DailyMenu.selling_price;
+							var code = obj.MenuItem.item_code;
+							var unit = obj.MenuItem.unit_id;
+							var id = obj.MenuItem.id;
+							var aggr={};
+							aggr['div.desc input']=desc;
+							aggr['div.price input']=ssUtil.roundNumber(price,2);
+							aggr['div.item_code input']=code;
+							aggr['div.unit input']=unit;
+							aggr['div.id input']=id;
+							source.push(aggr);
+						});
 					  
-					  $('#counterItems_ui ul.recordDataGrid').trigger('populate_grid',{'data':source});
-						//$('#qty').trigger('default');
+						$('#counterItems_ui ul.recordDataGrid').trigger('populate_grid',{'data':source});
 						$(document).trigger('restore_defaults');
 						allowKey = true;
 					}else{
-							$('#dialog').dialog('destroy');
-							$('#dialog').dialog({
-									title:'Notification',
-									modal:true,
-									closeOnEscape: false,
-									open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button		
-									buttons:{
-										OK:function(){
-												$(this).dialog('destroy');
-											}
+						$('#dialog').dialog('destroy');
+						$('#dialog').dialog({
+								title:'Notification',
+								modal:true,
+								closeOnEscape: false,
+								open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button		
+								buttons:{
+									OK:function(){
+											$(this).dialog('destroy');
 										}
-								});
-							$('.ui-widget-overlay').css('opacity','.2');
-							$('#dialog').html('<center>No Menu For Day Set!</center>');
-							allowKey = true;
-							$(document).trigger('restore_defaults');
-							//$('.ui-dialog-buttonset button:first').focus();
-							
+									}
+							});
+						$('.ui-widget-overlay').css('opacity','.2');
+						$('#dialog').html('<center>No Menu For Day Set!</center>');
+						allowKey = true;
+						$(document).trigger('restore_defaults');
 					}
-				  });
+				});
 		}
-	
 	});  
 	
 	//delete dataGrid
 	$('.recordDatagrid a.recordDelete').live('clicked',function(evt,args){
 		$('#save_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
-	}); 
+	});
 	
 	//Shorcut key designation
 	$(document).keydown(function(e){
-		console.log(e);
+		//console.log(e);
 		if(allowKey){
 			if(e.which==DONE){ //If F10 is hit
 				$('#done_button').click();
@@ -973,7 +1042,6 @@ $(document).ready(function(e){
 				}
 				$(document).trigger('restore_defaults');
 			}
-
 			if(e.which==F7){
 				$(document).trigger('restore_defaults');
 				$('#cash_button').click();
@@ -982,15 +1050,13 @@ $(document).ready(function(e){
 				$(document).trigger('restore_defaults');
 				$('#prepaid_button').click();
 			}
-			
 			if(e.which==F9){
 				$(document).trigger('restore_defaults');
 				$('#charge_button').click();
 			}
 		}
-	
 		if(e.which==commit){ //if Enter is hit
-			////console.log('saveFlag: ',saveFlag);
+			//console.log('saveFlag: ',saveFlag);
 			if(saveFlag){
 				if(!($('#save_button').attr('disabled'))){
 					if (MODE=='CS'){
@@ -1001,6 +1067,7 @@ $(document).ready(function(e){
 							$('#save_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
 						}else{
 							$('#amount_received').focus();
+							//$('.loader').fadeOut('slow');
 						}
 					}
 					if (MODE=='CH'){
@@ -1030,10 +1097,6 @@ $(document).ready(function(e){
 		if($(this).val()==''){
 			$(this).val(1);
 		}
-	});
-	
-	$('#save_button').bind('click', function(){
-		$(this).attr('disabled','disabled');
 	});
 	
 	$('#charge').live('focus',function(){
@@ -1096,9 +1159,8 @@ $(document).ready(function(e){
 	});
 	
 	function charge_validate(){ //on charge validation
-		////console.log('charge validate');
+		//console.log('charge validate');
 		if(MODE=='CH'){
-			////console.log('charge');
 			var chargeAmt = parseFloat($('#charge').val());
 			var due = parseFloat($('#total').val());
 			
