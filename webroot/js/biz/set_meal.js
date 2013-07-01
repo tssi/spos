@@ -359,13 +359,13 @@ $(document).ready(function(e){
 		var PARENT  =  $(row[0]).parent();
 		var COUNT =  $(PARENT).find('li:visible').length;
 		//Resets the page to default when last item is deleted
-		if(COUNT == 1){
+		/* if(COUNT == 1){
 			$(document).trigger('restore_defaults');
 		}
 		else{
 			$('#MenuItemAvgPrice').val(ESTIMATED_COST.toFixed(2));
 			$('#MenuItemSellingPrice').val(SRP.toFixed(2));
-		}
+		} */
 		
 	});
 });  

@@ -39,8 +39,8 @@
 					<?php echo $this->Form->input('MenuItem.name',array('div'=>array('class'=>'inline-block input text w57 required')));?>
 				</div>
 				<div class="w100">
-					<?php echo $this->Form->input('MenuItem.selling_price',array('class'=>'text-right','div'=>array('class'=>'inline-block input text required')));?>
-					<?php echo $this->Form->input('MenuItem.avg_price',array('label'=>'Est. Cost','class'=>'text-right','div'=>array('class'=>'inline-block input text required')));?>
+					<?php echo $this->Form->input('MenuItem.selling_price',array('class'=>'text-right monetary numeric','div'=>array('class'=>'inline-block input text required')));?>
+					<?php echo $this->Form->input('MenuItem.avg_price',array('label'=>'Est. Cost','class'=>'text-right monetary numeric','div'=>array('class'=>'inline-block input text required')));?>
 				</div>
 				<div class="w100 hide">
 					<?php echo $this->Form->input('MenuItem.unit_id',array('value'=>7,'type'=>'hidden','div'=>array('class'=>'inline-block input text')));?>
