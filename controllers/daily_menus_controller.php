@@ -21,12 +21,10 @@ class DailyMenusController extends AppController {
 
 	function add() {
 		if (!empty($this->data)) {
-			
-            //$this->DailyMenu->create();
-			//pr($this->data['DailyMenu']);
+		
 			
 		    $dateOf = $this->data['DailyMenu']['date'];
-            $this->DailyMenu->deleteAll(array('DailyMenu.date'=>$dateOf));
+			$this->DailyMenu->deleteAll(array('DailyMenu.date'=>$dateOf));
 			 
             unset($this->data['DailyMenu']['date']);
             unset($this->data['DailyMenu']['avg_price']);
@@ -37,18 +35,25 @@ class DailyMenusController extends AppController {
             //remove first record of daily menu detail
             array_shift($this->data['DailyMenu']);
 			
-            for($x=0;$x<count($this->data['DailyMenu']);$x++){
+			
+            for($x=0,$ctr=1;$x<count($this->data['DailyMenu']);$x++,$ctr++){
                 if(!isset($this->data['DailyMenu'][$x]['date'])){
                     $this->data['DailyMenu'][$x]['date']=$dateOf;
-                    }
+                }
 				if(empty($this->data['DailyMenu'][$x]['srv_left'])){
 					$this->data['DailyMenu'][$x]['served'] = $this->data['DailyMenu'][$x]['approx_srv'];
 				}else{
 					$this->data['DailyMenu'][$x]['served'] = $this->data['DailyMenu'][$x]['srv_left'];
 				}
+				
+				//Use in updating daily menu 
+				$r = $this->DailyMenu->find('first',array('fields'=>'DailyMenu.id','order'=>'DailyMenu.id DESC'));
+				$id = $r['DailyMenu']['id'];
+				$this->data['DailyMenu'][$x]['id']= $id+$ctr;
             } 
-			// pr($this->data['DailyMenu']);
-			//exit(); 
+			//pr($this->data['DailyMenu']);
+			
+
             if ($this->DailyMenu->saveAll($this->data['DailyMenu'])) {
 				if($this->RequestHandler->isAjax()){
 					$response['status'] = 1;

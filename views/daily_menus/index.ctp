@@ -227,11 +227,11 @@ li.clickInput .current input{
 				<div class="fClear"></div>	
 				<?php echo $this->Form->end(); ?>
 				<?php echo $this->Form->create('MenuItem', array('action'=>'edit', 'div'=>false, 'id'=>'MenuForm'));?>
-				<?php echo $this->Form->input('id', array('type'=>'hidden', 'div'=>false, 'class'=>'menuId'));?>
-				<?php echo $this->Form->input('item_code', array('type'=>'hidden', 'div'=>false));?>
-				<?php echo $this->Form->input('name', array('type'=>'hidden', 'div'=>false));?>
-				<?php echo $this->Form->input('unit_id', array('type'=>'hidden', 'div'=>false));?>
-				<?php echo $this->Form->input('selling_price', array('type'=>'hidden', 'div'=>false));?>
+					<?php echo $this->Form->input('id', array('type'=>'hidden', 'div'=>false, 'class'=>'menuId'));?>
+					<?php echo $this->Form->input('item_code', array('type'=>'hidden', 'div'=>false));?>
+					<?php echo $this->Form->input('name', array('type'=>'hidden', 'div'=>false));?>
+					<?php echo $this->Form->input('unit_id', array('type'=>'hidden', 'div'=>false));?>
+					<?php echo $this->Form->input('selling_price', array('type'=>'hidden', 'div'=>false));?>
 				<?php echo $this->Form->end(); ?>
 		</div>		
 	</div>	
