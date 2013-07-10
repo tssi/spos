@@ -33,7 +33,7 @@ $(document).ready(function(){
 				},
 				success:function(data){
 					$('.loader').fadeOut('slow');
-					//console.log(data);
+					console.log(data);
 					var json_data=$.parseJSON(data);
 					var status = json_data.status;
 					switch(status){

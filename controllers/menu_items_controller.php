@@ -65,9 +65,9 @@ class MenuItemsController extends AppController {
 					}				
 			}else{//Set Meal
 				if($this->data['MenuItem']['unit_id']=='7'){	
-					
+					//pr($this->data);exit;
 					$this->SetMeal->deleteAll(array('SetMeal.menu_item_id' => $this->data['MenuItem']['id']), true);	
-					
+
 					array_shift($this->data['SetMeal']);
 					$itemcode = trim($this->data['MenuItem']['item_code']);
 					if($itemcode=='(Auto)'){
@@ -116,7 +116,7 @@ class MenuItemsController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
-			if ($this->MenuItem->save($this->data)) {
+			if ($this->MenuItem->saveAll($this->data)) {
 				if($this->RequestHandler->isAjax()){
 					$response['status'] = 1;
 					$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; The menu has been edited';
@@ -262,6 +262,16 @@ class MenuItemsController extends AppController {
 			echo json_encode($data);
 			exit();
 		}
+	}
+	
+	function hot_meals() {
+		$this->MenuItem->recursive = 0;
+		//$this->set('menuItems', $this->paginate());	
+		$units = $this->MenuItem->Unit->find('list',array(
+												'fields'=>array('Unit.id','Unit.alias'),
+												'conditions'=>array('Unit.id != '=>'7'),
+											));
+		$this->set(compact('units'));
 	}
 	
 }

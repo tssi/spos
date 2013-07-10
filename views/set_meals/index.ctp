@@ -3,7 +3,7 @@
 	echo $this->Html->css(array('ui/uiSmartTable','ui/uiCollapsible','ui/uiIScroll','form/formValidation','form/formNeat','form/formNeatCanteen','record/recordDatagrid','record/recordSearch'));
 ?>
 <style>
-	#MasterListItems{ height:322px;}
+	#MasterListItems{ height:465px;}
 	#itemsSold{ height:350px;}
 	#buyer_info{ margin-left:-75px;}
 	#sales_info{ margin-right:-75px;}
@@ -32,21 +32,6 @@
 	<div class="tab-header">Set Meal</div>
 	<div class="tab-content">
 		<div class="canteen form formNeat w100">
-			<?php echo $this->Form->create('MenuItem',array('action'=>'add'));?>
-			<div class=" mCenter pTop10 classic soft ">
-				<div class="w100 ">
-					<?php echo $this->Form->input('MenuItem.item_code',array('placeholder'=>'Alt-I (Auto Code)','class'=>'itemcode','div'=>array('class'=>'inline-block input text required')));?>
-					<?php echo $this->Form->input('MenuItem.name',array('div'=>array('class'=>'inline-block input text w57 required')));?>
-				</div>
-				<div class="w100">
-					<?php echo $this->Form->input('MenuItem.selling_price',array('class'=>'text-right monetary numeric','div'=>array('class'=>'inline-block input text required')));?>
-					<?php echo $this->Form->input('MenuItem.avg_price',array('label'=>'Est. Cost','class'=>'text-right monetary numeric','div'=>array('class'=>'inline-block input text required')));?>
-				</div>
-				<div class="w100 hide">
-					<?php echo $this->Form->input('MenuItem.unit_id',array('value'=>7,'type'=>'hidden','div'=>array('class'=>'inline-block input text')));?>
-					<?php echo $this->Form->input('MenuItem.id',array('type'=>'hidden','div'=>array('class'=>'inline-block input text')));?>
-				</div>
-			</div>
 			<div class="w750 mCenter pTop10">
 				<div class="fLeft w35 ">
 					<div class="record metro tab nmLeft " >
@@ -90,6 +75,22 @@
 				</div>
 			
 				<div class="fRight w60">
+					<?php echo $this->Form->create('MenuItem',array('action'=>'add'));?>
+					<div class=" mCenter pTop10 classic soft ">
+						<div class="w100 ">
+							<?php echo $this->Form->input('MenuItem.item_code',array('placeholder'=>'Alt-I (Auto Code)','class'=>'itemcode','div'=>array('class'=>'inline-block input text required')));?>
+							<?php echo $this->Form->input('MenuItem.name',array('div'=>array('class'=>'inline-block input text w57 required')));?>
+						</div>
+						<div class="w100">
+							<?php echo $this->Form->input('MenuItem.selling_price',array('class'=>'text-right monetary numeric','div'=>array('class'=>'inline-block input text required')));?>
+							<?php echo $this->Form->input('MenuItem.avg_price',array('label'=>'Est. Cost','class'=>'text-right monetary numeric','div'=>array('class'=>'inline-block input text required')));?>
+						</div>
+						<div class="w100 hide">
+							<?php echo $this->Form->input('MenuItem.unit_id',array('value'=>7,'type'=>'hidden','div'=>array('class'=>'inline-block input text')));?>
+							<?php echo $this->Form->input('MenuItem.id',array('type'=>'hidden','div'=>array('class'=>'inline-block input text')));?>
+						</div>
+					</div>
+				
 					<div class="record metro tab nmLeft " >				
 						<h2 class="recordTitle  b1saqua pad4 bgAqua tcWhite fsSmall padLeft txtShadow taCenter">
 							Set Meal Item (Component)

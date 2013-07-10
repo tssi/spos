@@ -53,7 +53,7 @@
 										<div class="fLeft w60">
 											<div class="fLeft w40 itemCode">
 												<div class="input select">
-													<?php echo $this->Form->input('MenuItem.%.item_code',array('label'=>false,'id'=>false, 'class'=>'unique ajax numeric','frm'=>'#menuCheck', 'linkto'=>'#MenuItemItemCode', 'div'=>false)); ?>
+													<?php echo $this->Form->input('MenuItem.%.item_code',array('label'=>false,'id'=>false, 'class'=>'unique ajax ','frm'=>'#menuCheck', 'linkto'=>'#MenuItemItemCode', 'div'=>false)); ?>
 												</div>
 											</div>
 											<div class="fRight w60 desc">
