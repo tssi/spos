@@ -26,6 +26,7 @@ $(document).ready(function(){
 		$('.formNeat input:not(.ignore), .formNeat select').blur();
 		if(form.find('.error-message').length==0){
 			form.find('.uiNotify').removeClass('b1sLemon bgLemon b1sLime bgLime b1sCheri bgCheri');
+			form.trigger('transform_data'); //Trigger transform_data to sanitize if defined
 			form.ajaxSubmit({
 				beforeSend:function(){
 					form.trigger('formNeat_beforeSend');
