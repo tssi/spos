@@ -877,7 +877,18 @@ $(document).ready(function(e){
 		});
 		$('#dialog').html('Print Receipt?');
 		$('.ui-dialog-buttonset button:contains("No")').focus();
-	}); 
+		//Return name attribute just in case it has remote effects on recordDatagrid
+		$.each($('#counterItems ul.recordDatagrid li input'),function(i,o){
+			$(o).attr('name',$(o).attr('tname'));
+			$(o).removeAttr('vname');
+		});
+	}).bind('transform_data',function(evt,args){ //Sanitize data via a custom event transform_data
+		//Remove name attribute to counterItems to exclude useless Product data
+		$.each($('#counterItems ul.recordDatagrid li input'),function(i,o){
+			$(o).attr('tname',$(o).attr('name'));
+			$(o).removeAttr('name');
+		});
+	});
 	
 	$('#by').live('change',function(){
 		$('#SaleName').val('');
