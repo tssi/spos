@@ -29,6 +29,7 @@
 	<div class="tab-content">
 		<?php echo $this->Form->create('Sale',array('action'=>'add'));?>
 		<div class="canteen form formNeat w100">
+			
 			<div class="wLong">
 			<div class=" wWider mCenter">
 						<div class="fLeft w50 " id="buyer_info"> 
@@ -95,12 +96,15 @@
 							</div>	
 							<div class="fClear"></div>							
 						</div>		
-						<div class="fRight w50 pt5 topaz"><?php echo $this->Form->submit('Cancel (Esc)',array('type'=>'button','class'=>'selected fwb wideButton','id'=>'cancel_button'));?></div>	
+						<div class="fRight w50 pt5 topaz">
+							<?php echo $this->Form->submit('Cancel (Esc)',array('type'=>'button','class'=>'selected fwb wideButton','id'=>'cancel_button'));?>
+						</div>	
 						<div class="fClear"></div>
 					</div>
 					<div class="fClear"></div>
 				</div>
 				<div class="fClear"></div>	
+						
 				<div class="w750 mCenter pTop10">
 					<div class="fLeft w35 ">
 						<div class="record metro tab nmLeft " >
@@ -147,7 +151,6 @@
 						</div>
 						<div class="fClear"></div>	
 					</div>
-				
 					<div class="fRight w60">
 						<div class="record metro tab nmLeft " >				
 							<h2 class="recordTitle  b1saqua pad4 bgAqua tcWhite fsSmall padLeft txtShadow taCenter">

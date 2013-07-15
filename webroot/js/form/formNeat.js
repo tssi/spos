@@ -19,9 +19,7 @@ $(document).ready(function(){
 		$(this).addClass('selected');
 	}); 
 	$('.formNeat .submit-button').click(function(){
-		//$('.loader').fadeIn('slow');
 		var form= $(this).parents("form:first");
-		//console.log($(this));	//console.log(form);
 		form.trigger('formNeat_beforeSend');
 		$('.formNeat input:not(.ignore), .formNeat select').blur();
 		if(form.find('.error-message').length==0){
@@ -33,8 +31,6 @@ $(document).ready(function(){
 					form.find('input,select,label').addClass('o2');
 				},
 				success:function(data){
-					$('.loader').fadeOut('slow');
-					console.log(data);
 					var json_data=$.parseJSON(data);
 					var status = json_data.status;
 					switch(status){

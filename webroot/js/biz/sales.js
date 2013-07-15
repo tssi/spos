@@ -360,20 +360,15 @@ $(document).ready(function(e){
 	//onEnter on amount received
 	$("#amount_received").keypress(function(e,a){
 		if(e.which==commit){
-			$("#amount_received").trigger('blur');
+			onAmountReceive();
 		}
 	});
-	
-	$('#qty').keypress(function(e,o){
-		if(e.which==13){
-			$('#description').select();
-		
-		}
-	});
-	
 	//Validation for amount receive
 	 $("#amount_received").blur(function(){
-		var THIS = parseFloat($(this).val());
+		onAmountReceive();
+	});
+	function onAmountReceive(){
+		var THIS = parseFloat($('#amount_received').val());
 		if(THIS){
 			if (MODE =='CS'){
 				var total = parseFloat($('#total').val());
@@ -471,8 +466,17 @@ $(document).ready(function(e){
 				}
 			}
 		}
-	});
 	
+	}
+	
+	
+	$('#qty').keypress(function(e,o){
+		if(e.which==commit){
+			$('#description').select();
+		
+		}
+	});
+		
 	//Cash Button Validation
 	$('#cash_button').click(function(){
 		$('#prepaid_button').attr("disabled","disabled").parent().parent().removeClass('ruby');
@@ -829,35 +833,39 @@ $(document).ready(function(e){
 	
 	//Done button
 	$('#done_button').click(function(){
-		////console.log('done');
-		var total = $('#total').val();
-		if($('#save_button').attr('disabled')){ //if save button is disabled
-			if(!$('#done_button').attr('disabled')){
-				$('#description').blur();
-				$('#amount_received').focus();
-				
-				if(MODE=='CH'){
-					//$('#charge').val(total).blur();
-					$('#charge').removeAttr('readonly').select();
-				}
-				if(MODE=='CS'){
-					$('#amount_received').removeAttr('readonly').val('').focus();
-					$('#save_button').attr('disabled','disabled').parent().parent().removeClass('topaz');
-				}
-				if(MODE=='PR'){
-					//$('#charge').val(total).blur();
-					$('#prepaid').removeAttr('readonly').select();
-				}
-			}
-			
-		}
-		$('#done_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
+		onDoneButton();
 	});
+	
+	function onDoneButton(){
+		var total = $('#total').val();
+	
+		if(!$('#done_button').attr('disabled')){
+			$('#description').blur();
+			$('#done_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
+			if(MODE=='CH'){
+				//$('#charge').val(total).blur();
+				$('#charge').removeAttr('readonly').select();
+			}
+			if(MODE=='CS'){
+				$('#amount_received').removeAttr('readonly').val('').focus();
+				$('#save_button').attr('disabled','disabled').parent().parent().removeClass('topaz');
+			}
+			if(MODE=='PR'){
+				//$('#charge').val(total).blur();
+				$('#prepaid').removeAttr('readonly').select();
+			}
+		}
+			
+
+		
+	}
+	
 	//Print Pop-up after saved
 	$('#SaleAddForm').bind('formNeat_sucess',function(evt,args){
 		var data= $.parseJSON(args.data);
 		var invoice_no = data.data.Sale.id;
 		$('#invoice_no').val(invoice_no);
+		$('.loader').fadeOut('slow');
 		$('#dialog').dialog({
 			title:'Warning',
 			modal:true,
@@ -903,10 +911,7 @@ $(document).ready(function(e){
 	$("#cancel_button").click(function(){
 		$(document).trigger({'type':'keydown','which':ESC});
 	});
-	$('#save_button').click(function(){
-		$('.loader').fadeIn('slow');
-	});
-	
+
  	//Restore Default
 	$(document).bind('restore_defaults', function() {
 		allowCashiering = false;
@@ -1041,10 +1046,9 @@ $(document).ready(function(e){
 	
 	//Shorcut key designation
 	$(document).keydown(function(e){
-		//console.log(e);
 		if(allowKey){
 			if(e.which==DONE){ //If F10 is hit
-				$('#done_button').click();
+				onDoneButton();
 			}
 			if(e.which==ESC){ //if Esc is hit
 				$('#description').blur();
@@ -1394,5 +1398,7 @@ $(document).ready(function(e){
 		$('.ui-widget-overlay').css('opacity','.2');
 	}
 
-	
+	$('.test').click(function(){
+		
+	});
 });
