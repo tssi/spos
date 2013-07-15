@@ -20,9 +20,9 @@ $(document).ready(function(){
 	}); 
 	$('.formNeat .submit-button').click(function(){
 		var form= $(this).parents("form:first");
-		form.trigger('formNeat_beforeSend');
-		$('.formNeat input:not(.ignore), .formNeat select').blur();
 		if(form.find('.error-message').length==0){
+			//$('.formNeat input:not(.ignore), .formNeat select').blur();
+			
 			form.find('.uiNotify').removeClass('b1sLemon bgLemon b1sLime bgLime b1sCheri bgCheri');
 			form.trigger('transform_data'); //Trigger transform_data to sanitize if defined
 			form.ajaxSubmit({

@@ -860,6 +860,12 @@ $(document).ready(function(e){
 		
 	}
 	
+		//Print Pop-up after saved
+	$('#SaleAddForm').bind('formNeat_beforeSend',function(evt,args){
+		
+	});
+	
+	
 	//Print Pop-up after saved
 	$('#SaleAddForm').bind('formNeat_sucess',function(evt,args){
 		var data= $.parseJSON(args.data);
@@ -885,17 +891,25 @@ $(document).ready(function(e){
 		});
 		$('#dialog').html('Print Receipt?');
 		$('.ui-dialog-buttonset button:contains("No")').focus();
+			
 		//Return name attribute just in case it has remote effects on recordDatagrid
 		$.each($('#counterItems ul.recordDatagrid li input'),function(i,o){
-			$(o).attr('name',$(o).attr('tname'));
-			$(o).removeAttr('vname');
+		  $(o).attr('name',$(o).attr('tname'));
+		  $(o).removeAttr('vname');
 		});
+		
 	}).bind('transform_data',function(evt,args){ //Sanitize data via a custom event transform_data
 		//Remove name attribute to counterItems to exclude useless Product data
 		$.each($('#counterItems ul.recordDatagrid li input'),function(i,o){
-			$(o).attr('tname',$(o).attr('name'));
-			$(o).removeAttr('name');
+		  $(o).attr('tname',$(o).attr('name'));
+		  $(o).removeAttr('name');
 		});
+	}).bind('formNeat_beforeSend',function(evt,args){ 
+		$('.loader').fadeIn();
+	});
+	 
+	$('.submit-button').click(function(){
+		$('.loader').fadeIn();
 	});
 	
 	$('#by').live('change',function(){
@@ -1082,7 +1096,7 @@ $(document).ready(function(e){
 							$('#save_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
 						}else{
 							$('#amount_received').focus();
-							//$('.loader').fadeOut('slow');
+							
 						}
 					}
 					if (MODE=='CH'){
@@ -1398,7 +1412,4 @@ $(document).ready(function(e){
 		$('.ui-widget-overlay').css('opacity','.2');
 	}
 
-	$('.test').click(function(){
-		
-	});
 });
