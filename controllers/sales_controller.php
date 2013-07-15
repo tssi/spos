@@ -65,6 +65,7 @@ class SalesController extends AppController {
 						'price' => $this->data['SaleDetail'][$t]['price'],
 						'amount' => $this->data['SaleDetail'][$t]['amount'],
 						'is_setmeal' => $this->data['SaleDetail'][$t]['is_setmeal'],
+						'is_setmeal_content' => $this->data['SaleDetail'][$t]['is_setmeal_content'],
 					);
 				}else{
 					$newSaleDetail[$index]['qty']+=$this->data['SaleDetail'][$t]['qty'];
@@ -305,6 +306,8 @@ class SalesController extends AppController {
 				'SaleDetail.sale_id',
 				'SaleDetail.qty',
 				'SaleDetail.amount',
+				'SaleDetail.is_setmeal',
+				'SaleDetail.is_setmeal_content',
 				'Prod.product_type_id',
 				'Menu.name',
 				'Prod.name',
@@ -316,7 +319,7 @@ class SalesController extends AppController {
 		
         $conditions = array("Sale.created >=" =>$fromDate,
 							"Sale.created <=" =>$toDate,
-							"SaleDetail.is_setmeal !="=>1
+							//"SaleDetail.is_setmeal !="=>1
 							);
 		
 		
@@ -344,11 +347,11 @@ class SalesController extends AppController {
 								'PREPAID'=>0.0,
 								'CHARGE'=>0.0,
 		);
-		
 		for($q=0;$q<count($daily);$q++){
 				$index = (string)$daily[$q]['Sale']['id'];
 				$itemcode = (string)$daily[$q]['SaleDetail']['item_code'];
 				$data =array();
+				
 				
 				if(is_null($daily[$q]['Prod']['product_type_id'])){ //to check if Meal type
 					$foodDex = $daily[$q]['SaleDetail']['item_code'];//Meals
@@ -358,7 +361,9 @@ class SalesController extends AppController {
 									'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
 									'Desc'=>$daily[$q]['Menu']['name'],
 									'Amount'=>$daily[$q]['Menu']['selling_price'],
-									'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Menu']['selling_price']
+									'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Menu']['selling_price'],
+									'Is_Set'=>$daily[$q]['SaleDetail']['is_setmeal'],
+									'Is_SetContent'=>$daily[$q]['SaleDetail']['is_setmeal_content']
 						);
 					if(!isset($food[$foodDex])){
 						$food[$foodDex]= $data;
@@ -376,7 +381,9 @@ class SalesController extends AppController {
 									'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
 									'Desc'=>$daily[$q]['Prod']['name'],
 									'Amount'=>$daily[$q]['Prod']['selling_price'],
-									'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Prod']['selling_price']
+									'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Prod']['selling_price'],
+									'Is_Set'=>$daily[$q]['SaleDetail']['is_setmeal'],
+									'Is_SetContent'=>$daily[$q]['SaleDetail']['is_setmeal_content']
 						);
 					if(!isset($shelf[$prodDex])){
 						$shelf[$prodDex]= $data;

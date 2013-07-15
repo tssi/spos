@@ -65,7 +65,8 @@ $(document).ready(function(e){
 						aggr['div.amount input']='';
 						aggr['div.price input']='';
 						aggr['div.item_code input']=code;
-						aggr['div.is_setmeal input']='1';
+						aggr['div.is_setmeal input']='0';
+						aggr['div.is_setmeal_content input']='1';
 						source.push(aggr);
 					}
 					if(!(o.SetComponentProduct instanceof Array)){
@@ -79,7 +80,8 @@ $(document).ready(function(e){
 						aggr['div.amount input']='';
 						aggr['div.price input']='';
 						aggr['div.item_code input']=code;
-						aggr['div.is_setmeal input']='1';
+						aggr['div.is_setmeal input']='0';
+						aggr['div.is_setmeal_content input']='1';
 						source.push(aggr);
 					}
 						console.log(source);
@@ -99,8 +101,8 @@ $(document).ready(function(e){
 		if (allowCashiering){    
 			var data = [];
 			var obj = args.obj;
-			console.log(obj);
-			
+			console.log(obj)
+
 			var qty = $('#qty').val();
 			var amount = ssUtil.roundNumber(obj['div.price input']*qty,2);    
 			obj['div.qty input']=qty;
@@ -1011,21 +1013,38 @@ $(document).ready(function(e){
 			$.getJSON(ssUtil.cch_brk('/canteen/daily_menus/findDailyMenu/'+TODAY+''),
 				function(data){
 					source = [];
-					////console.log(data);
+					console.log(data);
 					if(data.length>0){
 						$.each(data, function(ctr,obj){
-							var desc= obj.MenuItem.name;
-							var price = obj.DailyMenu.selling_price;
-							var code = obj.MenuItem.item_code;
-							var unit = obj.MenuItem.unit_id;
-							var id = obj.MenuItem.id;
-							var aggr={};
-							aggr['div.desc input']=desc;
-							aggr['div.price input']=ssUtil.roundNumber(price,2);
-							aggr['div.item_code input']=code;
-							aggr['div.unit input']=unit;
-							aggr['div.id input']=id;
-							source.push(aggr);
+						
+							if(obj.MenuItem.unit_id == 7){
+								var desc= obj.MenuItem.name;
+								var price = obj.DailyMenu.selling_price;
+								var code = obj.MenuItem.item_code;
+								var unit = obj.MenuItem.unit_id;
+								var id = obj.MenuItem.id;
+								var aggr={};
+								aggr['div.desc input']=desc;
+								aggr['div.price input']=ssUtil.roundNumber(price,2);
+								aggr['div.item_code input']=code;
+								aggr['div.unit input']=unit;
+								aggr['div.id input']=id;
+								aggr['div.is_setmeal input']='1';
+								source.push(aggr);
+							}else{
+								var desc= obj.MenuItem.name;
+								var price = obj.DailyMenu.selling_price;
+								var code = obj.MenuItem.item_code;
+								var unit = obj.MenuItem.unit_id;
+								var id = obj.MenuItem.id;
+								var aggr={};
+								aggr['div.desc input']=desc;
+								aggr['div.price input']=ssUtil.roundNumber(price,2);
+								aggr['div.item_code input']=code;
+								aggr['div.unit input']=unit;
+								aggr['div.id input']=id;
+								source.push(aggr);
+							}
 						});
 					  
 						$('#counterItems_ui ul.recordDataGrid').trigger('populate_grid',{'data':source});

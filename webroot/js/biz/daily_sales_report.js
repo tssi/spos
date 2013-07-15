@@ -32,15 +32,15 @@ $(document).ready(function(){
 		var isCollector = parseInt($('#isCollector').val());
 		var urlIs='';
 		if(isCollector){
-			console.log('isCollector', isCollector);
+			//console.log('isCollector', isCollector);
 			urlIs='/canteen/sales/daily_report/';
 			
 		}
 		if(!isCollector){
-			console.log('!isCollector', isCollector);
+			//console.log('!isCollector', isCollector);
 			urlIs='/canteen/sales/daily_report/'+$('#SaleUserId').val();
 		}
-		console.log(urlIs);
+		//console.log(urlIs);
 		$('#SaleDailyReportForm').ajaxSubmit({
 		url:urlIs,
 		beforeSend:function(){
@@ -48,7 +48,7 @@ $(document).ready(function(){
 			$('.food_Table tbody, .shelf_Table tbody, .salesPayment tbody').empty();
 		},
 		success:function(data){
-			console.log($.parseJSON(data));
+			//console.log($.parseJSON(data));
 			toPrint = null;
 			toPrint =$.toJSON($.parseJSON(data));
 			//console.log(toPrint);
@@ -81,14 +81,18 @@ $(document).ready(function(){
 			totalIs= 0;
 			var htm1 = '';
 			$.each(report.Total_Details.Shelf, function(c,o){
-				totalIs+=o.Total;
-				htm1+='<tr>';
-				htm1+='<td class="taCenter">'+o.Qty+'</td>';
-				htm1+='<td class="taLeft">'+o.Barcode+'</td>';
-				htm1+='<td class="taLeft">'+o.Desc+'</td>';
-				htm1+='<td class="taRight money">'+ssUtil.roundNumber(o.Amount,2)+'</td>';
-				htm1+='<td class="taRight money">'+ssUtil.roundNumber(o.Total,2)+'</td>';
-				htm1+='</tr>';
+				if(o.Is_SetContent == 0){
+					console.log('Not Contnet');
+					totalIs+=o.Total;
+					htm1+='<tr>';
+					htm1+='<td class="taCenter">'+o.Qty+'</td>';
+					htm1+='<td class="taLeft">'+o.Barcode+'</td>';
+					htm1+='<td class="taLeft">'+o.Desc+'</td>';
+					htm1+='<td class="taRight money">'+ssUtil.roundNumber(o.Amount,2)+'</td>';
+					htm1+='<td class="taRight money">'+ssUtil.roundNumber(o.Total,2)+'</td>';
+					htm1+='</tr>';
+				}
+				
 			});
 			
 			htm1+='<tr>';
@@ -119,14 +123,25 @@ $(document).ready(function(){
 				htmOr+='<tbody>';
 				var totalIs=0;
 				$.each(o, function(ctr, object){
-					htmOr+='<tr>';
-					htmOr+='<td class="taCenter">'+object.Qty+'</td>';
-					htmOr+='<td class="taLeft">'+object.Barcode+'</td>';
-					htmOr+='<td class="taLeft">'+object.Desc+'</td>';
-					totalIs+=object.Total;
-					htmOr+='<td class="taRight money">'+ssUtil.roundNumber(object.Amount,2)+'</td>';
-					htmOr+='<td class="taRight money">'+ssUtil.roundNumber(object.Total,2)+'</td>';
-					htmOr+='</tr>';
+					console.log(object);
+					if(object.Is_SetContent == 1){
+						htmOr+='<tr>';
+						htmOr+='<td class="taCenter">'+object.Qty+'</td>';
+						htmOr+='<td class="taLeft">'+object.Barcode+'</td>';
+						htmOr+='<td class="taLeft">&nbsp;&nbsp;>'+object.Desc+'</td>';
+						htmOr+='<td class="taRight money">'+''+'</td>';
+						htmOr+='<td class="taRight money">'+''+'</td>';
+						htmOr+='</tr>';
+					}else{
+						htmOr+='<tr>';
+						htmOr+='<td class="taCenter">'+object.Qty+'</td>';
+						htmOr+='<td class="taLeft">'+object.Barcode+'</td>';
+						htmOr+='<td class="taLeft">'+object.Desc+'</td>';
+						totalIs+=object.Total;
+						htmOr+='<td class="taRight money">'+ssUtil.roundNumber(object.Amount,2)+'</td>';
+						htmOr+='<td class="taRight money">'+ssUtil.roundNumber(object.Total,2)+'</td>';
+						htmOr+='</tr>';
+					}
 				});
 				htmOr+='<tr><td colspan=3></td>';
 				htmOr+='<td class="taRight"><strong>Total Amount:</strong></td>';
