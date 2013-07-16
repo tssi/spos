@@ -81,7 +81,7 @@ $(document).ready(function(){
 			totalIs= 0;
 			var htm1 = '';
 			$.each(report.Total_Details.Shelf, function(c,o){
-				if(o.Is_SetContent == 0){
+				if(o.Is_SetDtl == 0){
 					console.log('Not Contnet');
 					totalIs+=o.Total;
 					htm1+='<tr>';
@@ -124,7 +124,7 @@ $(document).ready(function(){
 				var totalIs=0;
 				$.each(o, function(ctr, object){
 					console.log(object);
-					if(object.Is_SetContent == 1){
+					if(object.Is_SetDtl == 1){
 						htmOr+='<tr>';
 						htmOr+='<td class="taCenter">'+object.Qty+'</td>';
 						htmOr+='<td class="taLeft">'+object.Barcode+'</td>';
@@ -161,6 +161,8 @@ $(document).ready(function(){
 			$('.smart_table').find("tbody tr:odd").css('background-color','#f7f6f2');
 			$('.smart_table').find("tbody tr:last").css('background-color','#C8F0BC');
 			
+			
+			console.log(report);
 			var htm1SP='';
 			htm1SP+='<tr>';
 			htm1SP+='<td class="taRight">'+ssUtil.roundNumber(report.bySalesPayment.CASH,2)+'</td>';
