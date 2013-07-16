@@ -52,7 +52,7 @@ class orForm extends Formsheet{
 	
 	}
 	
-	function details($container){
+	function details(){
 		$dbL="===============================================";
 		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
 		$metrics = array(
@@ -82,28 +82,30 @@ class orForm extends Formsheet{
 			$this->centerText(16,$y,'Total',4,'');
 			$y+=1.5;
 			foreach($this->data['Total_Details']['Food'] as $food){
-				$this->leftText(1.25,$y,$food['Desc'],'');
-				$this->centerText(10,$y,$food['Qty'],3,'');
-				$this->rightText(12.5,$y,number_format($food['Amount'], 2, '.', ','),3,'');
-				$this->rightText(14.5,$y++,number_format($food['Total'], 2, '.', ','),4,'');
-				orForm::$_currline++;
-				if(orForm::$_currline>orForm::$_max){
-					$this->createSheet();
-					$this->hdr($this->data['Date']);
-					$y=10.8;
-					$this->GRID['font_size']=10;
-					$this->centerText(1,$y++,$dbL,18,'');
-					$this->centerText(0,$y++,'FOOD',20,'b');
-					$this->centerText(1,$y++,$dbL,18,'');
-					$this->centerText(1,$y++,$bL,18,'');
-					$y=13.6;
-					$this->leftText(1.25,$y,'Desc','');
-					$this->centerText(10,$y,'Qty',3,'');
-					$this->centerText(13,$y,'Amount',3,'');
-					$this->centerText(16,$y,'Total',4,'');
-					$y+=1.5;
-					orForm::$_currline =0;
-					orForm::$_currpage++;
+				if($food['Is_SetDtl']!=1){
+					$this->leftText(1.25,$y,$food['Desc'],'');
+					$this->centerText(10,$y,$food['Qty'],3,'');
+					$this->rightText(12.5,$y,number_format($food['Amount'], 2, '.', ','),3,'');
+					$this->rightText(14.5,$y++,number_format($food['Total'], 2, '.', ','),4,'');
+					orForm::$_currline++;
+					if(orForm::$_currline>orForm::$_max){
+						$this->createSheet();
+						$this->hdr($this->data['Date']);
+						$y=10.8;
+						$this->GRID['font_size']=10;
+						$this->centerText(1,$y++,$dbL,18,'');
+						$this->centerText(0,$y++,'FOOD',20,'b');
+						$this->centerText(1,$y++,$dbL,18,'');
+						$this->centerText(1,$y++,$bL,18,'');
+						$y=13.6;
+						$this->leftText(1.25,$y,'Desc','');
+						$this->centerText(10,$y,'Qty',3,'');
+						$this->centerText(13,$y,'Amount',3,'');
+						$this->centerText(16,$y,'Total',4,'');
+						$y+=1.5;
+						orForm::$_currline =0;
+						orForm::$_currpage++;
+					}
 				}
 			}
 			$y++;
@@ -132,29 +134,32 @@ class orForm extends Formsheet{
 			$this->GRID['font_size']=9;
 			$y+=1.5;
 			foreach($this->data['Total_Details']['Shelf'] as $shelf){
-				$this->leftText(1.25,$y,$shelf['Desc'],'');
-				$this->centerText(10,$y,$shelf['Qty'],3,'');
-				$this->rightText(12.5,$y,number_format($shelf['Amount'], 2, '.', ','),3,'');
-				$this->rightText(14.5,$y++,number_format($shelf['Total'], 2, '.', ','),4,'');
-				orForm::$_currline++;
-				if(orForm::$_currline>orForm::$_max){	
-					$this->createSheet();
-					$this->hdr($this->data['Date']);
-					$y=10.8;
-					$this->GRID['font_size']=10;
-					$this->centerText(1,$y++,$dbL,18,'');
-					$this->centerText(0,$y++,'Merchandise',20,'b');
-					$this->centerText(1,$y++,$dbL,18,'');
-					$this->centerText(1,$y++,$bL,18,'');
-					$y=13.6;
-					$this->leftText(1.25,$y,'Desc','');
-					$this->centerText(10,$y,'Qty',3,'');
-					$this->centerText(13,$y,'Amount',3,'');
-					$this->centerText(16,$y,'Total',4,'');
-					$y+=1.5;
-					orForm::$_currline =0;
-					orForm::$_currpage++;
-				}	
+				//pr($shelf);exit;
+				if($shelf['Is_SetDtl']!=1){
+					$this->leftText(1.25,$y,$shelf['Desc'],'');
+					$this->centerText(10,$y,$shelf['Qty'],3,'');
+					$this->rightText(12.5,$y,number_format($shelf['Amount'], 2, '.', ','),3,'');
+					$this->rightText(14.5,$y++,number_format($shelf['Total'], 2, '.', ','),4,'');
+					orForm::$_currline++;
+					if(orForm::$_currline>orForm::$_max){	
+						$this->createSheet();
+						$this->hdr($this->data['Date']);
+						$y=10.8;
+						$this->GRID['font_size']=10;
+						$this->centerText(1,$y++,$dbL,18,'');
+						$this->centerText(0,$y++,'Merchandise',20,'b');
+						$this->centerText(1,$y++,$dbL,18,'');
+						$this->centerText(1,$y++,$bL,18,'');
+						$y=13.6;
+						$this->leftText(1.25,$y,'Desc','');
+						$this->centerText(10,$y,'Qty',3,'');
+						$this->centerText(13,$y,'Amount',3,'');
+						$this->centerText(16,$y,'Total',4,'');
+						$y+=1.5;
+						orForm::$_currline =0;
+						orForm::$_currpage++;
+					}	
+				}
 			}
 		}
 		$y++;

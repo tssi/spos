@@ -61,15 +61,17 @@ $(document).ready(function(){
 			var htm = '';
 			var totalIs= 0;
 			$.each(report.Total_Details.Food, function(c,o){
-				o.Amount=parseFloat(o.Amount);
-				totalIs+=o.Total;
-				htm+='<tr>';
-				htm+='<td class="taCenter">'+o.Qty+'</td>';
-				htm+='<td class="taLeft">'+o.Barcode+'</td>';
-				htm+='<td class="taLeft">'+o.Desc+'</td>';
-				htm+='<td class="taRight monetary">'+ssUtil.roundNumber(o.Amount,2)+'</td>';
-				htm+='<td class="taRight money">'+ssUtil.roundNumber(o.Total, 2)+'</td>';
-				htm+='</tr>';
+				if(o.Is_SetDtl != 1){
+					o.Amount=parseFloat(o.Amount);
+					totalIs+=o.Total;
+					htm+='<tr>';
+					htm+='<td class="taCenter">'+o.Qty+'</td>';
+					htm+='<td class="taLeft">'+o.Barcode+'</td>';
+					htm+='<td class="taLeft">'+o.Desc+'</td>';
+					htm+='<td class="taRight monetary">'+ssUtil.roundNumber(o.Amount,2)+'</td>';
+					htm+='<td class="taRight money">'+ssUtil.roundNumber(o.Total, 2)+'</td>';
+					htm+='</tr>';
+				}
 			});
 			
 			htm+='<tr>';
@@ -81,8 +83,7 @@ $(document).ready(function(){
 			totalIs= 0;
 			var htm1 = '';
 			$.each(report.Total_Details.Shelf, function(c,o){
-				if(o.Is_SetDtl == 0){
-					console.log('Not Contnet');
+				if(o.Is_SetDtl != 1){
 					totalIs+=o.Total;
 					htm1+='<tr>';
 					htm1+='<td class="taCenter">'+o.Qty+'</td>';
@@ -161,8 +162,6 @@ $(document).ready(function(){
 			$('.smart_table').find("tbody tr:odd").css('background-color','#f7f6f2');
 			$('.smart_table').find("tbody tr:last").css('background-color','#C8F0BC');
 			
-			
-			console.log(report);
 			var htm1SP='';
 			htm1SP+='<tr>';
 			htm1SP+='<td class="taRight">'+ssUtil.roundNumber(report.bySalesPayment.CASH,2)+'</td>';

@@ -438,8 +438,7 @@ class SalesController extends AppController {
 			}
 		
 		}
-		
-		
+	
 		
 		$report=array(
 			'Date'=>$Date,
