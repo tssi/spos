@@ -42,7 +42,7 @@ for($q=0;$q<count($details);$q++){
 						'SaleDetail'=>array(
 								'qty'=>$details[$q]['SaleDetail']['qty'],
 								'amount'=>$details[$q]['SaleDetail']['amount'],
-								'is_setmeal'=>$details[$q]['SaleDetail']['is_setmeal']
+								'is_setmeal_dtl'=>$details[$q]['SaleDetail']['is_setmeal_dtl']
 						),
 						'Sale'=>$details[$q]['Sale'],
 						'Produkto'=>array(
@@ -57,7 +57,7 @@ for($q=0;$q<count($details);$q++){
 		}else{
 			$temp[$code]['SaleDetail']['qty']+=$data['SaleDetail']['qty'];
 			$temp[$code]['SaleDetail']['amount']+=$data['SaleDetail']['amount'];
-			$temp[$code]['SaleDetail']['is_setmeal']+=$data['SaleDetail']['is_setmeal'];
+			$temp[$code]['SaleDetail']['is_setmeal_dtl']+=$data['SaleDetail']['is_setmeal_dtl'];
 			
 		}
 		
@@ -71,7 +71,7 @@ foreach($details as $details){
 					'item' =>$details['Produkto']['name'],
 					'qty' =>$details['SaleDetail']['qty'],
 					'price'=> $details['SaleDetail']['amount'],
-					'is_setmeal'=> $details['SaleDetail']['is_setmeal'],
+					'is_setmeal_dtl'=> $details['SaleDetail']['is_setmeal_dtl'],
 				);
 	array_push($invoice_dtl,$data);	
 }	

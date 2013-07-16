@@ -64,8 +64,8 @@ class SalesController extends AppController {
 						'qty' => $this->data['SaleDetail'][$t]['qty'],
 						'price' => $this->data['SaleDetail'][$t]['price'],
 						'amount' => $this->data['SaleDetail'][$t]['amount'],
-						'is_setmeal' => $this->data['SaleDetail'][$t]['is_setmeal'],
-						'is_setmeal_content' => $this->data['SaleDetail'][$t]['is_setmeal_content'],
+						'is_setmeal_hdr' => $this->data['SaleDetail'][$t]['is_setmeal_hdr'],
+						'is_setmeal_dtl' => $this->data['SaleDetail'][$t]['is_setmeal_dtl'],
 					);
 				}else{
 					$newSaleDetail[$index]['qty']+=$this->data['SaleDetail'][$t]['qty'];
@@ -248,7 +248,8 @@ class SalesController extends AppController {
 						'Sale.id',
 						'SaleDetail.amount',
 						'SaleDetail.qty',
-						'SaleDetail.is_setmeal',
+						'SaleDetail.is_setmeal_hdr',
+						'SaleDetail.is_setmeal_dtl',
 						'Sale.total',
 						'Sale.amount_received',
 						'Produkto.name',
@@ -306,8 +307,8 @@ class SalesController extends AppController {
 				'SaleDetail.sale_id',
 				'SaleDetail.qty',
 				'SaleDetail.amount',
-				'SaleDetail.is_setmeal',
-				'SaleDetail.is_setmeal_content',
+				'SaleDetail.is_setmeal_hdr',
+				'SaleDetail.is_setmeal_dtl',
 				'Prod.product_type_id',
 				'Menu.name',
 				'Prod.name',
@@ -319,7 +320,7 @@ class SalesController extends AppController {
 		
         $conditions = array("Sale.created >=" =>$fromDate,
 							"Sale.created <=" =>$toDate,
-							//"SaleDetail.is_setmeal !="=>1
+							//"SaleDetail.is_setmeal_hdr !="=>1
 							);
 		
 		
@@ -362,8 +363,8 @@ class SalesController extends AppController {
 									'Desc'=>$daily[$q]['Menu']['name'],
 									'Amount'=>$daily[$q]['Menu']['selling_price'],
 									'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Menu']['selling_price'],
-									'Is_Set'=>$daily[$q]['SaleDetail']['is_setmeal'],
-									'Is_SetContent'=>$daily[$q]['SaleDetail']['is_setmeal_content']
+									'Is_SetHdr'=>$daily[$q]['SaleDetail']['is_setmeal_hdr'],
+									'Is_SetDtl'=>$daily[$q]['SaleDetail']['is_setmeal_dtl']
 						);
 					if(!isset($food[$foodDex])){
 						$food[$foodDex]= $data;
@@ -371,8 +372,9 @@ class SalesController extends AppController {
 						$food[$foodDex]['Qty']+=$data['Qty'];
 						$food[$foodDex]['Total']+=$data['Total'];
 					}
-					$foodTotal+=$data['Total'];
-										
+					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] != 1){
+						$foodTotal+=$data['Total'];
+					}					
 				}else{ // Merchandise
 					$prodDex = $daily[$q]['SaleDetail']['item_code'];
 					$prodSalesDex = $daily[$q]['SaleDetail']['sale_id'];
@@ -382,8 +384,8 @@ class SalesController extends AppController {
 									'Desc'=>$daily[$q]['Prod']['name'],
 									'Amount'=>$daily[$q]['Prod']['selling_price'],
 									'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Prod']['selling_price'],
-									'Is_Set'=>$daily[$q]['SaleDetail']['is_setmeal'],
-									'Is_SetContent'=>$daily[$q]['SaleDetail']['is_setmeal_content']
+									'Is_SetHdr'=>$daily[$q]['SaleDetail']['is_setmeal_hdr'],
+									'Is_SetDtl'=>$daily[$q]['SaleDetail']['is_setmeal_dtl']
 						);
 					if(!isset($shelf[$prodDex])){
 						$shelf[$prodDex]= $data;
@@ -391,7 +393,10 @@ class SalesController extends AppController {
 						$shelf[$prodDex]['Qty']+=$data['Qty'];
 						$shelf[$prodDex]['Total']+=$data['Total'];
 					}
-					$shelfTotal+=$data['Total'];
+					
+					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] != 1){
+						$shelfTotal+=$data['Total'];
+					}
 									
 				}
 

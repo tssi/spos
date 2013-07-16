@@ -177,8 +177,8 @@
 											<li class="mainInput">
 												<div class="fLeft w55">
 													<div class="fLeft w75 hide item_code"><div class="input"><?php echo $this->Form->input('SaleDetail.%.item_code',array('type'=>'hidden','id'=>false,'value'=>'X')); ?></div></div>
-													<div class="fLeft w75 hide is_setmeal"><div class="input"><?php echo $this->Form->input('SaleDetail.%.is_setmeal',array('type'=>'hidden','id'=>false,'value'=>'X')); ?></div></div>
-													<div class="fLeft w75 hide is_setmeal_content"><div class="input"><?php echo $this->Form->input('SaleDetail.%.is_setmeal_content',array('type'=>'hidden','id'=>false,'value'=>'X')); ?></div></div>
+													<div class="fLeft w75 hide is_setmeal_hdr"><div class="input"><?php echo $this->Form->input('SaleDetail.%.is_setmeal_hdr',array('type'=>'hidden','id'=>false,'value'=>'X')); ?></div></div>
+													<div class="fLeft w75 hide is_setmeal_dtl"><div class="input"><?php echo $this->Form->input('SaleDetail.%.is_setmeal_dtl',array('type'=>'hidden','id'=>false,'value'=>'X')); ?></div></div>
 													<div class="fLeft w75 desc"><?php echo $this->Form->input('SaleDetail.%.name',array('readonly'=>'readonly','label'=>false,'id'=>false,'value'=>'X')); ?></div>
 													<div class="fRight w25 qty"><?php echo $this->Form->input('SaleDetail.%.qty',array('readonly'=>'readonly','label'=>false,'id'=>false,'value'=>'X')); ?></div>
 												</div>								
@@ -231,14 +231,14 @@
 							<?php echo $this->Form->input('Product.%.item_code',array('readonly'=>'readonly','label'=>false, 'type'=>'hidden','id'=>false)); ?>
 						</div>
 					</div>
-					<div class="fLeft hide is_setmeal">
+					<div class="fLeft hide is_setmeal_hdr">
 						<div class="input">
-							<?php echo $this->Form->input('Product.%.is_setmeal',array('readonly'=>'readonly','value'=>'0','label'=>false, 'type'=>'hidden','id'=>false)); ?>
+							<?php echo $this->Form->input('Product.%.is_setmeal_hdr',array('readonly'=>'readonly','value'=>'0','label'=>false, 'type'=>'hidden','id'=>false)); ?>
 						</div>
 					</div>
-					<div class="fLeft hide is_setmeal_content">
+					<div class="fLeft hide is_setmeal_dtl">
 						<div class="input">
-							<?php echo $this->Form->input('Product.%.is_setmeal_content',array('readonly'=>'readonly','value'=>'0','label'=>false, 'type'=>'hidden','id'=>false)); ?>
+							<?php echo $this->Form->input('Product.%.is_setmeal_dtl',array('readonly'=>'readonly','value'=>'0','label'=>false, 'type'=>'hidden','id'=>false)); ?>
 						</div>
 					</div>
 					<div class="fLeft hide unit">

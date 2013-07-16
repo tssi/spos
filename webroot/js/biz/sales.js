@@ -65,8 +65,8 @@ $(document).ready(function(e){
 						aggr['div.amount input']='';
 						aggr['div.price input']='';
 						aggr['div.item_code input']=code;
-						aggr['div.is_setmeal input']='0';
-						aggr['div.is_setmeal_content input']='1';
+						aggr['div.is_setmeal_hdr input']='0';
+						aggr['div.is_setmeal_dtl input']='1';
 						source.push(aggr);
 					}
 					if(!(o.SetComponentProduct instanceof Array)){
@@ -80,8 +80,8 @@ $(document).ready(function(e){
 						aggr['div.amount input']='';
 						aggr['div.price input']='';
 						aggr['div.item_code input']=code;
-						aggr['div.is_setmeal input']='0';
-						aggr['div.is_setmeal_content input']='1';
+						aggr['div.is_setmeal_hdr input']='0';
+						aggr['div.is_setmeal_dtl input']='1';
 						source.push(aggr);
 					}
 						console.log(source);
@@ -1029,7 +1029,7 @@ $(document).ready(function(e){
 								aggr['div.item_code input']=code;
 								aggr['div.unit input']=unit;
 								aggr['div.id input']=id;
-								aggr['div.is_setmeal input']='1';
+								aggr['div.is_setmeal_hdr input']='1';
 								source.push(aggr);
 							}else{
 								var desc= obj.MenuItem.name;
