@@ -61,6 +61,7 @@ $(document).ready(function(){
 			var htm = '';
 			var totalIs= 0;
 			$.each(report.Total_Details.Food, function(c,o){
+				//console.log(o);
 				if(o.Is_SetDtl != 1){
 					o.Amount=parseFloat(o.Amount);
 					totalIs+=o.Total;
@@ -124,7 +125,7 @@ $(document).ready(function(){
 				htmOr+='<tbody>';
 				var totalIs=0;
 				$.each(o, function(ctr, object){
-					console.log(object);
+					//console.log(object);
 					if(object.Is_SetDtl == 1){
 						htmOr+='<tr>';
 						htmOr+='<td class="taCenter">'+object.Qty+'</td>';

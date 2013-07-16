@@ -357,6 +357,9 @@ class SalesController extends AppController {
 				if(is_null($daily[$q]['Prod']['product_type_id'])){ //to check if Meal type
 					$foodDex = $daily[$q]['SaleDetail']['item_code'];//Meals
 					$foodSalesDex = $daily[$q]['SaleDetail']['sale_id'];
+					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] == 1){//Set Qty to zero if is_setmeal_dtl is true
+						$daily[$q]['SaleDetail']['qty'] = 0;
+					}	
 					$data = array(
 									'Qty'=>$daily[$q]['SaleDetail']['qty'],
 									'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
@@ -378,6 +381,9 @@ class SalesController extends AppController {
 				}else{ // Merchandise
 					$prodDex = $daily[$q]['SaleDetail']['item_code'];
 					$prodSalesDex = $daily[$q]['SaleDetail']['sale_id'];
+					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] == 1){//Set Qty to zero if is_setmeal_dtl is true
+						$daily[$q]['SaleDetail']['qty'] = 0;
+					}	
 					$data = array(
 									'Qty'=>$daily[$q]['SaleDetail']['qty'],
 									'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
