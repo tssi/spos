@@ -9,7 +9,7 @@ class detailsreportForm extends Formsheet{
 	protected static $_available_line = 49;
 	protected static $_currpage = 1;
 	function detailsreportForm($data){
-		$this->data =$data;
+		$this->data = $data;
 		$this->showLines = !true;
 		$this->FPDF(detailsreportForm::$_orient, detailsreportForm::$_unit,array(detailsreportForm::$_width,detailsreportForm::$_height));
 		$this->createSheet();
@@ -21,8 +21,8 @@ class detailsreportForm extends Formsheet{
 			$this->Rect($metrics['base_x'],$metrics['base_y'],$metrics['width'],$metrics['height']);
 		}
 	}
-	function hdr($date,$total){
-
+	function hdr(){
+		$data = $this->data;
 		$metrics = array(
 			'base_x'=> 0,
 			'base_y'=> 0.25,
@@ -39,17 +39,18 @@ class detailsreportForm extends Formsheet{
 		$this->centerText(0,4,'Canteen Daily Report',20,'b');
 		$this->centerText(0,5,'(Details By Official Receipt)',20,'');
 		$this->leftText(1,7,'Total Sale:','b');
-		$this->rightText(8,7,number_format($total['Total_Sales'], 2, '.', ','),'');
+		$this->rightText(8,7,number_format($data['Total_Sales'], 2, '.', ','),'');
 		$this->leftText(1,8,'Food:','b');
-		$this->rightText(8,8,number_format($total['Total_Food'], 2, '.', ','),'');
+		$this->rightText(8,8,number_format($data['Total_Food'], 2, '.', ','),'');
 		$this->leftText(1,9,'Merchandise:','b');
-		$this->rightText(8,9,number_format($total['Total_Shelf'], 2, '.', ','),'');
+		$this->rightText(8,9,number_format($data['Total_Shelf'], 2, '.', ','),'');
 		$this->GRID['font_size']=9;
-		$this->rightText(19.5,6,'Date: '.$date,'');
+		$this->rightText(19.5,6,'Date: '.$data['Date'],'');
 	}
 	
 	
-	function details($data,$date,$total){
+	function details(){
+		$data = $this->data;
 		$dbL="===============================================";
 		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
 		$metrics = array(
@@ -62,7 +63,7 @@ class detailsreportForm extends Formsheet{
 		);
 		$this->section($metrics);
 		$y=0;
-		foreach($data as $key=>$val){
+		foreach($data['Total_byOR'] as $key=>$val){
 			$itm_count = count($val)+4;
 	
 			if(detailsreportForm::$_available_line < $itm_count){
@@ -70,7 +71,7 @@ class detailsreportForm extends Formsheet{
 				$this->createSheet();
 				detailsreportForm::$_available_line =  49;
 				detailsreportForm::$_currpage++;
-				$this->hdr($date,$total);
+				$this->hdr();
 				
 				$y = 11;
 			}
@@ -91,10 +92,18 @@ class detailsreportForm extends Formsheet{
 			$y+=1.5;
 		
 			foreach($val as $items){
-				$this->leftText(1.25,$y,$items['Desc'],'');
-				$this->centerText(10,$y,$items['Qty'],3,'');
-				$this->rightText(12.5,$y,number_format($items['Amount'], 2, '.', ','),3,'');
-				$this->rightText(14.5,$y++,number_format($items['Total'], 2, '.', ','),4,'');
+				if($items['Is_SetDtl']){
+					$this->leftText(1.5,$y,'>'.$items['Desc'],'');
+					$this->centerText(10,$y,$items['Qty'],3,'');
+					$this->rightText(12.5,$y,'0.00',3,'');
+					$this->rightText(14.5,$y++,'0.00',4,'');
+				}else{
+					$this->leftText(1.25,$y,$items['Desc'],'');
+					$this->centerText(10,$y,$items['Qty'],3,'');
+					$this->rightText(12.5,$y,number_format($items['Amount'], 2, '.', ','),3,'');
+					$this->rightText(14.5,$y++,number_format($items['Total'], 2, '.', ','),4,'');
+				}
+				
 				detailsreportForm::$_available_line--;
 			}
 			detailsreportForm::$_available_line-=4;
