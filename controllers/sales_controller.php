@@ -329,9 +329,9 @@ class SalesController extends AppController {
 		}
 		
 		$daily = $this->Sale->SaleDetail->find('all', array('conditions'=>$conditions, 'fields'=>$field, 'joins'=>$join, 'recursive'=>2));
-		 $conditions = array("Sale.created >=" =>$fromDate,
-							"Sale.created <=" =>$toDate,
-							);
+		$conditions = array("Sale.created >=" =>$fromDate,
+						"Sale.created <=" =>$toDate,
+						);
 		
 		$dailySale = $this->Sale->find('all', array('conditions'=>$conditions));
 		
@@ -349,84 +349,80 @@ class SalesController extends AppController {
 								'CHARGE'=>0.0,
 		);
 		for($q=0;$q<count($daily);$q++){
-				$index = (string)$daily[$q]['Sale']['id'];
-				$itemcode = (string)$daily[$q]['SaleDetail']['item_code'];
-				$data =array();
-				
-				
-				if(is_null($daily[$q]['Prod']['product_type_id'])){ //to check if Meal type
-					$foodDex = $daily[$q]['SaleDetail']['item_code'];//Meals
-					$foodSalesDex = $daily[$q]['SaleDetail']['sale_id'];
-					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] == 1){//Set Qty to zero if is_setmeal_dtl is true
-						$daily[$q]['SaleDetail']['qty'] = 0;
-					}	
-					$data = array(
-									'Qty'=>$daily[$q]['SaleDetail']['qty'],
-									'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
-									'Desc'=>$daily[$q]['Menu']['name'],
-									'Amount'=>$daily[$q]['Menu']['selling_price'],
-									'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Menu']['selling_price'],
-									'Is_SetHdr'=>$daily[$q]['SaleDetail']['is_setmeal_hdr'],
-									'Is_SetDtl'=>$daily[$q]['SaleDetail']['is_setmeal_dtl']
-						);
-					if(!isset($food[$foodDex])){
-						$food[$foodDex]= $data;
-					}else{
+			$index = (string)$daily[$q]['Sale']['id'];
+			$itemcode = (string)$daily[$q]['SaleDetail']['item_code'];
+			$data =array();
+			
+			if(is_null($daily[$q]['Prod']['product_type_id'])){ //to check if Meal type
+				$foodDex = $daily[$q]['SaleDetail']['item_code'];//Meals
+				$foodSalesDex = $daily[$q]['SaleDetail']['sale_id'];
+				$data = array(
+								'Qty'=>$daily[$q]['SaleDetail']['qty'],
+								'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
+								'Desc'=>$daily[$q]['Menu']['name'],
+								'Amount'=>$daily[$q]['Menu']['selling_price'],
+								'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Menu']['selling_price'],
+								'Is_SetHdr'=>$daily[$q]['SaleDetail']['is_setmeal_hdr'],
+								'Is_SetDtl'=>$daily[$q]['SaleDetail']['is_setmeal_dtl']
+					);
+				if(!isset($food[$foodDex]) && $daily[$q]['SaleDetail']['is_setmeal_dtl'] !=1){
+					$food[$foodDex]= $data;
+				}else{
+					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] !=1){
 						$food[$foodDex]['Qty']+=$data['Qty'];
 						$food[$foodDex]['Total']+=$data['Total'];
 					}
-					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] != 1){
-						$foodTotal+=$data['Total'];
-					}					
-				}else{ // Merchandise
-					$prodDex = $daily[$q]['SaleDetail']['item_code'];
-					$prodSalesDex = $daily[$q]['SaleDetail']['sale_id'];
-					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] == 1){//Set Qty to zero if is_setmeal_dtl is true
-						$daily[$q]['SaleDetail']['qty'] = 0;
-					}	
-					$data = array(
-									'Qty'=>$daily[$q]['SaleDetail']['qty'],
-									'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
-									'Desc'=>$daily[$q]['Prod']['name'],
-									'Amount'=>$daily[$q]['Prod']['selling_price'],
-									'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Prod']['selling_price'],
-									'Is_SetHdr'=>$daily[$q]['SaleDetail']['is_setmeal_hdr'],
-									'Is_SetDtl'=>$daily[$q]['SaleDetail']['is_setmeal_dtl']
-						);
-					if(!isset($shelf[$prodDex])){
-						$shelf[$prodDex]= $data;
-					}else{
+				}
+				if($daily[$q]['SaleDetail']['is_setmeal_dtl'] != 1){
+					$foodTotal+=$data['Total'];
+				}				
+			}else{ // Merchandise
+				$prodDex = $daily[$q]['SaleDetail']['item_code'];
+				$prodSalesDex = $daily[$q]['SaleDetail']['sale_id'];
+				$data = array(
+								'Qty'=>$daily[$q]['SaleDetail']['qty'],
+								'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
+								'Desc'=>$daily[$q]['Prod']['name'],
+								'Amount'=>$daily[$q]['Prod']['selling_price'],
+								'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Prod']['selling_price'],
+								'Is_SetHdr'=>$daily[$q]['SaleDetail']['is_setmeal_hdr'],
+								'Is_SetDtl'=>$daily[$q]['SaleDetail']['is_setmeal_dtl']
+					);
+				if(!isset($shelf[$prodDex]) && $daily[$q]['SaleDetail']['is_setmeal_dtl'] !=1){
+					$shelf[$prodDex]= $data;
+				}else{
+					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] !=1){
 						$shelf[$prodDex]['Qty']+=$data['Qty'];
 						$shelf[$prodDex]['Total']+=$data['Total'];
 					}
-					
-					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] != 1){
-						$shelfTotal+=$data['Total'];
-					}
-									
 				}
-
-				if(!isset($byOr[$index])){ //(By OR) if or number is already set 
-						$byOr[$index]=array();
-						array_push($byOr[$index],$data);
-				}else{
-					$match = 0;
-					
-					for($t=0;$t<count($byOr[$index]); $t++){
-						if($byOr[$index][$t]['Barcode']==$itemcode){
-							$byOr[$index][$t]['Qty']+=$data['Qty'];
-							$byOr[$index][$t]['Total']=$byOr[$index][$t]['Qty']*$byOr[$index][$t]['Amount'];
-						
-							$match=1;								
-							break;
-						}
-					}
-					if (!$match){
-						array_push($byOr[$index],$data);
-					}
-				}
-		
 				
+				if($daily[$q]['SaleDetail']['is_setmeal_dtl'] != 1){
+					$shelfTotal+=$data['Total'];
+				}
+								
+			}
+
+			if(!isset($byOr[$index])){ //(By OR) if or number is already set 
+					$byOr[$index]=array();
+					array_push($byOr[$index],$data);
+			}else{
+				$match = 0;
+				
+				for($t=0;$t<count($byOr[$index]); $t++){
+					if($byOr[$index][$t]['Barcode']==$itemcode){
+						$byOr[$index][$t]['Qty']+=$data['Qty'];
+						$byOr[$index][$t]['Total']=$byOr[$index][$t]['Qty']*$byOr[$index][$t]['Amount'];
+					
+						$match=1;								
+						break;
+					}
+				}
+				if (!$match){
+					array_push($byOr[$index],$data);
+				}
+			}
+			
 		}
 		
 	    for($r=0;$r<count($dailySale);$r++){
@@ -444,8 +440,7 @@ class SalesController extends AppController {
 			}
 		
 		}
-	
-		
+
 		$report=array(
 			'Date'=>$Date,
 			'Total_Sales'=>$foodTotal+$shelfTotal,
@@ -470,11 +465,9 @@ class SalesController extends AppController {
 		
 		}
 	}
-	
 	function report(){
 	
 	}
-	
 	function report_pdf(){
 		$data = $this->data['Sale']['data'];
 		$data = json_decode($data, true);
@@ -482,7 +475,6 @@ class SalesController extends AppController {
 		$this->layout='pdf';
 		$this->render();
 	}
-	
 	function details_report(){
 		$data = $this->data['Sale']['data'];
 		$data = json_decode($data, true);
@@ -490,7 +482,6 @@ class SalesController extends AppController {
 		$this->layout='pdf';
 		$this->render();
 	}
-	
 	function employeeCharged(){
 		//$this->data['Sale']['buyer']=19;
 		if($this->RequestHandler->isAjax()){

@@ -61,7 +61,6 @@ $(document).ready(function(){
 			var htm = '';
 			var totalIs= 0;
 			$.each(report.Total_Details.Food, function(c,o){
-				//console.log(o);
 				if(o.Is_SetDtl != 1){
 					o.Amount=parseFloat(o.Amount);
 					totalIs+=o.Total;
@@ -131,8 +130,8 @@ $(document).ready(function(){
 						htmOr+='<td class="taCenter">'+object.Qty+'</td>';
 						htmOr+='<td class="taLeft">'+object.Barcode+'</td>';
 						htmOr+='<td class="taLeft">&nbsp;&nbsp;>'+object.Desc+'</td>';
-						htmOr+='<td class="taRight money">'+''+'</td>';
-						htmOr+='<td class="taRight money">'+''+'</td>';
+						htmOr+='<td class="taRight money">'+'0.00'+'</td>';
+						htmOr+='<td class="taRight money">'+'0.00'+'</td>';
 						htmOr+='</tr>';
 					}else{
 						htmOr+='<tr>';
