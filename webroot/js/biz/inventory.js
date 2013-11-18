@@ -94,8 +94,9 @@ $(document).ready(function(){
 				  var source = [];
 				  //Prepare data structure
 				if(json.length>0){
-					  $.each(json, function(ctr,obj){
+					$.each(json, function(ctr,obj){
 						if(obj.Product){
+							var id= obj.Product.id;
 							var desc= obj.Product.name;
 							var price = ssUtil.roundNumber(obj.Product.selling_price,2);
 							var avg = ssUtil.roundNumber(obj.Product.avg_price,2);
@@ -110,6 +111,7 @@ $(document).ready(function(){
 							var qty = obj.Product.qty;
 							var unit = obj.Unit.alias;
 						}else{
+							var id= obj.Perishable.id;
 							var desc= obj.Perishable.name;
 							var price = ssUtil.roundNumber(obj.Perishable.selling_price,2);
 							var avg = ssUtil.roundNumber(obj.Perishable.avg_price,2);
@@ -125,6 +127,7 @@ $(document).ready(function(){
 							var unit = obj.Unit.alias;
 						}
 						var aggr={};           
+							aggr['div.VIEWID input']=id;
 							aggr['div.VIEWdesc input']=desc;
 							aggr['div.VIEWquantity input']=qty;
 							//aggr['div.VIEWconsume select']=isConsumable;
@@ -552,25 +555,25 @@ $(document).ready(function(){
 		var qty = row.find('.VIEWquantity input').val();
 		var srp = row.find('.VIEWprice input').val();
 		var epp = row.find('.VIEWavg input').val();
-			$.ajax({
-				type:'POST',
-				url: BASE_URL+'products/update',
-				data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp}}},
-				success:function(data){
-				console.log(data);
-					$('#myDialog').dialog({
-						title:'Notify',
-						modal:true,
-						closeOnEscape: false,
-						open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},
-						buttons:{
-								Back:function(e, a){
-									$(this).dialog('destroy');
-								},	
-							}
-					});
-					$('#myDialog').html('Item successfully updated!');
-				}
-			});
+		$.ajax({
+			type:'POST',
+			url: BASE_URL+'products/update',
+			data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp}}},
+			success:function(data){
+			console.log(data);
+				$('#myDialog').dialog({
+					title:'Notify',
+					modal:true,
+					closeOnEscape: false,
+					open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},
+					buttons:{
+							Back:function(e, a){
+								$(this).dialog('destroy');
+							},	
+						}
+				});
+				$('#myDialog').html('Item successfully updated!');
+			}
+		});
 	});
 });
