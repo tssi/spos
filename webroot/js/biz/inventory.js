@@ -1,7 +1,6 @@
 var BASE_URL ='/'+window.location.pathname.split('/')[1]+'/';
 var MyLink = window.location.pathname+'/';
 
-
 $(document).ready(function(){
 	var ACTIVE_CLASS =  'ruby';
 	var RECORD_SPEED = 'slow';
@@ -11,7 +10,7 @@ $(document).ready(function(){
 	$('.mainInput').hide();
 	$('.uiNotify ').hide();
 	
-	//Notify user when form has errors
+	//NOTIFY USER WHEN FORM HAS ERRORS
 	$('#inventoryList div.itemCode.input input').focus();
 	$('li.mainInput div.unit select').prepend(new Option('Select One', '%'));
 	
@@ -30,6 +29,7 @@ $(document).ready(function(){
 					var price = ssUtil.roundNumber(obj.Product.selling_price,2);
 					var avg = ssUtil.roundNumber(obj.Product.avg_price,2);
 					var code = obj.Product.item_code;
+					var last_recount_start_time = obj.Product.last_recount_start_time;
 					var isConsumable;
 					//var isConsumable = obj.Product.is_consumable;
 					if(obj.Product.is_consumable==1){
@@ -45,6 +45,8 @@ $(document).ready(function(){
 					var price = ssUtil.roundNumber(obj.Perishable.selling_price,2);
 					var avg = ssUtil.roundNumber(obj.Perishable.avg_price,2);
 					var code = obj.Perishable.item_code;
+					var test = obj.Perishable.test;
+					var last_recount_start_time = obj.Perishable.last_recount_start_time;
 					var isConsumable;
 					//var isConsumable = obj.Product.is_consumable;
 					if(obj.Perishable.is_consumable==1){
@@ -65,21 +67,21 @@ $(document).ready(function(){
 					aggr['div.VIEWitemCode input']=code;
 					aggr['div.VIEWunit input']=unit;
 					aggr['div.VIEWavg input']=avg;
-					//console.log(aggr);
-				source.push(aggr);  
-			});
+					aggr['div.LastRecountStartTime input']=last_recount_start_time;
+					source.push(aggr);  
+				});
 			  
 				//Pass data to populate_grid event
 				$('#inventoryList_view ul.recordDataGrid').trigger('populate_grid',{'data':source});
 				$('#inventoryList_view ul.recordDataGrid').bind('hide', function(){
 					$('#inventoryList_view ul.recordDatagrid li.mainInput').hide();
-					});
+				});
 				$('#inventoryList_view ul.recordDataGrid').trigger('hide');
 			  });
 	
 	};
 	
-	//search button
+	//SEARCH BUTTON EVENT HANDLER
 	$('.search_button').click(function(){
 		var by = $('#searchBy').val();
 		var type = $('#searchType').val();
@@ -164,7 +166,7 @@ $(document).ready(function(){
 		
 	});
 	
-	//--pop dialog constructor
+	//POP DIALOG CONSTRUCTOR
     $('#myDialog').bind('pop-it', function(evt, args){
 		var _msg = args.msg;
 		var _title = args.title;
@@ -184,7 +186,7 @@ $(document).ready(function(){
 		$('#myDialog').html(_msg);
 	});
 	
-	//-- Description auto-complete
+	//DESCRIPTION AUTO-COMPLETE
     $('.productAuto').livequery(function(){
 		var input =  $(this);		
 		input.autocomplete({
@@ -264,10 +266,7 @@ $(document).ready(function(){
 		$(this).find('li:last div.itemcode .input input').removeAttr('readonly');
 		$('#inventoryList ul.recordDataGrid input , #inventoryList ul.recordDataGrid select').blur();
 		$('.error-message').remove();
-		/* $('#inventoryList .recordDatagrid li:last').find('input[valid="-1"]').attr('valid',1)
-		
-		; */
-		
+		//$('#inventoryList .recordDatagrid li:last').find('input[valid="-1"]').attr('valid',1);
 	}); 
 	
 	$('.formNeat .picker .submit input').livequery('click',function(){
@@ -379,7 +378,7 @@ $(document).ready(function(){
 		
 	});
 	
-	//Cancel Button
+	//CANCEL BUTTON EVENT HANDLER
 	$("#cancel_button, .cancel_button").click(function(){
 		$(document).trigger('restore_defaults');
 		
@@ -407,71 +406,58 @@ $(document).ready(function(){
 		$(document).trigger('restore_defaults');
 	}); 
     
-	
 	$('#inventoryList .markIt').live('focus', function(e,a){
-	var SELF = $(this);
-	//console.log(SELF);
-	if(SELF.val()==''){
-		var dg = '<div class="dgForm fwb">';
-			
-			dg+='<div class="fLeft w45 pt5">Estimated Purchase Price:</div>';
-			dg+='<div class="avgPrice fRight w55"><input class="monetary numeric taRight nextnode"/></div>';
-			dg+='<div class="fClear"></div>';
-			
-			dg+='<div class="fLeft w45 pt5">Markup Unit:</div>';
-			dg+='<div class="emUnit fRight w55"><select class="nextnode">';
-			dg+='<option value="1">Php.</option>';
-			dg+='<option value="%">%</option>';
-			dg+='</select></div>';
-			dg+='<div class="fClear"></div>';
-			
-			dg+='<div class="fLeft w45 pt5">Estimated Markup:</div>';
-			dg+='<div class="em fRight w55"><input class=" numeric taRight nextnode"/></div>';
-			dg+='<div class="fClear"></div>';
-			
-			dg+='</div>';
-			
-			var button = {};
-		
-			button.OK = function(){
-				var avgPrice = parseInt($('div.dgForm .avgPrice input').val());
-				var em = parseInt($('div.dgForm .em input').val());
-				var emUnit = $('div.dgForm .emUnit select').val();
-
-				if (avgPrice !='' && em !='' && emUnit!=''){
-					SELF.parents('li:first').find('div.em input').val(em);
-					SELF.parents('li:first').find('div.emUnit input').val(emUnit);
-					SELF.parents('li:first').find('div.avgPrice input').val(avgPrice);
-					SELF.parents('li:first').find('div.avgPrice input').blur();
-					SELF.parents('li:first').find('div.avgPrice input').trigger('keypress',{'which':13});
-					if(emUnit == '%'){
-						SELF.parents('li:first').find('div.price input').val((avgPrice+(avgPrice*(em/100))).toFixed(2));
-					}
-					if(emUnit == 1 ){
-						SELF.parents('li:first').find('div.price input').val((avgPrice+em).toFixed(2));
-					}
-					
+		var SELF = $(this);
+		if(SELF.val()==''){
+			var dg = '<div class="dgForm fwb">';
+				dg+='<div class="fLeft w45 pt5">Estimated Purchase Price:</div>';
+				dg+='<div class="avgPrice fRight w55"><input class="monetary numeric taRight nextnode"/></div>';
+				dg+='<div class="fClear"></div>';
+				dg+='<div class="fLeft w45 pt5">Markup Unit:</div>';
+				dg+='<div class="emUnit fRight w55"><select class="nextnode">';
+				dg+='<option value="1">Php.</option>';
+				dg+='<option value="%">%</option>';
+				dg+='</select></div>';
+				dg+='<div class="fClear"></div>';
+				dg+='<div class="fLeft w45 pt5">Estimated Markup:</div>';
+				dg+='<div class="em fRight w55"><input class=" numeric taRight nextnode"/></div>';
+				dg+='<div class="fClear"></div>';
+				dg+='</div>';
+				var button = {};
+				button.OK = function(){
+					var avgPrice = parseInt($('div.dgForm .avgPrice input').val());
+					var em = parseInt($('div.dgForm .em input').val());
+					var emUnit = $('div.dgForm .emUnit select').val();
+					if (avgPrice !='' && em !='' && emUnit!=''){
+						SELF.parents('li:first').find('div.em input').val(em);
+						SELF.parents('li:first').find('div.emUnit input').val(emUnit);
+						SELF.parents('li:first').find('div.avgPrice input').val(avgPrice);
+						SELF.parents('li:first').find('div.avgPrice input').blur();
+						SELF.parents('li:first').find('div.avgPrice input').trigger('keypress',{'which':13});
+						if(emUnit == '%'){
+							SELF.parents('li:first').find('div.price input').val((avgPrice+(avgPrice*(em/100))).toFixed(2));
+						}
+						if(emUnit == 1 ){
+							SELF.parents('li:first').find('div.price input').val((avgPrice+em).toFixed(2));
+						}
+						$(this).dialog('destroy');
+					}				
+				};
+				
+				button.CANCEL =function(){
 					$(this).dialog('destroy');
-				}				
-			};
-			
-			button.CANCEL =function(){
-				$(this).dialog('destroy');
-				SELF.parents('li:first').find('div.avgPrice input').blur();
-			}
-			
-			$('#myDialog').trigger('pop-it', {
-				'title': 'Estimated Purchase Price',
-				'msg': dg,
-				'button': button,
-				'modal': true
-			});
-		$('.dgForm .avgPrice input:first').select();
-	
-	}
-	
-});
-
+					SELF.parents('li:first').find('div.avgPrice input').blur();
+				}
+				
+				$('#myDialog').trigger('pop-it', {
+					'title': 'Estimated Purchase Price',
+					'msg': dg,
+					'button': button,
+					'modal': true
+				});
+			$('.dgForm .avgPrice input:first').select();
+		}
+	});
 
     $('.itemcode input').livequery(function(){
 		var THIS = this;
@@ -493,7 +479,6 @@ $(document).ready(function(){
 		input.trigger('check_valid');
 		
 		/* if (valueOf=='' || valueOf=='%'){
-			
 			var thisLast = $(this).parents('li:first');
 			var recordLast = $('#inventoryList .recordDatagrid li:last');
 			thisLast = thisLast[0];
@@ -509,43 +494,42 @@ $(document).ready(function(){
 	
 	$('#inventoryList .moreThanZero').live('blur', function(e,a){
 		var SELF = $(this);
-			if( parseInt($.trim(SELF.val())) <=0){
-				SELF.val('');
-				SELF.attr('valid','-1');
-				
-				var button = {};
-				button.OK = function() {
-					$(this).dialog('destroy');
-					SELF.focus();
-				};
-				$('#myDialog').trigger('pop-it', {
-					'title': 'Notification',
-					'msg': 'Must be greater than zero',
-					'button': button,
-					'modal': true
-				});
-			}else{
-				SELF.attr('valid','1')
-			}
+		if( parseInt($.trim(SELF.val())) <=0){
+			SELF.val('');
+			SELF.attr('valid','-1');
+			var button = {};
+			button.OK = function() {
+				$(this).dialog('destroy');
+				SELF.focus();
+			};
+			$('#myDialog').trigger('pop-it', {
+				'title': 'Notification',
+				'msg': 'Must be greater than zero',
+				'button': button,
+				'modal': true
+			});
+		}else{
+			SELF.attr('valid','1')
+		}
 	});
 	
 	$('.order_button').click(function(){
-		
 		var orderItby =$('#ordering :selected').val();
 		sortIt(CURRENT_TYPE, orderItby);
-	
 	});
 	
 	$(document).trigger('restore_defaults');
 	
-	//Edit
+	//EDIT EVENT HANDLER
 	$('.edit-product').livequery('click',function(){
 		var row = $(this).parents('li:first');
 		row.find('.editable').removeAttr('readonly','readonly');
 		row.find('.VIEWdesc input').focus().select();
 		row.find('.action').html('<a class="save-product"><img src="'+BASE_URL+'img/icons/disk.png"></img></a>');
+		row.find('.VIEWquantity input').addClass('is_modal');
 	});
-	//Save(Edit)Update
+	
+	//SAVE(EDIT)UPDATE EVENT HANDLER
 	$('.save-product').livequery('click',function(){
 		var row = $(this).parents('li:first');
 		row.find('.editable').attr('readonly','readonly');
@@ -555,12 +539,19 @@ $(document).ready(function(){
 		var qty = row.find('.VIEWquantity input').val();
 		var srp = row.find('.VIEWprice input').val();
 		var epp = row.find('.VIEWavg input').val();
+		var item_code = row.find('.VIEWitemCode input').val();
+		var fieldToEdit = row.find('.FieldToEdit input').val();
+
+		var last_recount_start_time = row.find('.LastRecountStartTime input').val();
+		console.log(last_recount_start_time);
+		
 		$.ajax({
 			type:'POST',
 			url: BASE_URL+'products/update',
-			data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp}}},
-			success:function(data){
-			console.log(data);
+			data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp,'field':fieldToEdit,'item_code':item_code,'last_recount_start_time':last_recount_start_time}}},
+			success:function(data){	
+				var result = $.parseJSON(data);
+				console.log(result);
 				$('#myDialog').dialog({
 					title:'Notify',
 					modal:true,
@@ -572,8 +563,65 @@ $(document).ready(function(){
 							},	
 						}
 				});
-				$('#myDialog').html('Item successfully updated!');
+				$('#myDialog').html(result.msg);
+				row.find('.VIEWquantity input').val(result.data.Product.qty);
+				row.find('.VIEWquantity input').removeClass('is_modal');
+				row.find('.FieldToEdit input').val('');
 			}
 		});
 	});
+	
+	//QTY ADJUSTMENT MODAL
+	$('.VIEWquantity input.is_modal').livequery('click',function(){
+		var row = $(this).parents('li:first');
+		$('#myDialog').dialog({
+			title:'Notify',
+			modal:true,
+			closeOnEscape: false,
+			open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},
+			buttons:{
+					Ok:function(e, a){
+						var qty_as = $('input[type="radio"]:checked').val();
+						var new_qty = $('#NewQty').val();
+						
+						if(qty_as != undefined && new_qty.length){
+							row.find('.FieldToEdit input').val(qty_as);
+							row.find('.VIEWquantity input').val(new_qty);
+							$(this).dialog('destroy');
+						}else{
+							$('#NewQty').addClass('bgCheri');
+						}
+					},
+					Cancel:function(e, a){
+						$(this).dialog('destroy');
+					},	
+				}
+		});
+		$('#myDialog').html("<br/><b>Edit Qty As:</b><br/><br/>"+
+							"<input type='radio' name='data['FieldToEdit']' checked='checked' value='qty'></input><label>Qty on Hand</label><br/>"+
+							"<input type='radio' name='data['FieldToEdit']' value='init_qty'></input><label>Initial Qty</label><br/><br/>"+
+							"<div class='fLeft w37 pt5'><b>New Qty Value:</b></div>"+
+							"<div class='fRight w63'><input id='NewQty' class='monetary numeric taRight'/></div>"+
+							"<div class='fClear'></div><br/><div id='QtyModalNotif'></div>"
+							);
+	});
+	
+	
+	
+	//RECOUNT
+	$('#StartRecountButton').livequery('click',function(){
+		var item_code = $('#StartTimeProductItemCode').val();
+		$.ajax({
+			type:'POST',
+			url: BASE_URL+'products/start_recounting',
+			data:{'data':{'Product':{'item_code':item_code}}},
+			success:function(data){	
+				var result = $.parseJSON(data);
+				$("abbr.timeago").attr('title',result.data.Product.last_recount_start_time)
+				$("abbr.timeago").timeago();
+			}
+		});
+	});
+	
 });
+
