@@ -36,11 +36,14 @@ class SalesController extends AppController {
 	function add(){
 		if (!empty($this->data)) {
 			$this->Sale->create();
+			
+			//GENERATE SALE ID
 			$counter = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'INVOICE')));
 			$this->data['Sale']['id']=$counter['Counter']['value'];
 			$this->Counter->doIncrement('INVOICE',1);
+			//END
 			
-			
+			//PREPARE SALE PAYMENTS
 			$salesPayments = json_decode($this->data['Sale']['payment'], true);
 			$this->data['SalePayment']=array();
 			foreach($salesPayments as $payment){
@@ -51,12 +54,12 @@ class SalesController extends AppController {
 				);
 				array_push($this->data['SalePayment'],$byPayment);
 			}
-			//-------------------
-			$newSaleDetail=array();
+			//END
 			
+			//PREPARE SALE DETAILS
+			$newSaleDetail=array();
 			for($t=0;$t<count($this->data['SaleDetail']);$t++){
 				$index = $this->data['SaleDetail'][$t]['item_code'];
-				
 				if(!isset($newSaleDetail[$index])){
 					$newSaleDetail[$index]=array(
 						'item_code' => $this->data['SaleDetail'][$t]['item_code'],
@@ -72,23 +75,19 @@ class SalesController extends AppController {
 					$newSaleDetail[$index]['amount']+=$this->data['SaleDetail'][$t]['amount'];
 				}			
 			}
-			
 			$this->data['SaleDetail']=$newSaleDetail;
 			array_shift($this->data['SaleDetail']);
 			unset($this->Sale->SaleDetail->validate['sale_id']);
+			//END
 			
-			//pr($this->data);
-			//exit();
-			//------------------
+			//
 			if ($this->Sale->saveAll($this->data,array('validate'=>'first'))) {
-				
 				$currentSale = $this->Sale->SalePayment->find('all', array('conditions'=>array('Sale.id'=>$this->Sale->id)));
 				
-				//pr($currentSale);
-				//exit();
-					
-				foreach($currentSale as $paymentIs){ //get charged to deduct to credit
-					if($paymentIs['PaymentType']['name']=='CHAR'){ //if to charge account
+				//GET CHARGED TO DEDUCT TO CREDIT
+				foreach($currentSale as $paymentIs){ 
+					//FOR CHARGE ACCOUNT
+					if($paymentIs['PaymentType']['name']=='CHAR'){ 
 						$chAcount=$this->Charge201->find('first', array('conditions'=>array(
 											'Charge201.reference'=>$paymentIs['Sale']['buyer'],
 											'Charge201.category'=>$this->data['Sale']['category']
@@ -114,13 +113,14 @@ class SalesController extends AppController {
 						};
 						break;
 					}
-					if($paymentIs['PaymentType']['name']=='PREP'){ //if to prepaid account
+					//END
+					
+					//FOR PREPAID ACCOUNT
+					if($paymentIs['PaymentType']['name']=='PREP'){ 
 						$pdAcount=$this->Prepaid201->find('first', array('conditions'=>array(
 											'Prepaid201.reference'=>$paymentIs['Sale']['buyer'],
 											'Prepaid201.category'=>$this->data['Sale']['category']
 											)));
-						
-											
 						$this->SopPpTran->create();
 						$prepaidTransaction = array(
 								'prepaid201_id'=>$pdAcount['Prepaid201']['id'],
@@ -130,7 +130,6 @@ class SalesController extends AppController {
 							);
 						if($this->SopPpTran->save($prepaidTransaction)){
 							$bal = $this->SopPpVal->findByPrepaid201Id($pdAcount['Prepaid201']['id']);
-							
 							$this->SopPpVal->id = $bal['SopPpVal']['id'];
 							$this->SopPpVal->save(
 											array(
@@ -143,29 +142,30 @@ class SalesController extends AppController {
 						};
 						break;
 					}
-				
+					//END
 				}
+				
+				//UPDATE PRODUCT INVENTORY &|| DAILY MENU INVENTORY
 				foreach($this->data['SaleDetail'] as $dtl){
 					$product = $this->Product->find('first',array('conditions'=>array('Product.item_code'=>$dtl['item_code'])));
-					if(isset($product['Product']['id'])){
-						$this->Product->doIncrement($product['Product']['id'],-$dtl['qty']);
-					}
-					$Date = date('Y-m-d');
 					
-					$conditions = array(
-						'MenuItem.item_code'=>$dtl['item_code'],
-						'DailyMenu.date =' =>$Date,
-					);
-					$daily_menu = $this->DailyMenu->find('first',array('conditions'=>$conditions,
-						'order'=>'DailyMenu.created DESC'));
+					if(isset($product['Product']['id'])){
+						$this->Product->doIncrement($product['Product']['id'],-$dtl['qty']);	
+					}
+					
+					$daily_menu = $this->DailyMenu->find('first',array(
+															'conditions'=>array(
+																'MenuItem.item_code'=>$dtl['item_code'],
+																'DailyMenu.date =' =>date('Y-m-d'),
+															),
+															'order'=>'DailyMenu.created DESC'
+														));
 					
 					if(isset($daily_menu['DailyMenu']['id'])){
 						$this->DailyMenu->doIncrement($daily_menu['DailyMenu']['id'],-$dtl['qty']);
 					}
 				}
-				
-						
-				
+				//END
 				
 				if($this->RequestHandler->isAjax()){
 					$response['status'] = 1;
@@ -190,8 +190,8 @@ class SalesController extends AppController {
 				}
 			}
 		}
-		$paymentTypes = $this->Sale->PaymentType->find('list');
 		
+		$paymentTypes = $this->Sale->PaymentType->find('list');
 		$this->set(compact('paymentTypes'));
 	}
 
@@ -465,9 +465,11 @@ class SalesController extends AppController {
 		
 		}
 	}
+	
 	function report(){
 	
 	}
+	
 	function report_pdf(){
 		$data = $this->data['Sale']['data'];
 		$data = json_decode($data, true);
@@ -475,6 +477,7 @@ class SalesController extends AppController {
 		$this->layout='pdf';
 		$this->render();
 	}
+	
 	function details_report(){
 		$data = $this->data['Sale']['data'];
 		$data = json_decode($data, true);
@@ -482,6 +485,7 @@ class SalesController extends AppController {
 		$this->layout='pdf';
 		$this->render();
 	}
+	
 	function employeeCharged(){
 		//$this->data['Sale']['buyer']=19;
 		if($this->RequestHandler->isAjax()){
@@ -489,6 +493,7 @@ class SalesController extends AppController {
 			exit();
 		}
 	}
+	
 	function returns(){
 		$this->Employee->find('list');
 		$paymentTypes = $this->PaymentType->find('list');
