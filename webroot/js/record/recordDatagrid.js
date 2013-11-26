@@ -9,18 +9,14 @@ $(document).ready(function(){
 	var AUTO_FLAG = '(Auto)';
 	
 	$('.recordDatagrid input,.recordDatagrid select').livequery(function(){
-		
 		var input =  $(this);
 		input.bind('next_row',function(evt,args){
-		
 			var PARENT  =  args.PARENT;
 			var ROW  =  args.ROW;
 			var NEW_ROW  =  args.NEW_ROW;
 			var NAME  =  args.NAME;
 			var COUNT  =  args.COUNT;
 			var FIRST_COL  =  args.FIRST_COL;
-
-			
 			if(NEW_ROW){
 				//Correct first row, set index to zero
 				if(COUNT==1){
@@ -44,7 +40,6 @@ $(document).ready(function(){
 				});
 				
 			}
-			
 			//Focus next item to first column
 			var VNAME = $(FIRST_COL).attr('vname');
 			var lastInput = $(PARENT).find('li:eq('+COUNT+')').find('input[vname="'+VNAME+'"],select[vname="'+VNAME+'"]');
@@ -69,11 +64,8 @@ $(document).ready(function(){
 			ROW = ROW[0]; //ROW fix
 		var NEW_ROW =null;
 		if(evt.which ==  RECORD_COMMIT||args.which ==RECORD_COMMIT){
-		
 			//Prevent form submit on ENTER key
 			evt.preventDefault();
-			
-			
 			if(SELF==FIRST_COL){
 				$.each(SIBLINGS, function(e, c){
 					$(c).parent().addClass('required');
@@ -95,9 +87,7 @@ $(document).ready(function(){
 					 });
 				}
 				//Triggers the next_row event
-				
-				$(SELF).trigger('next_row',{'PARENT':PARENT,'ROW':$(ROW),'NEW_ROW':NEW_ROW,'NAME':NAME,'COUNT':ROW_COUNT,'FIRST_COL':FIRST_COL});
-			
+				$(SELF).trigger('next_row',{'PARENT':PARENT,'ROW':$(ROW),'NEW_ROW':NEW_ROW,'NAME':NAME,'COUNT':ROW_COUNT,'FIRST_COL':FIRST_COL});			
 			}else{
 				SIBLINGS.each(function(CTR,OBJ){
 					if(SELF==OBJ){
@@ -109,9 +99,7 @@ $(document).ready(function(){
 			}
 		}
 	}).live('check_valid', function(){
-			
 		 if($(this).hasClass('unique')){
-			
 			var thisInput = $.trim($(this).val());
 			if(thisInput!=AUTO_FLAG){
 				var selfLi = $(this).parents('li:first').index();
@@ -125,10 +113,9 @@ $(document).ready(function(){
 					$(this).trigger('error',{msg:'Already existing'});
 				}
 			};
-			
 		} 
-		
 	});
+	
 	//Updates Datagrid list index
 	$('.recordDatagrid').livequery(function(){
 		var THIS =  this;
@@ -166,6 +153,7 @@ $(document).ready(function(){
 				}
 				//Loop on each key to populate
 				$.each(obj,function(prop,value){
+				
 					new_row.find(prop).val(value);
 				});
 				new_row.show();
@@ -190,8 +178,6 @@ $(document).ready(function(){
 		});
 	});
 	
-
-	
 	//Deletes on record at a time
 	$('.recordDatagrid a.recordDelete').live('click',function(evt,args){
 		//Prevent from bouncing link
@@ -213,7 +199,6 @@ $(document).ready(function(){
 		}
 	});
 
-	
 	//Collects all useful data when row is clicked
 	$('.recordDatagrid li.clickInput').live('click',function(evt,args){
 		var SELF = $(this);
@@ -228,6 +213,4 @@ $(document).ready(function(){
 		});
 		SELF.trigger('clicked',{'obj':obj}); //Fire this to pass the data collected
 	});
-	
-	
 });
