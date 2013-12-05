@@ -499,4 +499,15 @@ class SalesController extends AppController {
 		$paymentTypes = $this->PaymentType->find('list');
 		$this->set(compact('paymentTypes'));
 	}
+
+	function daily_cashiers_report(){
+		$date = date('Y-m-d').' 00:00:00';
+	
+		$curr_data = $this->Sale->daily_cashiers_report($date);
+	
+		$this->set(compact('curr_data'));
+		
+		$this->layout='pdf';
+		$this->render();
+	}
 }
