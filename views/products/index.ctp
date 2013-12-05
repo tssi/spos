@@ -296,8 +296,8 @@
 												<div class="hide ow">
 													<?php echo $this->Form->input('Product.%.ow',array('type'=>'text','id'=>false)); ?>
 												</div>
-												<div class="hide FieldToEdit">
-													<?php echo $this->Form->input('Qty.%.field',array('type'=>'text','id'=>false)); ?>
+												<div class="hide IsRecounting">
+													<?php echo $this->Form->input('Qty.%.is_recounting',array('type'=>'text','id'=>false)); ?>
 												</div>
 												<div class="hide LastRecountStartTime">
 													<?php echo $this->Form->input('Qty.%.last_recount_start_time',array('type'=>'text','id'=>false)); ?>
@@ -341,9 +341,7 @@
 			
 				
 			<div class="fLeft pt5 topaz w50">
-				<?php echo $this->Form->input('item_code',array('value'=>'','id'=>'StartTimeProductItemCode','div'=>false));?>
-				<?php echo $this->Form->submit('Start Recount',array('type'=>'button','class'=>'selected fwb wideButton','id'=>'StartRecountButton'));?>
-				<span><abbr class="timeago" title="2013-11-25 13:17:44"></abbr></span>
+				<a href="/canteen/products/recount">Intent To Reinitialize Item(s)</a>
 			</div>
 			<div class="fRight pt5 topaz">
 				<?php echo $this->Form->submit('Close',array('type'=>'button','class'=>'selected fwb close_button','id'=>false));?>

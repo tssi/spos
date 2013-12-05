@@ -338,7 +338,7 @@ class ProductsController extends AppController {
 	
 	function getByProductCode(){
 		$code = $this->data['Product']['item_code'];
-		$product = $this->Product->find('all', array('conditions'=>array('Product.item_code'=>$code)));
+		$product = $this->Product->find('first', array('conditions'=>array('Product.item_code'=>$code)));
 		echo json_encode($product);
 		exit();
 	}
@@ -386,12 +386,10 @@ class ProductsController extends AppController {
 	}
 	
 	function update(){
-		//INIT QTY ADJUSTING
-		
-		if($this->data['Product']['field'] == 'init_qty'){
-			$this->data['Product']['init_qty'] = $this->data['Product']['qty'];
-
-			
+		pr($this->data);exit;
+	
+		//ADJUSTING WHILE ITEM IS ON RECOUNT STATUS	
+		if($this->data['Product']['is_recounting']){
 			$item_sales_count = $this->SaleDetail->find('first',array(
 							'conditions'=>array(
 								'SaleDetail.item_code'=>$this->data['Product']['item_code'],
@@ -399,10 +397,10 @@ class ProductsController extends AppController {
 							),
 							'fields'=>array('SUM(SaleDetail.qty)')
 					));
-			$this->data['Product']['qty'] = $this->data['Product']['init_qty'] - $item_sales_count[0]['SUM(`SaleDetail`.`qty`)'];
+			$this->data['Product']['qty'] = $this->data['Product']['qty'] - $item_sales_count[0]['SUM(`SaleDetail`.`qty`)'];
 			
 		}
-		//
+		
 		if($this->Product->saveAll($this->data)){
 			if($this->RequestHandler->isAjax()){
 				$response['status'] = 1;
@@ -431,14 +429,9 @@ class ProductsController extends AppController {
 		$productTypes = $this->Product->ProductType->find('all');
 		$units = $this->Product->Unit->find('list',array('fields'=>array('Unit.id','Unit.alias')));
 		$this->set(compact('productTypes', 'units'));
-	
-		
 	}
+	
 	function start_recounting(){
-		$item_code = $this->data['Product']['item_code'];
-		$result = $this->Product->find('first',array('conditions'=>array('Product.item_code'=>$item_code),'fields'=>array('Product.id','Product.name')));
-		
-		$this->data['Product']['id'] = $result['Product']['id'];
 		$this->data['Product']['last_recount_start_time'] = date('Y-m-d H:i:s');
 	
 		if(!empty($this->data['Product']['id'])){
@@ -464,9 +457,35 @@ class ProductsController extends AppController {
 				}
 			}
 		}
-
 	}
 	
+	function stop_recounting(){
+		$this->data['Product']['last_recount_stop_time'] = date('Y-m-d H:i:s');
+	
+		if(!empty($this->data['Product']['id'])){
+			if($this->Product->saveAll($this->data)){
+				if($this->RequestHandler->isAjax()){
+					$response['status'] = 1;
+					$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; Item successfully updated';
+					$response['data'] = $this->data;
+					echo json_encode($response);
+					exit();
+				}else{ 
+					$this->Session->setFlash(__('Saving successful...', true));
+				}
+			} else {
+				if($this->RequestHandler->isAjax()){
+					$response['status'] = -1;
+					$response['msg'] = '<img src="/canteen/img/icons/exclamation.png" />&nbsp; Item unsuccessfully updated. Please, try again.';
+					$response['data'] = $this->data;
+					echo json_encode($response);
+					exit();
+				}else{
+				$this->Session->setFlash(__('The product could not be saved. Please, try again.', true));
+				}
+			}
+		}
+	}
 	
 	function general(){
 		$productTypes = $this->Product->ProductType->find('all');

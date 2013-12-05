@@ -30,6 +30,7 @@ $(document).ready(function(){
 					var avg = ssUtil.roundNumber(obj.Product.avg_price,2);
 					var code = obj.Product.item_code;
 					var last_recount_start_time = obj.Product.last_recount_start_time;
+					var is_recounting = obj.Product.is_recounting;
 					var isConsumable;
 					//var isConsumable = obj.Product.is_consumable;
 					if(obj.Product.is_consumable==1){
@@ -47,6 +48,7 @@ $(document).ready(function(){
 					var code = obj.Perishable.item_code;
 					var test = obj.Perishable.test;
 					var last_recount_start_time = obj.Perishable.last_recount_start_time;
+					var is_recounting = obj.Perishable.is_recounting;
 					var isConsumable;
 					//var isConsumable = obj.Product.is_consumable;
 					if(obj.Perishable.is_consumable==1){
@@ -68,6 +70,7 @@ $(document).ready(function(){
 					aggr['div.VIEWunit input']=unit;
 					aggr['div.VIEWavg input']=avg;
 					aggr['div.LastRecountStartTime input']=last_recount_start_time;
+					aggr['div.IsRecounting input']= (is_recounting==1)?'TRUE':'FALSE';
 					source.push(aggr);  
 				});
 			  
@@ -540,15 +543,13 @@ $(document).ready(function(){
 		var srp = row.find('.VIEWprice input').val();
 		var epp = row.find('.VIEWavg input').val();
 		var item_code = row.find('.VIEWitemCode input').val();
-		var fieldToEdit = row.find('.FieldToEdit input').val();
-
+		var is_recounting = row.find('.IsRecounting input').val();
 		var last_recount_start_time = row.find('.LastRecountStartTime input').val();
-		console.log(last_recount_start_time);
-		
+
 		$.ajax({
 			type:'POST',
 			url: BASE_URL+'products/update',
-			data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp,'field':fieldToEdit,'item_code':item_code,'last_recount_start_time':last_recount_start_time}}},
+			data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp,'item_code':item_code,'last_recount_start_time':last_recount_start_time,'is_recounting':is_recounting}}},
 			success:function(data){	
 				var result = $.parseJSON(data);
 				console.log(result);
@@ -566,7 +567,6 @@ $(document).ready(function(){
 				$('#myDialog').html(result.msg);
 				row.find('.VIEWquantity input').val(result.data.Product.qty);
 				row.find('.VIEWquantity input').removeClass('is_modal');
-				row.find('.FieldToEdit input').val('');
 			}
 		});
 	});
@@ -574,54 +574,44 @@ $(document).ready(function(){
 	//QTY ADJUSTMENT MODAL
 	$('.VIEWquantity input.is_modal').livequery('click',function(){
 		var row = $(this).parents('li:first');
-		$('#myDialog').dialog({
-			title:'Notify',
-			modal:true,
-			closeOnEscape: false,
-			open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},
-			buttons:{
-					Ok:function(e, a){
-						var qty_as = $('input[type="radio"]:checked').val();
-						var new_qty = $('#NewQty').val();
-						
-						if(qty_as != undefined && new_qty.length){
-							row.find('.FieldToEdit input').val(qty_as);
-							row.find('.VIEWquantity input').val(new_qty);
-							$(this).dialog('destroy');
-						}else{
-							$('#NewQty').addClass('bgCheri');
-						}
-					},
-					Cancel:function(e, a){
-						$(this).dialog('destroy');
-					},	
-				}
-		});
-		$('#myDialog').html("<br/><b>Edit Qty As:</b><br/><br/>"+
-							"<input type='radio' name='data['FieldToEdit']' checked='checked' value='qty'></input><label>Qty on Hand</label><br/>"+
-							"<input type='radio' name='data['FieldToEdit']' value='init_qty'></input><label>Initial Qty</label><br/><br/>"+
-							"<div class='fLeft w37 pt5'><b>New Qty Value:</b></div>"+
-							"<div class='fRight w63'><input id='NewQty' class='monetary numeric taRight'/></div>"+
-							"<div class='fClear'></div><br/><div id='QtyModalNotif'></div>"
-							);
-	});
-	
-	
-	
-	//RECOUNT
-	$('#StartRecountButton').livequery('click',function(){
-		var item_code = $('#StartTimeProductItemCode').val();
+		var item_code = row.find('.VIEWitemCode input').val();
 		$.ajax({
 			type:'POST',
-			url: BASE_URL+'products/start_recounting',
+			url: BASE_URL+'products/getByProductCode',
 			data:{'data':{'Product':{'item_code':item_code}}},
 			success:function(data){	
 				var result = $.parseJSON(data);
-				$("abbr.timeago").attr('title',result.data.Product.last_recount_start_time)
-				$("abbr.timeago").timeago();
+				$('#myDialog').dialog({
+					title:'Notify',
+					modal:true,
+					closeOnEscape: false,
+					open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},
+					buttons:{
+							Ok:function(e, a){
+								var new_qty = $('#NewQty').val();
+								if(new_qty.length){
+									row.find('.VIEWquantity input').val(new_qty);
+									row.find('.IsRecounting input').val(result.Product.is_recounting);
+									$(this).dialog('destroy');
+								}else{
+									$('#NewQty').addClass('bgCheri');
+								}
+							},
+							Cancel:function(e, a){
+								$(this).dialog('destroy');
+							},	
+						}
+				});
+				var item_status= (result.Product.is_recounting==1)?'Recounting':'NOT Recounting';
+	
+				$('#myDialog').html(
+									"<br/><b>Item Status: <span class='tcRed'>"+item_status+"</sapn></b><br/><br/>"+
+									"<div class='fLeft w37 pt5'><b>New Qty Value:</b></div>"+
+									"<div class='fRight w63'><input id='NewQty' class='monetary numeric taRight'/></div>"+
+									"<div class='fClear'></div>"
+									);
 			}
 		});
 	});
-	
 });
 

@@ -19,7 +19,7 @@
 .h20{
 	height: 20px  !important;
 }
-.elapse-border{
+.border{
 	border-right: 1px solid #dee7ea !important;
 	height: 30px;
 	width: 97%;
@@ -100,12 +100,14 @@
 							</div>
 						</div>
 						<div class="fRight w50 ">
-							<div class="fLeft w40 ">
-								Last Recount Date
-							</div>
 							<div class="fLeft w60 ">
-								<div class="fLeft w80 ">Elapse Time</div>
-								<div class="fRight w20 "></div>
+								<div class="fLeft w57">Last Recount Date</div>
+								<div class="fRight w43">Is Recounting</div>
+								<div class="fClear"></div>
+							</div>
+							<div class="fLeft w40 ">
+								<div class="fLeft w50 "></div>
+								<div class="fRight w50 "></div>
 								<div class="fClear"></div>
 							</div>
 							<div class="fClear"></div>
@@ -131,16 +133,24 @@
 										<div class="fClear"></div>
 									</div>
 									<div class="fRight w50">
-										<div class="fLeft w40 LastRecountStartTime">
-											<?php echo $this->Form->input('Product.%.test',array('label'=>false,'readonly'=>'readonly', 'class'=>'taCenter','id'=>false)); ?>
-										</div>
-										<div class="fRight w60">
-											<div class="fLeft w75 elapse-border taCenter">
-												<abbr class="timeago" title=""></abbr>
+										<div class="fLeft w60 ">
+											<div class="fLeft w65 LastRecountStartTime">
+												<?php echo $this->Form->input('Product.%.test',array('label'=>false,'readonly'=>'readonly', 'class'=>'taCenter','id'=>false)); ?>
 											</div>
-											<div class="fRight w24 taCenter action">
+											<div class="fLeft w35 IsRecounting">
+												<?php echo $this->Form->input('Product.%.is_recounting',array('label'=>false,'readonly'=>'readonly', 'class'=>'taCenter tcRed','id'=>false)); ?>
+											</div>
+											<div class="fClear"></div>
+										</div>
+										<div class="fRight w40">
+											<div class="fLeft w50 border taCenter">
 												<a class="start-recounting">
-													recount
+													Start
+												</a>
+											</div>
+											<div class="fRight w49 taCenter action">
+												<a class="stop-recounting">
+													Stop
 												</a>
 											</div>
 											<div class="fClear"></div>
@@ -170,7 +180,10 @@
 			<?php echo $this->Form->input('type',array('label'=>false, 'type'=>'hidden'));?>
 			<?php echo $this->Form->input('key',array('label'=>false, 'type'=>'hidden'));?>
 			<?php echo $this->Form->end();?>
-
+			<div class="fLeft pt5 topaz w50">
+				<a href="/canteen/products">Back</a>
+			</div>
+			
 			<div class="fRight pt5 topaz">
 				<?php echo $this->Form->submit('Close',array('type'=>'button','class'=>'selected fwb close_button','id'=>false));?>
 			</div>
