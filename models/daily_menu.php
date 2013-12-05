@@ -13,4 +13,27 @@ class DailyMenu extends AppModel {
 			'order' => ''
 		)
 	);
+	
+	public function daily_inventory_sheet_hotmeal($date){
+		return $this->query( 
+		"SELECT 
+		  `sale_details`.`item_code`,
+		  `menu_items`.`name`,
+		  SUM(`sale_details`.`qty`) AS no_of_sold_item,
+		  `daily_menus`.`approx_srv`,
+		  `daily_menus`.`selling_price` 
+		FROM
+		  `canteen`.`sale_details` 
+		  INNER JOIN `canteen`.`menu_items` 
+			ON (
+			  `sale_details`.`item_code` = `menu_items`.`item_code`
+			) 
+		  INNER JOIN `canteen`.`daily_menus` 
+			ON (
+			  `menu_items`.`id` = `daily_menus`.`menu_item_id`
+			) 
+		WHERE `sale_details`.`created` >= '$date' 
+		GROUP BY `sale_details`.`item_code`" 
+		);
+	}
 }

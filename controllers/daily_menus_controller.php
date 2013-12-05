@@ -116,4 +116,13 @@ class DailyMenusController extends AppController {
 		echo json_encode($daily);
 		exit();
 	}
+	
+	function daily_inventory_sheet_hotmeal(){
+		$date = date('Y-m-d').' 00:00:00';
+		
+		$curr_data = $this->DailyMenu->daily_inventory_sheet_hotmeal($date);
+		$this->set(compact('curr_data'));
+		$this->layout='pdf';
+		$this->render();
+	}
 }
