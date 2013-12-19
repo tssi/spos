@@ -17,6 +17,7 @@ class SalesController extends AppController {
 					'Charge201',
 					'Prepaid201',
 					'MenuItem',
+					'DailyBeginningInventory'
 					);
 
 	function index(){
@@ -79,6 +80,35 @@ class SalesController extends AppController {
 			array_shift($this->data['SaleDetail']);
 			unset($this->Sale->SaleDetail->validate['sale_id']);
 			//END
+			
+			
+			//INIT BEGINNING INVENTORY
+			foreach($this->data['SaleDetail'] as $index => $detail){
+				$check_init =$this->DailyBeginningInventory->find('first',array(
+							'conditions'=>array(
+								'DailyBeginningInventory.item_code'=>$detail['item_code'],
+								'DailyBeginningInventory.created'=>date('Y-m-d')
+							)
+					));
+		
+				if(empty($check_init)){
+					$product_beginning_invty =$this->Product->find('first',array(
+							'conditions'=>array('Product.item_code'=>$detail['item_code']),
+							'fields'=>array('Product.qty')
+						));
+					if(!empty($product_beginning_invty)){
+						$this->data['DailyBeginningInventory'][$index]['item_code'] = $detail['item_code'];
+						$this->data['DailyBeginningInventory'][$index]['qty'] = $product_beginning_invty['Product']['qty'];
+					}
+				}
+			}
+			if(isset($this->data['DailyBeginningInventory'])){
+				$this->DailyBeginningInventory->saveAll($this->data['DailyBeginningInventory']);
+				unset($this->data['DailyBeginningInventory']);
+			}
+			//END
+
+				
 			
 			//
 			if ($this->Sale->saveAll($this->data,array('validate'=>'first'))) {
@@ -504,6 +534,8 @@ class SalesController extends AppController {
 		$date = date('Y-m-d').' 00:00:00';
 	
 		$curr_data = $this->Sale->daily_cashiers_report($date);
+		
+		//pr($curr_data);exit;
 	
 		$this->set(compact('curr_data'));
 		

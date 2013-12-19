@@ -40,32 +40,56 @@ class Sale extends AppModel {
 				  `products`.`name`,
 				  `products`.`selling_price`,
 				  `products`.`avg_price`
+				 
 				FROM
 				  `canteen`.`sale_details` 
 				  INNER JOIN `canteen`.`products` 
 					ON (
 					  `sale_details`.`item_code` = `products`.`item_code`
 					) 
-				WHERE (`sale_details`.`created` >= '$date') 
-				GROUP BY `sale_details`.`item_code`"
+				WHERE (
+					`sale_details`.`created` >= '$date'
+				  ) 
+				GROUP BY `sale_details`.`item_code` 
+				ORDER BY  `products`.`name`"
 			);
 		
 		$received = $this->query( 
-			"SELECT
-				`receiving_details`.`item_code`
-				, `receiving_details`.`name`
-				,  SUM(`receiving_details`.`qty`) AS qty_additional_for_the_day
+			"SELECT 
+			  `receiving_details`.`item_code`,
+			  `receiving_details`.`name`,
+			  SUM(`receiving_details`.`qty`) AS qty_additional_for_the_day,
+			  `receivings`.`created`,
+			  `receivings`.`status` 
 			FROM
-				`canteen`.`receiving_details`
-				INNER JOIN `canteen`.`products` 
-					ON (`receiving_details`.`item_code` = `products`.`item_code`)
-				INNER JOIN `canteen`.`receivings` 
-					ON (`receivings`.`id` = `receiving_details`.`receiving_id`)
-			WHERE (`receivings`.`created` >= '$date') 
+			  `canteen`.`receiving_details` 
+			  INNER JOIN `canteen`.`products` 
+				ON (
+				  `receiving_details`.`item_code` = `products`.`item_code`
+				) 
+			  INNER JOIN `canteen`.`receivings` 
+				ON (
+				  `receivings`.`id` = `receiving_details`.`receiving_id`
+				) 
+			WHERE (
+				`receivings`.`created` >= '$date'
+			  ) 
+			AND `receivings`.`status` = '1'
 			GROUP BY `receiving_details`.`item_code`"
 		);
 		
-		return array('Sale'=>$sale,'Received'=>$received);
+		$beginning_invty = $this->query( 
+			"SELECT 
+			  `id`,
+			  `item_code`,
+			  `qty`,
+			  `created` 
+			FROM
+			  `canteen`.`daily_beginning_inventories` 
+			WHERE (`created` = '2013-12-09')"
+		);
+		
+		return array('Sale'=>$sale,'Received'=>$received,'BeginningInventory'=>$beginning_invty);
 	}
 
 }

@@ -113,14 +113,16 @@ class dcrForm extends Formsheet{
 		
 		$y = 4.7;
 		foreach($curr_data['Sale'] as $data){
-			$qty_additional_for_the_day = isset($data['receiving_details']['qty_additional_for_the_day'])?$data['receiving_details']['qty_additional_for_the_day']:'';
+			$qty_additional_for_the_day = isset($data['receiving_details']['qty_additional_for_the_day'])?$data['receiving_details']['qty_additional_for_the_day']:'0.00';
+			
+			$qty_total = $data['daily_beginning_inventories']['qty']+$qty_additional_for_the_day;
 			
 			$x=10;
 			$x_ntvl=3;
 			$this->leftText(0.25,$y,$data['products']['name'],3,'');
-			$this->centerText($x,$y,'A',3,'');
-			$this->centerText($x+=$x_ntvl,$y,$qty_additional_for_the_day,3,'');
-			$this->centerText($x+=$x_ntvl,$y,'C',3,'');
+			$this->centerText($x,$y,$data['daily_beginning_inventories']['qty'],3,'');
+			$this->centerText($x+=$x_ntvl,$y,number_format($qty_additional_for_the_day, 2, '.', ''),3,'');
+			$this->centerText($x+=$x_ntvl,$y,number_format($qty_total, 2, '.', ''),3,'');
 			$this->centerText($x+=$x_ntvl,$y,$data['products']['avg_price'],3,'');
 			$this->centerText($x+=$x_ntvl,$y,$data['products']['selling_price'],3,'');
 			$this->centerText($x+=$x_ntvl,$y,$data['0']['no_of_sold_item'],3,'');
