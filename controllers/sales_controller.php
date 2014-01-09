@@ -530,10 +530,10 @@ class SalesController extends AppController {
 	}
 
 	function daily_cashiers_report(){
-		$date = $this->data['Sale']['date'].' 00:00:00';
+		$date = $this->data['Sale']['date'];
 	
-		$curr_data = $this->Sale->daily_cashiers_report($date);
-		$this->set(compact('curr_data'));
+		$curr_data = $this->Sale->daily_cashiers_report($date.' 00:00:00');
+		$this->set(compact('curr_data','date'));
 		$this->layout='pdf';
 		$this->render();
 	}

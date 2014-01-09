@@ -24,10 +24,10 @@ class dcrForm extends Formsheet{
 		}
 	}
 	
-	function hdr(){
+	function hdr($date){
 		$metrics = array(
 			'base_x'=> 0.25,
-			'base_y'=> 0.15,
+			'base_y'=> 0.075,
 			'height'=> 0.4,
 			'width'=> 8,
 			'cols'=> 40,
@@ -37,6 +37,7 @@ class dcrForm extends Formsheet{
 		$this->GRID['font_size']=9;
 		$this->centerText(0,1,'ITEMIZED - HTA CANTEEN - DAILY CASHIERS REPORT',40,'b');
 		$this->centerText(0,2,'GRADE SCHOOL__  HIGH SCHOOL__  CANTEEN',40,'b');
+		$this->centerText(0,3,date("F d,Y",strtotime($date)),40,'b');
 	}
 	
 	function dtl($curr_data){
@@ -142,12 +143,16 @@ class dcrForm extends Formsheet{
 		
 		//Footer
 		$this->GRID['font_size']=9;
-		$this->leftText(0,50.5,'Total Cash Collection','','b');
+		$this->leftText(0,50.6,'Total Cash Collection','','b');
 		$this->GRID['font_size']=8;
 		$this->leftText(0,51.25,'Prepared by:','','b');
 		$this->drawLine(51.4,'h',array(3.5,10));
 		$this->leftText(0,52,'Noted by:','','b');
 		$this->drawLine(52.15,'h',array(3,10.5));
+		
+		$this->rightText(34,51.25,'Date Printed: ','','b');
+		$this->leftText(34,51.25,date('M. d,Y H:i A'),'','b');
+		$this->drawLine(51.4,'h',array(34,6));
 	}
 
 }

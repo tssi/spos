@@ -18,7 +18,7 @@ unset($curr_data['Received']);
 unset($curr_data['BeginningInventory']);
 
 $form=new dcrForm();
-$form->hdr();
+$form->hdr($date);
 $form->dtl($curr_data);
 
 $form->output();
