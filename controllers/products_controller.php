@@ -2,15 +2,15 @@
 class ProductsController extends AppController {
 
 	var $name = 'Products';
-    var $uses = array('Product','Perishable', 'ProductType','Counter', 'MenuItem','SaleDetail');
+    var $uses = array('Product','Perishable', 'ProductType','Counter', 'MenuItem','SaleDetail','Categories');
 	var $components = array('RequestHandler');
 	
 	function index() {
 		$productTypes = $this->Product->ProductType->find('all');
 		$units = $this->Product->Unit->find('list',array('fields'=>array('Unit.id','Unit.alias')));
-	
-		
-		$this->set(compact('productTypes', 'units'));
+		$categories = $this->Categories->find('list');
+
+		$this->set(compact('productTypes', 'units','categories'));
 	}
 
 	function view($id = null) {
@@ -204,7 +204,8 @@ class ProductsController extends AppController {
 					$orderBy = 'Product.item_code';
 				}
 				
-				$order = array($orderBy);
+				//$order = array($orderBy);
+				$order = array('Product.name');
 				
 				if ($id=="ALL"){
 					$sItems = $this->Product->find('all', array('conditions'=>array('Product.status'=>1),'order'=>$order));
@@ -386,8 +387,6 @@ class ProductsController extends AppController {
 	}
 	
 	function update(){
-		pr($this->data);exit;
-	
 		//ADJUSTING WHILE ITEM IS ON RECOUNT STATUS	
 		if($this->data['Product']['is_recounting']){
 			$item_sales_count = $this->SaleDetail->find('first',array(
