@@ -22,7 +22,7 @@ class SalesController extends AppController {
 
 	function index(){
 		$this->Employee->find('list');
-		$paymentTypes = $this->PaymentType->find('list');
+		$paymentTypes = $this->PaymentType->find('list');		
 		$this->set(compact('paymentTypes'));
 	}
 
@@ -90,7 +90,6 @@ class SalesController extends AppController {
 								'DailyBeginningInventory.created'=>date('Y-m-d')
 							)
 					));
-		
 				if(empty($check_init)){
 					$product_beginning_invty =$this->Product->find('first',array(
 							'conditions'=>array('Product.item_code'=>$detail['item_code']),
@@ -531,14 +530,10 @@ class SalesController extends AppController {
 	}
 
 	function daily_cashiers_report(){
-		$date = date('Y-m-d').' 00:00:00';
+		$date = $this->data['Sale']['date'].' 00:00:00';
 	
 		$curr_data = $this->Sale->daily_cashiers_report($date);
-		
-		//pr($curr_data);exit;
-	
 		$this->set(compact('curr_data'));
-		
 		$this->layout='pdf';
 		$this->render();
 	}
