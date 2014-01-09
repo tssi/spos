@@ -33,6 +33,7 @@ $(document).ready(function(){
 					var is_recounting = obj.Product.is_recounting;
 					var isConsumable;
 					//var isConsumable = obj.Product.is_consumable;
+					var category_id = obj.Product.category_id;
 					if(obj.Product.is_consumable==1){
 						isConsumable='YES';
 					}else{
@@ -71,6 +72,7 @@ $(document).ready(function(){
 					aggr['div.VIEWavg input']=avg;
 					aggr['div.LastRecountStartTime input']=last_recount_start_time;
 					aggr['div.IsRecounting input']= (is_recounting==1)?'TRUE':'FALSE';
+					aggr['div.ViewCategory select']= category_id;
 					source.push(aggr);  
 				});
 			  
@@ -344,7 +346,7 @@ $(document).ready(function(){
 		
 		$('#ordering, #searchBy, #searchType, #searchKey').removeAttr('disabled'); //enable search and sorting functionality
 		$('.order_button, .search_button').removeAttr('disabled');
-		$('.recordDataGrid input, select').removeAttr('disabled');
+		$('.recordDataGrid input, select:not(.categories)').removeAttr('disabled');
 		var of = $('#ordering :selected').val();
 		
 		//Populate according to chosen product
@@ -527,6 +529,7 @@ $(document).ready(function(){
 	$('.edit-product').livequery('click',function(){
 		var row = $(this).parents('li:first');
 		row.find('.editable').removeAttr('readonly','readonly');
+		row.find('.categories').removeAttr('disabled','disabled');
 		row.find('.VIEWdesc input').focus().select();
 		row.find('.action').html('<a class="save-product"><img src="'+BASE_URL+'img/icons/disk.png"></img></a>');
 		row.find('.VIEWquantity input').addClass('is_modal');
@@ -536,6 +539,7 @@ $(document).ready(function(){
 	$('.save-product').livequery('click',function(){
 		var row = $(this).parents('li:first');
 		row.find('.editable').attr('readonly','readonly');
+		row.find('.categories').attr('disabled','disabled');
 		row.find('.action').html('<a class="edit-product"><img src="'+BASE_URL+'img/icons/pencil.png"></img></a>');
 		var id = row.find('.VIEWID input').val();
 		var desc = row.find('.VIEWdesc input').val();
@@ -545,11 +549,12 @@ $(document).ready(function(){
 		var item_code = row.find('.VIEWitemCode input').val();
 		var is_recounting = row.find('.IsRecounting input').val();
 		var last_recount_start_time = row.find('.LastRecountStartTime input').val();
+		var category_id = row.find('.ViewCategory select').val();
 
 		$.ajax({
 			type:'POST',
 			url: BASE_URL+'products/update',
-			data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp,'item_code':item_code,'last_recount_start_time':last_recount_start_time,'is_recounting':is_recounting}}},
+			data:{'data':{'Product':{'id':id,'name':desc,'qty':qty,'selling_price':srp,'avg_price':epp,'item_code':item_code,'last_recount_start_time':last_recount_start_time,'is_recounting':is_recounting,'category_id':category_id}}},
 			success:function(data){	
 				var result = $.parseJSON(data);
 				console.log(result);
