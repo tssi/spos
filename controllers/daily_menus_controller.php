@@ -118,10 +118,10 @@ class DailyMenusController extends AppController {
 	}
 	
 	function daily_inventory_sheet_hotmeal(){
-		$date = $this->data['Sale']['date'].' 00:00:00';
-		
-		$curr_data = $this->DailyMenu->daily_inventory_sheet_hotmeal($date);
-		$this->set(compact('curr_data'));
+		$date = $this->data['Sale']['date'];
+		$curr_data = $this->DailyMenu->daily_inventory_sheet_hotmeal($date.' 00:00:00');
+
+		$this->set(compact('curr_data','date'));
 		$this->layout='pdf';
 		$this->render();
 	}

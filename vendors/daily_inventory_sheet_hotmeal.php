@@ -24,7 +24,8 @@ class disForm extends Formsheet{
 		}
 	}
 	
-	function hdr(){
+	function hdr($date){
+		//pr($curr_data);exit;
 		$metrics = array(
 			'base_x'=> 0.25,
 			'base_y'=> 0.15,
@@ -38,13 +39,13 @@ class disForm extends Formsheet{
 		$this->centerText(0,1,'HOLY TRINITY ACADEMY',52,'');
 		$this->GRID['font_size']=10;
 		$this->centerText(0,2,'Calabash Road, Balic-Balic, Sampaloc, Manila',52,'');
-		$this->centerText(0,4,'DAILY INVENTORY SHEET',52,'b');
-		$this->centerText(0,5,'HOTMEAL',52,'b');
+		$this->centerText(0,4,'DAILY INVENTORY SHEET HOTMEAL',52,'b');
+		$this->centerText(0,5,date("F d,Y",strtotime($date)),52,'');
 		$this->leftText(0,5.8,'Department:','','');
 		$this->drawLine(6,'h',array(4,10));
-		$this->rightText(46,5.8,'Date: ','','');
-		$this->leftText(46,5.8,date('m/d/Y H:i:s'),'','');
-		$this->drawLine(6,'h',array(46,6));
+		$this->rightText(45,5.8,'Date Printed: ','','');
+		$this->leftText(45,5.8,date('M. d,Y H:i A'),'','');
+		$this->drawLine(6,'h',array(45,7));
 	}
 	
 	function dtl($curr_data){
