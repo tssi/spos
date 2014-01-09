@@ -39,7 +39,8 @@ class Sale extends AppModel {
 				  SUM(`sale_details`.`qty`) AS no_of_sold_item,
 				  `products`.`name`,
 				  `products`.`selling_price`,
-				  `products`.`avg_price`
+				  `products`.`avg_price`,
+				  `products`.`category_id`
 				 
 				FROM
 				  `canteen`.`sale_details` 
@@ -51,7 +52,7 @@ class Sale extends AppModel {
 					`sale_details`.`created` >= '$date'
 				  ) 
 				GROUP BY `sale_details`.`item_code` 
-				ORDER BY  `products`.`name`"
+				ORDER BY   `products`.`category_id`,`products`.`name`"
 			);
 		
 		$received = $this->query( 
@@ -86,7 +87,7 @@ class Sale extends AppModel {
 			  `created` 
 			FROM
 			  `canteen`.`daily_beginning_inventories` 
-			WHERE (`created` = '2013-12-09')"
+			WHERE (`created` = '$date')"
 		);
 		
 		return array('Sale'=>$sale,'Received'=>$received,'BeginningInventory'=>$beginning_invty);
