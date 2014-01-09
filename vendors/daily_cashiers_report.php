@@ -112,14 +112,20 @@ class dcrForm extends Formsheet{
 		
 		
 		$y = 4.7;
+		$category ='';
 		foreach($curr_data['Sale'] as $data){
+			if($category != $data['products']['category_id']){
+				$category == $data['products']['category_id'];
+				$this->leftText(0.25,$y++,$data['products']['category_id'],3,'b');
+			}
+			
 			$qty_additional_for_the_day = isset($data['receiving_details']['qty_additional_for_the_day'])?$data['receiving_details']['qty_additional_for_the_day']:'0.00';
 			
 			$qty_total = $data['daily_beginning_inventories']['qty']+$qty_additional_for_the_day;
 			
 			$x=10;
 			$x_ntvl=3;
-			$this->leftText(0.25,$y,$data['products']['name'],3,'');
+			$this->leftText(0.5,$y,$data['products']['name'],3,'');
 			$this->centerText($x,$y,$data['daily_beginning_inventories']['qty'],3,'');
 			$this->centerText($x+=$x_ntvl,$y,number_format($qty_additional_for_the_day, 2, '.', ''),3,'');
 			$this->centerText($x+=$x_ntvl,$y,number_format($qty_total, 2, '.', ''),3,'');
