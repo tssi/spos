@@ -49,8 +49,12 @@
 						</div>
 						<div class="fRight w45 recordHeader">
 							<div class="fLeft w45 ">
-								<div class="fLeft w55 ">Unit</div>
-								<div class="fLeft w45 ">Consumable</div>
+								<div class="fLeft w30 ">Unit</div>
+								<div class="fLeft w70 ">
+									<div class="fLeft w40 ">Cons.</div>
+									<div class="fRight w60 ">Cate.</div>
+									<div class="fClear"></div>
+								</div>
 								<div class="fClear"></div>
 							</div>
 							<div class="fRight w55">
@@ -97,19 +101,25 @@
 									</div>
 									<div class="fRight w45">
 										<div class="fLeft w45">
-											<div class="fLeft w55 unit ">
+											<div class="fLeft w35 unit ">
 												<div class="input select required">
 													<?php echo $this->Form->input('Product.%.unit_id',array('label'=>false,'id'=>false, 'class'=>'required option', 'div'=>false)); ?>
 												</div>
 											</div>
-											<div class="fRight w45 consume">
-												<?php //echo $this->Form->input('Product.%.is_consumable',array('label'=>false,'id'=>false)); ?>
-												<div class="input select required">
+											<div class="fRight w65">
+												<div class="fLeft w50 consume">
+													<div class="input select required">
 													<select name="data[Product][%][is_consumable]" class="required option">
 														<option value="%">Select One</option>
 														<option value="1">YES</option>
 														<option value="0">NO</option>
 													</select>
+													</div>
+												</div>
+												<div class="fRight w50">
+													<div class="input select required">
+														<?php echo $this->Form->input('Product.%.category_id',array('options'=>$categories,'empty'=>'Select','label'=>false,'id'=>false, 'disabled'=>'disabled','class'=>'required option')); ?>	
+													</div>
 												</div>
 											</div>
 											<div class="fClear"></div>
@@ -228,8 +238,12 @@
 						</div>
 						<div class="fRight w45 ">
 							<div class="fLeft w45 ">
-								<div class="fLeft w55 ">Unit</div>
-								<div class="fLeft w45 ">Consumable</div>
+								<div class="fLeft w30 ">Unit</div>
+								<div class="fLeft w70 ">
+									<div class="fLeft w40 ">Cons.</div>
+									<div class="fRight w60 ">Cate.</div>
+									<div class="fClear"></div>
+								</div>
 								<div class="fClear"></div>
 							</div>
 							<div class="fRight w55">
@@ -269,13 +283,21 @@
 									</div>
 									<div class="fRight w45">
 										<div class="fLeft w45">
-											<div class="fLeft w55 VIEWunit">
+											<div class="fLeft w35 VIEWunit">
 												<?php echo $this->Form->input('Product.%.unit_id',array('type'=>'text','label'=>false,'id'=>false, 'readonly'=>'readonly','class'=>'required option')); ?>
 											</div>
-											<div class="fRight w45 VIEWconsume">
-												<div class="input select required">
-													<?php echo $this->Form->input('Product.%.is_consumable',array('type'=>'text','label'=>false,'id'=>false, 'readonly'=>'readonly','class'=>'required option')); ?>	
+											<div class="fRight w65">
+												<div class="fLeft w50 VIEWconsume">
+													<div class="input select required">
+														<?php echo $this->Form->input('Product.%.is_consumable',array('type'=>'text','label'=>false,'id'=>false, 'readonly'=>'readonly','class'=>'required option')); ?>	
+													</div>
 												</div>
+												<div class="fRight w50 ViewCategory">
+													<div class="input select required">
+														<?php echo $this->Form->input('Product.%.category_id',array('options'=>$categories,'empty'=>'Select','label'=>false,'id'=>false, 'disabled'=>'disabled','class'=>'required option categories editable')); ?>	
+													</div>
+												</div>
+												<div class="fClear"></div>
 											</div>
 											<div class="fClear"></div>
 										</div>
