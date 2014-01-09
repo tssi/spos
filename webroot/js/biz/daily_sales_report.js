@@ -215,4 +215,15 @@ $(document).ready(function(){
 		$('#SaleDailyReportForm').attr('target','_blank');
 		$('#SaleDailyReportForm').submit();
 	});
+	
+	$('#printOtherReport').live('click',function(){
+		var action = $('#SaleReport').val();
+		if(action){
+			$('#SaleDailyReportForm').attr('action',action);
+			$('#SaleDailyReportForm').attr('target','_blank');
+			$('#SaleDailyReportForm').submit();
+		}else{
+			$('#SaleReport').focus();
+		}
+	});
 });
