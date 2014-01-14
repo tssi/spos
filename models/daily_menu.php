@@ -1,9 +1,15 @@
 <?php
 class DailyMenu extends AppModel {
 	var $name = 'DailyMenu';
-	var $actsAs = array('Increment'=>array('incrementFieldName'=>'served'));
+	var $actsAs = array('Increment'=>array('incrementFieldName'=>'srv_left'));
+	var $virtualFields = array('approx_srv_is_editable'=>"CASE additional_approx_srv
+										WHEN '0' THEN 'true'
+										ELSE 'false'
+									END ");
+	
+	
+	
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
-
 	var $belongsTo = array(
 		'MenuItem' => array(
 			'className' => 'MenuItem',
@@ -33,6 +39,7 @@ class DailyMenu extends AppModel {
 			  `menu_items`.`id` = `daily_menus`.`menu_item_id`
 			) 
 		WHERE `sale_details`.`created` >= '$date' 
+			AND `sale_details`.`is_setmeal_hdr`  = '0'
 		GROUP BY `sale_details`.`item_code`" 
 		);
 	}
