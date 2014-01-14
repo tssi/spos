@@ -439,6 +439,8 @@ class SalesController extends AppController {
 								
 			}
 
+			$index = (string)$daily[$q]['Sale']['id'];
+		
 			if(!isset($byOr[$index])){ //(By OR) if or number is already set 
 					$byOr[$index]=array();
 					array_push($byOr[$index],$data);
@@ -446,7 +448,7 @@ class SalesController extends AppController {
 				$match = 0;
 				
 				for($t=0;$t<count($byOr[$index]); $t++){
-					if($byOr[$index][$t]['Barcode']==$itemcode){
+					if($byOr[$index][$t]['Barcode']==$itemcode && $daily[$q]['SaleDetail']['is_setmeal_dtl'] ==0){
 						$byOr[$index][$t]['Qty']+=$data['Qty'];
 						$byOr[$index][$t]['Total']=$byOr[$index][$t]['Qty']*$byOr[$index][$t]['Amount'];
 					
@@ -458,6 +460,7 @@ class SalesController extends AppController {
 					array_push($byOr[$index],$data);
 				}
 			}
+			//pr($byOr);
 			
 		}
 		
