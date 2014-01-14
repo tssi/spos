@@ -47,7 +47,6 @@ class orForm extends Formsheet{
 		$change=0.00;
 				
 		
-		
 		foreach($data as $d){
 			if($d['is_setmeal_dtl']){
 				$this->leftText(2,$ctr,'>'.$d['item'],'');
@@ -57,9 +56,10 @@ class orForm extends Formsheet{
 				$this->leftText(1.5,$ctr,$d['item'],'');
 				$this->centerText(14,$ctr,$d['qty'],2,'');
 				$this->rightText(21,$ctr,number_format($d['price'], 2, '.', ','),'');	
+				$count_item++;	
 			}
 			$ctr++;
-			$count_item++;	
+			
 		}
 		$ctr+=1;
 		$this->leftText(14.5,$ctr,'Total','');
