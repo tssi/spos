@@ -29,15 +29,22 @@
 				<div class='fClear'></div>
 			</div>
 			<hr>
-			<div class="wWider">
-				<div class="fLeft w38 classic soft ">
-					<?php echo $this->Form->input('Total Sales', array('label'=>'Total Sale(s)', 'class'=>'monetary TaRight'));?>
-					<?php echo $this->Form->input('Food', array('class'=>'monetary TaRight'));?>
-					<?php echo $this->Form->input('Shelf', array('label'=>'Merchendise', 'class'=>'monetary TaRight'));?>
-					
+			<div class="fLeft w50 classic soft ">
+				<div class="fLeft w50 classic soft ">
+					<?php echo $this->Form->input('Total Sales', array('label'=>'Total Sale(s)', 'class'=>'monetary TaRight','readonly'=>'readonly'));?>
+				</div>
+				<div class="fRight w50 classic soft ">
+					<?php echo $this->Form->input('Food', array('class'=>'monetary TaRight','readonly'=>'readonly'));?>
 				</div>
 				<div class='fClear'></div>
 			</div>
+			<div class="fRight w50 classic soft text-left">
+				<div class="fLeft w50 classic soft ">
+					<?php echo $this->Form->input('Shelf', array('label'=>'Merchendise', 'class'=>'monetary TaRight','readonly'=>'readonly'));?>
+				</div>
+			</div>
+			<div class='fClear'></div>
+
 			
 			<div class="wWider">
 				<div class="fLeft w20 ptop10 taRight fsSmall">Include Details</div>
