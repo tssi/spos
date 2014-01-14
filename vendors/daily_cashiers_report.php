@@ -70,7 +70,7 @@ class dcrForm extends Formsheet{
 		$this->centerText($x+=$x_ntvl,0.7,'G',3,'b');
 		$this->centerText($x+=$x_ntvl,0.7,'H = E x G',3,'b');
 		$this->centerText($x+=$x_ntvl,0.7,'I = F - G',3,'b');
-		$this->centerText($x+=$x_ntvl,0.7,'J = D x G',3,'b');
+		$this->centerText($x+=$x_ntvl,0.7,'J = E x G',3,'b');
 		
 		$x=10;
 		$x_ntvl=3;
