@@ -57,23 +57,30 @@ class SalesController extends AppController {
 			}
 			//END
 			
+			
+			
 			//PREPARE SALE DETAILS
 			$newSaleDetail=array();
 			for($t=0;$t<count($this->data['SaleDetail']);$t++){
-				$index = $this->data['SaleDetail'][$t]['item_code'];
+				$index = ($this->data['SaleDetail'][$t]['is_setmeal_dtl']==0)?$this->data['SaleDetail'][$t]['item_code']:$t;
+				
+				
 				if(!isset($newSaleDetail[$index])){
-					$newSaleDetail[$index]=array(
-						'item_code' => $this->data['SaleDetail'][$t]['item_code'],
-						'name' => $this->data['SaleDetail'][$t]['name'],
-						'qty' => $this->data['SaleDetail'][$t]['qty'],
-						'price' => $this->data['SaleDetail'][$t]['price'],
-						'amount' => $this->data['SaleDetail'][$t]['amount'],
-						'is_setmeal_hdr' => $this->data['SaleDetail'][$t]['is_setmeal_hdr'],
-						'is_setmeal_dtl' => $this->data['SaleDetail'][$t]['is_setmeal_dtl'],
-					);
+						$newSaleDetail[$index]=array(
+							'item_code' => $this->data['SaleDetail'][$t]['item_code'],
+							'name' => $this->data['SaleDetail'][$t]['name'],
+							'qty' => $this->data['SaleDetail'][$t]['qty'],
+							'price' => $this->data['SaleDetail'][$t]['price'],
+							'amount' => $this->data['SaleDetail'][$t]['amount'],
+							'is_setmeal_hdr' => $this->data['SaleDetail'][$t]['is_setmeal_hdr'],
+							'is_setmeal_dtl' => $this->data['SaleDetail'][$t]['is_setmeal_dtl'],
+						);
+
 				}else{
-					$newSaleDetail[$index]['qty']+=$this->data['SaleDetail'][$t]['qty'];
-					$newSaleDetail[$index]['amount']+=$this->data['SaleDetail'][$t]['amount'];
+					if($this->data['SaleDetail'][$t]['is_setmeal_dtl']==0 && $this->data['SaleDetail'][$t]['is_setmeal_hdr']==0){
+						$newSaleDetail[$index]['qty']+=$this->data['SaleDetail'][$t]['qty'];
+						$newSaleDetail[$index]['amount']+=$this->data['SaleDetail'][$t]['amount'];
+					}
 				}			
 			}
 			$this->data['SaleDetail']=$newSaleDetail;
