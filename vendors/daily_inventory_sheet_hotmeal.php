@@ -41,8 +41,8 @@ class disForm extends Formsheet{
 		$this->centerText(0,2,'Calabash Road, Balic-Balic, Sampaloc, Manila',52,'');
 		$this->centerText(0,4,'DAILY INVENTORY SHEET HOTMEAL',52,'b');
 		$this->centerText(0,5,date("F d,Y",strtotime($date)),52,'');
-		$this->leftText(0,5.8,'Department:','','');
-		$this->drawLine(6,'h',array(4,10));
+		//$this->leftText(0,5.8,'Department:','','');
+		//$this->drawLine(6,'h',array(4,10));
 		$this->rightText(45,5.8,'Date Printed: ','','');
 		$this->leftText(45,5.8,date('M. d,Y H:i A'),'','');
 		$this->drawLine(6,'h',array(45,7));
@@ -79,11 +79,11 @@ class disForm extends Formsheet{
 		$this->centerText($x,0.8,'Beginning',$x_ntvl,'b');
 		$this->centerText($x,1.8,'Inventory',$x_ntvl,'b');
 		$this->centerText($x+=$x_ntvl,1,'Addition',$x_ntvl,'b');
+		$this->centerText($x+=$x_ntvl,1,'TOTAL',$x_ntvl,'b');
 		$this->centerText($x+=$x_ntvl,0.8,'No. of sold',$x_ntvl,'b');
 		$this->centerText($x,1.8,'Cash',$x_ntvl,'b');
-		$this->centerText($x+=$x_ntvl,1,'TOTAL',$x_ntvl,'b');
 		$this->centerText($x+=$x_ntvl,1,'No. of unsold',$x_ntvl,'b');
-		$this->centerText($x+=$x_ntvl,1,'Price/Unit',$x_ntvl,'b');
+		$this->centerText($x+=$x_ntvl,1,'Selling Price',$x_ntvl,'b');
 		$this->centerText($x+=$x_ntvl,1,'TOTAL',$x_ntvl,'b');
 		$this->centerText($x+=$x_ntvl,1,'DIFFERENCES',6.25,'b');
 		
@@ -93,19 +93,30 @@ class disForm extends Formsheet{
 		foreach($curr_data as $data){
 			$x =16;
 			$x_ntvl =4.25;
-			$unsold = $data['daily_menus']['approx_srv'] - $data['0']['no_of_sold_item'];
+			$total_item = $data['daily_menus']['approx_srv']+$data['daily_menus']['additional_approx_srv'];
+			$total = $data['daily_menus']['selling_price']*$total_item;
+			$differences = $data['daily_menus']['selling_price']*$data['daily_menus']['srv_left'];
 			
-			$this->centerText(0,$y,$i,2,'');
-			$this->leftText(2.25,$y,$data['menu_items']['name'],'','');
-			$this->centerText($x,$y,$data['daily_menus']['approx_srv'],$x_ntvl,'');
-			$this->centerText($x+=$x_ntvl,$y,'Addition',$x_ntvl,'');
-			$this->centerText($x+=$x_ntvl,$y,$data['0']['no_of_sold_item'],$x_ntvl,'');
-			$this->centerText($x+=$x_ntvl,$y,'TOTAL',$x_ntvl,'');
-			$this->centerText($x+=$x_ntvl,$y,number_format($unsold, 2, '.', ''),$x_ntvl,'');
-			$this->centerText($x+=$x_ntvl,$y,$data['daily_menus']['selling_price'],$x_ntvl,'');
-			$this->centerText($x+=$x_ntvl,$y,'TOTAL',$x_ntvl,'');
-			$this->centerText($x+=$x_ntvl,$y++,'DIFFERENCES',6.25,'');
-			$i++;
+		
+			
+			if($data['sale_details']['is_setmeal_dtl']){
+				$item_name = (isset($data['menu_items']['menu_item_name']))?$data['menu_items']['menu_item_name']:$data['products']['product_name'];
+				$this->leftText(2.75,$y++,'> '.$item_name,'','');
+			
+			}else{
+				$x =16;
+				$this->centerText(0,$y,$i,2,'');
+				$this->leftText(2.25,$y,$data['menu_items']['menu_item_name'],'','');
+				$this->centerText($x,$y,$data['daily_menus']['approx_srv'],$x_ntvl,'');
+				$this->centerText($x+=$x_ntvl,$y,$data['daily_menus']['additional_approx_srv'],$x_ntvl,'');
+				$this->centerText($x+=$x_ntvl,$y,number_format($total_item, 2, '.', ''),$x_ntvl,'');
+				$this->rightText(-0.5+$x+=$x_ntvl,$y,$data['0']['no_of_sold_item'],$x_ntvl,'');
+				$this->rightText(-0.5+$x+=$x_ntvl,$y,number_format($data['daily_menus']['srv_left'], 2, '.', ''),$x_ntvl,'');
+				$this->rightText(-0.5+$x+=$x_ntvl,$y,$data['daily_menus']['selling_price'],$x_ntvl,'');
+				$this->rightText(-0.5+$x+=$x_ntvl,$y,number_format($total, 2, '.', ''),$x_ntvl,'');
+				$this->rightText(-0.5+$x+=$x_ntvl,$y++,number_format($differences, 2, '.', ''),6.25,'');
+				$i++;
+			}
 		}
 		
 		
