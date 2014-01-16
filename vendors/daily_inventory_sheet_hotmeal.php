@@ -25,7 +25,6 @@ class disForm extends Formsheet{
 	}
 	
 	function hdr($date){
-		//pr($curr_data);exit;
 		$metrics = array(
 			'base_x'=> 0.25,
 			'base_y'=> 0.15,
@@ -48,7 +47,7 @@ class disForm extends Formsheet{
 		$this->drawLine(6,'h',array(45,7));
 	}
 	
-	function dtl($curr_data){
+	function data_table(){
 		$metrics = array(
 			'base_x'=> 0.25,
 			'base_y'=> 1.5,
@@ -87,18 +86,39 @@ class disForm extends Formsheet{
 		$this->centerText($x+=$x_ntvl,1,'TOTAL',$x_ntvl,'b');
 		$this->centerText($x+=$x_ntvl,1,'DIFFERENCES',6.25,'b');
 		
+		$this->drawLine(30.5,'h');
+		$this->leftText(0.5,32,'Prepared by:','','');
+		$this->drawLine(32.1,'h',array(5,8));
+	}
+	
+	
+	
+	function dtl($curr_data,$date){
+		$metrics = array(
+			'base_x'=> 0.25,
+			'base_y'=> 1.5,
+			'height'=> 1.2,
+			'width'=> 11,
+			'cols'=> 52,
+			'rows'=> 6,
+		);
+		$this->section($metrics);
+		$this->GRID['font_size']=9;
+		$max = 29;
+		$totalpage = (count($curr_data)!=$max)?ceil(count($curr_data)/$max):$max;
+		
+		$line_count = 1;
+		$curr_page = 1;
 		$i = 1;
 		$y = 3;
-		//pr($curr_data);exit;
+		$this->rightText(52,34,'Page '.$curr_page.' of '.$totalpage,'','');
 		foreach($curr_data as $data){
 			$x =16;
 			$x_ntvl =4.25;
 			$total_item = $data['daily_menus']['approx_srv']+$data['daily_menus']['additional_approx_srv'];
 			$total = $data['daily_menus']['selling_price']*$total_item;
 			$differences = $data['daily_menus']['selling_price']*$data['daily_menus']['srv_left'];
-			
-		
-			
+
 			if($data['sale_details']['is_setmeal_dtl']){
 				$item_name = (isset($data['menu_items']['menu_item_name']))?$data['menu_items']['menu_item_name']:$data['products']['product_name'];
 				$this->leftText(2.75,$y++,'> '.$item_name,'','');
@@ -117,13 +137,31 @@ class disForm extends Formsheet{
 				$this->rightText(-0.5+$x+=$x_ntvl,$y++,number_format($differences, 2, '.', ''),6.25,'');
 				$i++;
 			}
+			$line_count++;
+			if($line_count > $max){
+				$this->createSheet();
+				$this->hdr($date);
+				$y = 3;
+				$line_count = 1;
+				$this->data_table();
+				$this->rightText(52,34,'Page '.++$curr_page.' of '.$totalpage,'','');
+			}
 		}
+	}
+	
+	function nodata(){
+		$metrics = array(
+			'base_x'=> 0.25,
+			'base_y'=> 1.5,
+			'height'=> 1.2,
+			'width'=> 11,
+			'cols'=> 52,
+			'rows'=> 6,
+		);
+		$this->section($metrics);
+		$this->GRID['font_size']=15;
+		$this->centerText(0,13,'No Data Available',52,'b');
 		
-		
-		$this->drawLine(30.5,'h');
-		$this->leftText(0.5,32,'Prepared by:','','');
-		$this->drawLine(32.1,'h',array(5,8));
-
 	}
 	
 }
