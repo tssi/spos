@@ -17,9 +17,17 @@ foreach($curr_data['Sale'] as $index => $sale){
 unset($curr_data['Received']);
 unset($curr_data['BeginningInventory']);
 
+
 $form=new dcrForm();
-$form->hdr($date);
-$form->dtl($curr_data);
+if(!empty($curr_data['Sale'])){
+	$form->hdr($date);
+	$form->data_table();
+	$form->dtl($curr_data,$date);
+}else{
+	$form->nodata();
+}
+
+
 
 $form->output();
 ?>
