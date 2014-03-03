@@ -6,8 +6,8 @@ class endingForm extends Formsheet{
 	protected static $_unit = 'in';
 	protected static $_orient = 'P';
 	protected static $_allot_subjects = 15;
-	function endingForm(){
-		
+	function endingForm($data){
+		$this->data=$data;
 		$this->showLines = !true;
 		$this->FPDF(endingForm::$_orient, endingForm::$_unit,array(endingForm::$_width,endingForm::$_height));
 		$this->createSheet();
@@ -34,13 +34,13 @@ class endingForm extends Formsheet{
 		$this->GRID['font_size']=10;
 		$this->centerText(0,2,'Calabash Road, Balic-Balic, Sampaloc, Manila',40,'');
 		$this->centerText(0,4,'Reconciliation Ending Report',40,'b');
-		
 		$this->GRID['font_size']=9;
-		$this->leftText(2,5,'Ref No: ','');
+		$this->leftText(2,5,'Ref No: '.$this->data['EndingReconciliation']['ref_no'],'');
 		$this->leftText(30,5,'Date: '.$date.' / '.date('h:i:s A'),'');
 	
 	}
-	function details($data){
+	function details(){
+		$data =  $this->data;
 		$dbL="===============================================";
 		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
 		$metrics = array(
