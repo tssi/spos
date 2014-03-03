@@ -41,7 +41,7 @@ class endingForm extends Formsheet{
 	
 	}
 	
-	function details(){
+	function details($index=0,$page=1){
 		$dbL="===============================================";
 		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
 		$metrics = array(
@@ -73,12 +73,26 @@ class endingForm extends Formsheet{
 		$this->centerText(1,$y,$bL,18,'');
 		$this->GRID['font_size']=9;
 		$y+=1.5;
-		foreach($this->data['EndingDetail'] as $detail){
+		$ln=1;
+		for($i=$index;$i<count($this->data['EndingDetail']);$i++,$ln++){
+			$detail = $this->data['EndingDetail'][$i];
 			$this->leftText(1.25,$y,$detail['item_code'],'');
-			$this->leftText(6,$y,$detail['name'],3,'');
+			$this->fitText(6,$y,$detail['name'],3.5,'');
 			$this->centerText(15,$y,isset($detail['unit_id'])?$detail['unit_id']:'---',3,'');
 			$this->rightText(19,$y,isset($detail['qty'])?$detail['qty']:'---','');
 			$this->drawLine(0.2+$y++,'h',array(17.5,1.5));
+			if($ln==50){
+				$this->GRID['font_size']=10;
+				$this->centerText(1,$y++,$dbL,18,'');
+				$this->GRID['font_size']=9;
+				$this->centerText(0,$y++,'-- See next page --',20,'');
+				$this->GRID['font_size']=10;
+				$this->centerText(1,$y,$dbL,18,'');
+				$this->GRID['font_size']=9;	
+				$y+=2;
+				$this->leftText(16.5,$y,'Page '.$page,'','');
+				return array('index'=>$i+1,'page'=>$page+1);
+			}
 			
 		}
 		$y+=1.5;
@@ -91,7 +105,8 @@ class endingForm extends Formsheet{
 		$this->centerText(1,$y,$dbL,18,'');
 		$this->GRID['font_size']=9;	
 		$y+=2;
-		$this->leftText(15.5,$y,'Page '.'1'.' of '.'1','','');
+		$this->leftText(15.5,$y,'Page '.$page,'','');
+		return array('index'=>$i,'page'=>$page+1);
 	}
 	
 	
