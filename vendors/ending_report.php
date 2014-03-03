@@ -76,8 +76,8 @@ class endingForm extends Formsheet{
 		foreach($this->data['EndingDetail'] as $detail){
 			$this->leftText(1.25,$y,$detail['item_code'],'');
 			$this->leftText(6,$y,$detail['name'],3,'');
-			$this->centerText(15,$y,$detail['unit_id'],3,'');
-			$this->rightText(19,$y,$detail['qty'],'');
+			$this->centerText(15,$y,isset($detail['unit_id'])?$detail['unit_id']:'---',3,'');
+			$this->rightText(19,$y,isset($detail['qty'])?$detail['qty']:'---','');
 			$this->drawLine(0.2+$y++,'h',array(17.5,1.5));
 			
 		}
