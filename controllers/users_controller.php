@@ -1,4 +1,3 @@
-
 <?php
 class UsersController extends AppController {
 	
@@ -19,6 +18,7 @@ class UsersController extends AppController {
 		$this->Session->destroy();
 		$this->redirect($this->Auth->logout());
 	}
+	
 	function register() {
 		if ($this->data) {
 			$this->data['User']['group_id']=9; //USER Group id
