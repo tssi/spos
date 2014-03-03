@@ -30,6 +30,7 @@ $(document).ready(function(){
 	});
 	
 	$('input').attr('autocomplete','off');
+	
 	$('input, select').livequery(function(){
 		$(this).bind('validate',function(e,param){
 			var msg = mrk_up ="";
@@ -59,7 +60,6 @@ $(document).ready(function(){
 		});
 	});
 	
-	
 	$(".required input").live('blur',function(){
 		if($(this).val()==""){
 			$(this).trigger('validate',{status:-1,msg:'Required'});
@@ -77,6 +77,7 @@ $(document).ready(function(){
 			$(this).trigger('validate',{status:1});
 		}
 	});
+	
 	$('input.ajax').livequery(function(){
 		$(this).attr('init',function(e){
 			$(this).attr('init',$(this).val());
@@ -131,6 +132,7 @@ $(document).ready(function(){
 			$(THIS).trigger('validate',{status:1});
 		}
 	});
+	
 	$('input.cpassword').change(function(){
 		var THIS =  this;
 		var LINK_TO = $(this).attr('linkto');

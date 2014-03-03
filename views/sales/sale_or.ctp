@@ -30,7 +30,8 @@ foreach($header['SalePayment'] as $mode){
 }
 
 for($q=0;$q<count($details);$q++){
-		$code = $details[$q]['SaleDetail']['item_code'];
+		
+		$code = ($details[$q]['SaleDetail']['is_setmeal_dtl']==0)?$details[$q]['SaleDetail']['item_code']:$q;
 	
 		if(empty($details[$q]['Produkto']['name'])){
 			$details[$q]['Produkto']['name']=$details[$q]['MenuItem']['name'];
@@ -62,7 +63,6 @@ for($q=0;$q<count($details);$q++){
 		}
 		
 } 
-
 
 $details = $temp;
 $invoice_dtl=array();

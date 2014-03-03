@@ -2,15 +2,15 @@
 class ProductsController extends AppController {
 
 	var $name = 'Products';
-    var $uses = array('Product','Perishable', 'ProductType','Counter', 'MenuItem');
+    var $uses = array('Product','Perishable', 'ProductType','Counter', 'MenuItem','SaleDetail','Categories');
 	var $components = array('RequestHandler');
 	
 	function index() {
 		$productTypes = $this->Product->ProductType->find('all');
 		$units = $this->Product->Unit->find('list',array('fields'=>array('Unit.id','Unit.alias')));
-	
-		
-		$this->set(compact('productTypes', 'units'));
+		$categories = $this->Categories->find('list');
+
+		$this->set(compact('productTypes', 'units','categories'));
 	}
 
 	function view($id = null) {
@@ -26,16 +26,21 @@ class ProductsController extends AppController {
 		if (!empty($this->data)){
 			if(isset($this->data['Product'][0])){ //if many products 
 				for($i=0;$i<count($this->data['Product']); $i++){
-					$name = $this->data['Product'][$i]['name']; //to Prope rCase
-					$cast = ucwords(strtolower($name));   //         |
-					$this->data['Product'][$i]['name'] = $cast; //   |
+				
+					//PROPER CASE PRODUCT NAME 
+					$this->data['Product'][$i]['name'] = ucwords(strtolower($this->data['Product'][$i]['name']));
+					//END
+					
+					//ASSIGN INIT QTY
+					$this->data['Product'][$i]['init_qty'] = $this->data['Product'][$i]['qty'];
+					//unset($this->data['Product'][$i]['qty']);
+					//END
 											
 					if($this->data['Product'][$i]['item_code']=='(Auto)'){
 						$prefixInHouse = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRFXINH')));
 						$prefixInProduct = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRFXPRD')));
 						$productType = $this->data['Product'][$i]['product_type_id'];
 						
-								
 						if($productType== 'PI'){
 							$counter = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRSHBLE')));
 							$this->Counter->doIncrement('PRSHBLE',1);
@@ -43,6 +48,7 @@ class ProductsController extends AppController {
 							$counter = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'SHLFITM')));
 							$this->Counter->doIncrement('SHLFITM',1);
 						}
+						
 						$assignee_code = $prefixInHouse['Counter']['value'].$prefixInProduct['Counter']['value'].$counter['Counter']['value'];
 						
 						$findMatch=$this->Product->findByItemCode($assignee_code);
@@ -77,52 +83,59 @@ class ProductsController extends AppController {
 					}
 				}
 			}else{
-					if($this->data['Product']['item_code']=='(Auto)'){  //single product
-								$name = $this->data['Product']['name'];
-								$cast = ucwords(strtolower($name));
-								$this->data['Product']['name'] = $cast;
-								$prefixInHouse = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRFXINH')));
-								$prefixInProduct = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRFXPRD')));
-								$productType = $this->data['Product']['product_type_id'];
-						
-								if($this->data['Product']['product_type_id']== 'PI'){
-									$counter = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRSHBLE')));
-									$this->Counter->doIncrement('PRSHBLE',1);
-								}else{
-									$counter = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'SHLFITM')));
-									$this->Counter->doIncrement('SHLFITM',1);
-								}
-								$this->data['Product']['item_code']=$prefixInHouse['Counter']['value'].$prefixInProduct['Counter']['value'].$counter['Counter']['value'];
-								
-								$typeIs = '';
-									switch($productType){
-										case 'SI':
-											$this->data['Product']['is_consumable'] =1;
-										break;
-										case 'AX':
-											$this->data['Product']['is_consumable'] =0;
-										break;
-										case 'PP':
-											$this->data['Product']['is_consumable'] =0;
-										break;
-										case 'PI':
-											$this->data['Product']['is_consumable'] =1;
-										break;
-										case 'SP':
-											$this->data['Product']['is_consumable'] =1;
-										break;
-										case 'UT':
-											$this->data['Product']['is_consumable'] =0;
-										break;
-									}
-								$this->data['Product']['status']=0;
-					}elseif (empty($this->data['Product']['item_code'])){
-								unset($this->data['Product']);
-								exit();
-							}
+				if($this->data['Product']['item_code']=='(Auto)'){  //single product
+					
+					//PROPER CASE PRODUCT NAME 
+					$this->data['Product']['name'] = ucwords(strtolower($this->data['Product']['name']));
+					//END
+					
+					//ASSIGN INIT QTY
+					$this->data['Product'][$i]['init_qty'] = $this->data['Product'][$i]['qty'];
+					//unset($this->data['Product'][$i]['qty']);
+					//END
+					
+					$prefixInHouse = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRFXINH')));
+					$prefixInProduct = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRFXPRD')));
+					$productType = $this->data['Product']['product_type_id'];
+			
+					if($this->data['Product']['product_type_id']== 'PI'){
+						$counter = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'PRSHBLE')));
+						$this->Counter->doIncrement('PRSHBLE',1);
+					}else{
+						$counter = $this->Counter->find('first',array('conditions'=>array('Counter.id'=>'SHLFITM')));
+						$this->Counter->doIncrement('SHLFITM',1);
+					}
+					$this->data['Product']['item_code']=$prefixInHouse['Counter']['value'].$prefixInProduct['Counter']['value'].$counter['Counter']['value'];
+					
+					$typeIs = '';
+						switch($productType){
+							case 'SI':
+								$this->data['Product']['is_consumable'] =1;
+							break;
+							case 'AX':
+								$this->data['Product']['is_consumable'] =0;
+							break;
+							case 'PP':
+								$this->data['Product']['is_consumable'] =0;
+							break;
+							case 'PI':
+								$this->data['Product']['is_consumable'] =1;
+							break;
+							case 'SP':
+								$this->data['Product']['is_consumable'] =1;
+							break;
+							case 'UT':
+								$this->data['Product']['is_consumable'] =0;
+							break;
+						}
+					$this->data['Product']['status']=0;
+				}elseif (empty($this->data['Product']['item_code'])){
+					unset($this->data['Product']);
+					exit();
 				}
-			
-			
+			}
+
+			//SAVING
 			if ($this->Product->saveAll($this->data['Product'])) {
 				if($this->RequestHandler->isAjax()){
 					$response['status'] = 1;
@@ -191,7 +204,8 @@ class ProductsController extends AppController {
 					$orderBy = 'Product.item_code';
 				}
 				
-				$order = array($orderBy);
+				//$order = array($orderBy);
+				$order = array('Product.name');
 				
 				if ($id=="ALL"){
 					$sItems = $this->Product->find('all', array('conditions'=>array('Product.status'=>1),'order'=>$order));
@@ -222,7 +236,6 @@ class ProductsController extends AppController {
 				echo json_encode($perishables);
 				exit();
 			}
-			
       }
 	}
     
@@ -326,10 +339,11 @@ class ProductsController extends AppController {
 	
 	function getByProductCode(){
 		$code = $this->data['Product']['item_code'];
-		$product = $this->Product->find('all', array('conditions'=>array('Product.item_code'=>$code)));
+		$product = $this->Product->find('first', array('conditions'=>array('Product.item_code'=>$code)));
 		echo json_encode($product);
 		exit();
 	}
+	
 	function getByProductId(){
 		$id = $this->data['Product']['id'];
 		$product = $this->Product->find('first', array('conditions'=>array('Product.id'=>$id)));
@@ -371,16 +385,110 @@ class ProductsController extends AppController {
 			}
 		}
 	}
+	
 	function update(){
-		$this->Product->saveAll($this->data);
-		echo json_encode($this->data);
-		exit();
+		//ADJUSTING WHILE ITEM IS ON RECOUNT STATUS	
+		if($this->data['Product']['is_recounting']){
+			$item_sales_count = $this->SaleDetail->find('first',array(
+							'conditions'=>array(
+								'SaleDetail.item_code'=>$this->data['Product']['item_code'],
+								'SaleDetail.created >='=>$this->data['Product']['last_recount_start_time'],
+							),
+							'fields'=>array('SUM(SaleDetail.qty)')
+					));
+			$this->data['Product']['qty'] = $this->data['Product']['qty'] - $item_sales_count[0]['SUM(`SaleDetail`.`qty`)'];
+			
+		}
+		
+		if($this->Product->saveAll($this->data)){
+			if($this->RequestHandler->isAjax()){
+				$response['status'] = 1;
+				$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; Item successfully updated';
+				$response['data'] = $this->Product->read(null, $this->data['Product']['id']);
+				echo json_encode($response);
+				exit();
+			}else{ 
+				$this->Session->setFlash(__('Saving successful...', true));
+			}
+		} else {
+			if($this->RequestHandler->isAjax()){
+				$response['status'] = -1;
+				$response['msg'] = '<img src="/canteen/img/icons/exclamation.png" />&nbsp; Item unsuccessfully updated. Please, try again.';
+				$response['data'] = $this->data;
+				echo json_encode($response);
+				exit();
+			}else{
+			$this->Session->setFlash(__('The product could not be saved. Please, try again.', true));
+			}
+		}
+	
 	}
 	
-	function general() {
+	function recount(){
 		$productTypes = $this->Product->ProductType->find('all');
 		$units = $this->Product->Unit->find('list',array('fields'=>array('Unit.id','Unit.alias')));
 		$this->set(compact('productTypes', 'units'));
 	}
 	
+	function start_recounting(){
+		$this->data['Product']['last_recount_start_time'] = date('Y-m-d H:i:s');
+	
+		if(!empty($this->data['Product']['id'])){
+			if($this->Product->saveAll($this->data)){
+				if($this->RequestHandler->isAjax()){
+					$response['status'] = 1;
+					$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; Item successfully updated';
+					$response['data'] = $this->data;
+					echo json_encode($response);
+					exit();
+				}else{ 
+					$this->Session->setFlash(__('Saving successful...', true));
+				}
+			} else {
+				if($this->RequestHandler->isAjax()){
+					$response['status'] = -1;
+					$response['msg'] = '<img src="/canteen/img/icons/exclamation.png" />&nbsp; Item unsuccessfully updated. Please, try again.';
+					$response['data'] = $this->data;
+					echo json_encode($response);
+					exit();
+				}else{
+				$this->Session->setFlash(__('The product could not be saved. Please, try again.', true));
+				}
+			}
+		}
+	}
+	
+	function stop_recounting(){
+		$this->data['Product']['last_recount_stop_time'] = date('Y-m-d H:i:s');
+	
+		if(!empty($this->data['Product']['id'])){
+			if($this->Product->saveAll($this->data)){
+				if($this->RequestHandler->isAjax()){
+					$response['status'] = 1;
+					$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; Item successfully updated';
+					$response['data'] = $this->data;
+					echo json_encode($response);
+					exit();
+				}else{ 
+					$this->Session->setFlash(__('Saving successful...', true));
+				}
+			} else {
+				if($this->RequestHandler->isAjax()){
+					$response['status'] = -1;
+					$response['msg'] = '<img src="/canteen/img/icons/exclamation.png" />&nbsp; Item unsuccessfully updated. Please, try again.';
+					$response['data'] = $this->data;
+					echo json_encode($response);
+					exit();
+				}else{
+				$this->Session->setFlash(__('The product could not be saved. Please, try again.', true));
+				}
+			}
+		}
+	}
+	
+	function general(){
+		$productTypes = $this->Product->ProductType->find('all');
+		$units = $this->Product->Unit->find('list',array('fields'=>array('Unit.id','Unit.alias')));
+		$this->set(compact('productTypes', 'units'));
+	}
 }

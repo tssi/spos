@@ -21,39 +21,28 @@ class DailyMenusController extends AppController {
 
 	function add() {
 		if (!empty($this->data)) {
-		
-			
-		    $dateOf = $this->data['DailyMenu']['date'];
-			$this->DailyMenu->deleteAll(array('DailyMenu.date'=>$dateOf));
-			 
-            unset($this->data['DailyMenu']['date']);
-            unset($this->data['DailyMenu']['avg_price']);
+			$date = $this->data['DailyMenu']['date'];
+			unset($this->data['DailyMenu']['date']);
+			unset($this->data['DailyMenu']['avg_price']);
             unset($this->data['DailyMenu']['desc']);
             unset($this->data['DailyMenu']['unit']);
-			unset($this->data['DailyMenu']['code']);
-			
-            //remove first record of daily menu detail
-            array_shift($this->data['DailyMenu']);
-			
-			
-            for($x=0,$ctr=1;$x<count($this->data['DailyMenu']);$x++,$ctr++){
-                if(!isset($this->data['DailyMenu'][$x]['date'])){
-                    $this->data['DailyMenu'][$x]['date']=$dateOf;
-                }
-				if(empty($this->data['DailyMenu'][$x]['srv_left'])){
-					$this->data['DailyMenu'][$x]['served'] = $this->data['DailyMenu'][$x]['approx_srv'];
-				}else{
-					$this->data['DailyMenu'][$x]['served'] = $this->data['DailyMenu'][$x]['srv_left'];
-				}
+			unset($this->data['DailyMenu']['code']);	
+			array_shift($this->data['DailyMenu']);
+		
+			foreach($this->data['DailyMenu'] as $index => $dailyMenu){
 				
-				//Use in updating daily menu 
-				$r = $this->DailyMenu->find('first',array('fields'=>'DailyMenu.id','order'=>'DailyMenu.id DESC'));
-				$id = $r['DailyMenu']['id'];
-				$this->data['DailyMenu'][$x]['id']= $id+$ctr;
-            } 
-			//pr($this->data['DailyMenu']);
-			
+				
+                $this->data['DailyMenu'][$index]['date']= $date;
 
+				if(empty($dailyMenu['id'])){
+					$this->data['DailyMenu'][$index]['srv_left'] = $dailyMenu['approx_srv'];
+					$this->data['DailyMenu'][$index]['additional_approx_srv']= 0;
+				}else if(!empty($dailyMenu['id'])){
+					unset($this->data['DailyMenu'][$index]['additional_approx_srv']);
+					unset($this->data['DailyMenu'][$index]['approx_srv']);
+				}
+			}
+			
             if ($this->DailyMenu->saveAll($this->data['DailyMenu'])) {
 				if($this->RequestHandler->isAjax()){
 					$response['status'] = 1;
@@ -88,10 +77,45 @@ class DailyMenusController extends AppController {
 			$this->data = $this->DailyMenu->read(null, $id);
 		}
 	}
+	
 	function update(){
-		$this->DailyMenu->save($this->data);
-		echo json_encode($this->data);
-		exit();
+		if($this->data['DailyMenu']['tType'] == "Add"){
+			$existingDailyMenu = $this->DailyMenu->find('first',array('conditions'=>array('DailyMenu.id'=>$this->data['DailyMenu']['id'])));
+			
+			$additionalApproxSrv= $this->data['DailyMenu']['additional_approx_srv'];
+			
+			$this->data['DailyMenu']['srv_left'] = $existingDailyMenu['DailyMenu']['srv_left'] + $additionalApproxSrv;
+			$this->data['DailyMenu']['additional_approx_srv'] = $existingDailyMenu['DailyMenu']['additional_approx_srv'] + $additionalApproxSrv;
+			unset($this->data['DailyMenu']['approx_srv']);
+		}else{
+			$this->data['DailyMenu']['additional_approx_srv']= 0;
+		}
+		
+	
+
+		//SAVING
+		if ($this->DailyMenu->save($this->data)) {
+			if($this->RequestHandler->isAjax()){
+				$response['status'] = 1;
+				$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; Updating successful';
+				$response['data'] = $this->data;
+				echo json_encode($response);
+				exit();
+			}else{ 
+				$this->Session->setFlash(__('Updating successful...', true));
+			}
+		} else {
+			if($this->RequestHandler->isAjax()){
+				$response['status'] = -1;
+				$response['msg'] = '<img src="/canteen/img/icons/exclamation.png" />&nbsp; The daily menu could not be updated. Please, try again.';
+				$response['data'] = $this->data;
+				echo json_encode($response);
+				exit();
+			}else{
+				$this->Session->setFlash(__('The daily menu could not be updated. Please, try again.', true));
+			}
+		}
+		
 	}
 
 	function delete($id = null) {
@@ -115,5 +139,14 @@ class DailyMenusController extends AppController {
 		$daily = $this->DailyMenu->find('all',array('conditions'=>array('DailyMenu.date'=>$dateIs), 'recursive'=>2));
 		echo json_encode($daily);
 		exit();
+	}
+	
+	function daily_inventory_sheet_hotmeal(){
+		$date = $this->data['Sale']['date'];
+		$curr_data = $this->DailyMenu->daily_inventory_sheet_hotmeal($date.' 00:00:00');
+
+		$this->set(compact('curr_data','date'));
+		$this->layout='pdf';
+		$this->render();
 	}
 }

@@ -29,15 +29,22 @@
 				<div class='fClear'></div>
 			</div>
 			<hr>
-			<div class="wWider">
-				<div class="fLeft w38 classic soft ">
-					<?php echo $this->Form->input('Total Sales', array('label'=>'Total Sale(s)', 'class'=>'monetary TaRight'));?>
-					<?php echo $this->Form->input('Food', array('class'=>'monetary TaRight'));?>
-					<?php echo $this->Form->input('Shelf', array('label'=>'Merchendise', 'class'=>'monetary TaRight'));?>
-					
+			<div class="fLeft w50 classic soft ">
+				<div class="fLeft w50 classic soft ">
+					<?php echo $this->Form->input('Total Sales', array('label'=>'Total Sale(s)', 'class'=>'monetary TaRight','readonly'=>'readonly'));?>
+				</div>
+				<div class="fRight w50 classic soft ">
+					<?php echo $this->Form->input('Food', array('class'=>'monetary TaRight','readonly'=>'readonly'));?>
 				</div>
 				<div class='fClear'></div>
 			</div>
+			<div class="fRight w50 classic soft text-left">
+				<div class="fLeft w50 classic soft ">
+					<?php echo $this->Form->input('Shelf', array('label'=>'Merchendise', 'class'=>'monetary TaRight','readonly'=>'readonly'));?>
+				</div>
+			</div>
+			<div class='fClear'></div>
+
 			
 			<div class="wWider">
 				<div class="fLeft w20 ptop10 taRight fsSmall">Include Details</div>
@@ -108,6 +115,21 @@
 				</div>
 			</div>
 			
+			<br/>
+			<div class='tab w70 mCenter'>
+				<h2 class="tab-header bgAqua taCenter tcWhite fsSmall txtShadow pad4">Generate Other Reports</h2>
+				<div class='tab-content classic soft'>
+					<?php echo $this->Form->input('Report',array('empty'=>'Select','options'=>array('/canteen/sales/daily_cashiers_report'=>'Daily Cashiers Report','/canteen/daily_menus/daily_inventory_sheet_hotmeal'=>'Daily Inventory Sheet Hotmeal'),'class'=>'w60'));?>
+					<div class="fLeft w30 topaz pt5">	
+						<div class="submit">
+							<input type="button" id="printOtherReport" value="Print">
+						</div>
+					</div>
+					<div class="fClear"></div>
+				</div>
+				
+				
+			</div>
 		</div>
 		<?php echo $this->Form->end();?>
 	</div>

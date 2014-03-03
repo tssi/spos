@@ -159,6 +159,21 @@ li.clickInput .current input{
 															<?php echo $this->Form->input('code',array('readonly'=>'readonly','label'=>false, 'type'=>'hidden','id'=>false)); ?>
 														</div>
 													</div>
+													<div class="hide approx_srv_is_editable">
+														<div class="input">
+															<?php echo $this->Form->input('DailyMenu.%.approx_srv_is_editable',array('readonly'=>'readonly','label'=>false, 'type'=>'hidden','id'=>false)); ?>
+														</div>
+													</div>
+													<div class="hide additionalApproxSrv">
+														<div class="input">
+															<?php echo $this->Form->input('DailyMenu.%.additional_approx_srv',array('readonly'=>'readonly','label'=>false, 'type'=>'hidden','id'=>false)); ?>
+														</div>
+													</div>
+													<div class="hide tType">
+														<div class="input">
+															<?php echo $this->Form->input('DailyMenu.%.tType',array('readonly'=>'readonly','label'=>false, 'type'=>'hidden','id'=>false)); ?>
+														</div>
+													</div>
 													<div class="fLeft w100 desc VIEWdesc">
 														<div class="input">
 															<?php echo $this->Form->input('desc',array('readonly'=>'readonly','label'=>false,'id'=>false)); ?>
