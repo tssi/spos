@@ -2,9 +2,9 @@
 App::import('Vendor','reconciliation_report');
 //pr($data);
 $date=date('Y-m-d');
-$form = new endingForm();
+$form = new endingForm($data);
 $form->hdr($date);
-$form->details($data);
+$form->details();
 $form->output();
 
 ?>
