@@ -115,7 +115,7 @@ class orForm extends Formsheet{
 	
 		//Shelf
 		if(count($this->data['Total_Details']['Shelf']) == 0){
-			$y=0;
+			//$y=0;
 		}else{
 			$this->GRID['font_size']=10;
 			$this->centerText(1,$y++,$dbL,18,'');
