@@ -44,7 +44,7 @@ class Sale extends AppModel {
 				 
 				FROM
 				  `sale_details` 
-				  INNER JOIN `canteen`.`products` 
+				  INNER JOIN `products` 
 					ON (
 					  `sale_details`.`item_code` = `products`.`item_code`
 					) 
