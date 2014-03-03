@@ -43,7 +43,7 @@ class Sale extends AppModel {
 				  `products`.`category_id`
 				 
 				FROM
-				  `canteen`.`sale_details` 
+				  `sale_details` 
 				  INNER JOIN `canteen`.`products` 
 					ON (
 					  `sale_details`.`item_code` = `products`.`item_code`
@@ -64,11 +64,11 @@ class Sale extends AppModel {
 			  `receivings`.`status` 
 			FROM
 			  `receiving_details` 
-			  INNER JOIN `canteen`.`products` 
+			  INNER JOIN `products` 
 				ON (
 				  `receiving_details`.`item_code` = `products`.`item_code`
 				) 
-			  INNER JOIN `canteen`.`receivings` 
+			  INNER JOIN `receivings` 
 				ON (
 				  `receivings`.`id` = `receiving_details`.`receiving_id`
 				) 
