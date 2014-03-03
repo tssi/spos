@@ -41,17 +41,15 @@ $(document).ready(function(){
 			$('#myDialog').dialog('destroy');
 			var endings=$.parseJSON(data);
 			
-			
 			if(endings){
 				var begin='null';
+				var ending='null';
 				if(endings.Merchandise_Ending_Date_Beginning){
 					begin=new Date(endings.Merchandise_Ending_Date_Beginning);
 					begin = begin.getFullYear()+'-'+(parseInt(begin.getMonth())+1)+'-'+begin.getDate();
+					ending=new Date(endings.Merchandise_Ending_Date_Ending);
+					ending = ending.getFullYear()+'-'+(parseInt(ending.getMonth())+1)+'-'+ending.getDate();
 				}
-				
-				var ending=new Date(endings.Merchandise_Ending_Date_Ending);
-				
-				ending = ending.getFullYear()+'-'+(parseInt(ending.getMonth())+1)+'-'+ending.getDate()
 				
 				$('#MerchBeginDate').val(begin);
 				$('#MerchEndDate').val(ending);
