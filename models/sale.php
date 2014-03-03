@@ -63,7 +63,7 @@ class Sale extends AppModel {
 			  `receivings`.`created`,
 			  `receivings`.`status` 
 			FROM
-			  `canteen`.`receiving_details` 
+			  `receiving_details` 
 			  INNER JOIN `canteen`.`products` 
 				ON (
 				  `receiving_details`.`item_code` = `products`.`item_code`
@@ -86,7 +86,7 @@ class Sale extends AppModel {
 			  `qty`,
 			  `created` 
 			FROM
-			  `canteen`.`daily_beginning_inventories` 
+			  `daily_beginning_inventories` 
 			WHERE (`created` = '$date')"
 		);
 		
