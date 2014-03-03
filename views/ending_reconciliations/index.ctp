@@ -35,6 +35,7 @@
 	<?php echo $this->Form->create('EndingReconciliation',array('action'=>'add', 'id'=>'recon_merch'));?>
 	<?php echo $this->Form->input('user',array('type'=>'hidden', 'id'=>false, 'value'=>$user['userFull']));?>
 	<?php echo $this->Form->input('type',array('type'=>'hidden', 'id'=>false, 'value'=>'MERCH'));?>
+	<?php echo $this->Form->input('ref_no',array('type'=>'hidden', 'id'=>'MERCH_REF_NO', 'value'=>'null'));?>
 		
 	<!--Ending Reconciliation Inventory-->	
 	<div class="canteen form formNeat w98 mCenter">
@@ -244,6 +245,7 @@
 		<?php echo $this->Form->create('EndingReconciliation',array('action'=>'add', 'id'=>'recon_meal'));?>
 		<?php echo $this->Form->input('user',array('type'=>'hidden', 'id'=>false, 'value'=>$user['userFull']));?>
 		<?php echo $this->Form->input('type',array('type'=>'hidden', 'id'=>false, 'value'=>'MEALS'));?>
+		<?php echo $this->Form->input('ref_no',array('type'=>'hidden', 'id'=>'MEALS_REF_NO', 'value'=>'null'));?>
 		<div class="w100">
 			<div class="fLeft w50 classic soft">
 				<div class="fLeft w45">
