@@ -91,7 +91,7 @@ class endingForm extends Formsheet{
 				$detail = $this->data['EndingReconciliationDetail'][$i];
 				$this->rightText(1.5,$y,$detail['beginning_computer'],3,'');
 				$this->rightText(4,$y,$detail['beginning_actual'],3,'');
-				$this->leftText(8,$y,$detail['desc'],10,'');
+				$this->fitText(8,$y,$detail['desc'],3.5,'');
 				$this->rightText(16.5,$y,$detail['sold'],4,'');
 				$this->rightText(21.5,$y,$detail['ending_computer'],3,'');
 				$this->rightText(24.5,$y,$detail['ending_actual'],3,'');
@@ -99,7 +99,7 @@ class endingForm extends Formsheet{
 				$this->rightText(30,$y,$detail['variance_actual'],3,'');
 				$this->rightText(34,$y,isset($detail['remarks'])?$detail['remarks']:'',4,'');
 				$y+=1;
-				if($ln==25){
+				if($ln==50){
 					$this->GRID['font_size']=10;
 					$this->centerText(0,$y++,$dbL . $dbL,40,'');
 					$this->GRID['font_size']=9;
