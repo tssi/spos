@@ -39,7 +39,7 @@ class endingForm extends Formsheet{
 		$this->leftText(30,5,'Date: '.$date.' / '.date('h:i:s A'),'');
 	
 	}
-	function details(){
+	function details($index=0,$page=1){
 		$data =  $this->data;
 		$dbL="===============================================";
 		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
@@ -86,7 +86,9 @@ class endingForm extends Formsheet{
 			$this->centerText(0,$y,$bL . $bL,40,'');
 			$this->GRID['font_size']=9;
 			$y+=1.5;
-			foreach($data['EndingReconciliationDetail'] as $detail){
+			$ln=1;
+			for($i=$index;$i<count($this->data['EndingReconciliationDetail']);$i++,$ln++){
+				$detail = $this->data['EndingReconciliationDetail'][$i];
 				$this->rightText(1.5,$y,$detail['beginning_computer'],3,'');
 				$this->rightText(4,$y,$detail['beginning_actual'],3,'');
 				$this->leftText(8,$y,$detail['desc'],10,'');
@@ -95,10 +97,20 @@ class endingForm extends Formsheet{
 				$this->rightText(24.5,$y,$detail['ending_actual'],3,'');
 				$this->rightText(27.5,$y,$detail['variance_computer'],3,'');
 				$this->rightText(30,$y,$detail['variance_actual'],3,'');
-				
 				$this->rightText(34,$y,isset($detail['remarks'])?$detail['remarks']:'',4,'');
 				$y+=1;
-				
+				if($ln==50){
+					$this->GRID['font_size']=10;
+					$this->centerText(0,$y++,$dbL . $dbL,40,'');
+					$this->GRID['font_size']=9;
+					$this->centerText(0,$y++,'-- See next page --',40,'');
+					$this->GRID['font_size']=10;
+					$this->centerText(0,$y,$dbL . $dbL,40,'');
+					$this->GRID['font_size']=9;	
+					$y+=2;
+					$this->centerText(0,$y,'Page '.$page,40,'');
+					return array('index'=>$i+1,'page'=>$page+1);
+				}
 			}
 		}
 		
@@ -158,7 +170,8 @@ class endingForm extends Formsheet{
 		$this->centerText(0,$y,$dbL . $dbL,40,'');
 		$this->GRID['font_size']=9;	
 		$y+=2;
-		$this->centerText(0,$y,'Page '.'1'.' of '.'1',40,'');
+		$this->centerText(0,$y,'Page '.$page,40,'');
+		return array('index'=>$i+1,'page'=>$page+1);
 	}
 	
 }
