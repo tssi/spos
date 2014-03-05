@@ -17,8 +17,8 @@ class EndingReconciliationsController extends AppController {
 
 	function add() {
 		if (!empty($this->data)){
-			$this->EndingReconciliation->create();
 			array_shift($this->data['EndingReconciliationDetail']);
+			$this->EndingReconciliation->create();
 			if ($this->EndingReconciliation->saveAll($this->data)){
 				if($this->RequestHandler->isAjax()){
 					$response['status'] = 1;
