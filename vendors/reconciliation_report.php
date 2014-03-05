@@ -99,7 +99,7 @@ class endingForm extends Formsheet{
 				$this->rightText(30,$y,$detail['variance_actual'],3,'');
 				$this->rightText(34,$y,isset($detail['remarks'])?$detail['remarks']:'',4,'');
 				$y+=1;
-				if($ln==50){
+				if($ln==25){
 					$this->GRID['font_size']=10;
 					$this->centerText(0,$y++,$dbL . $dbL,40,'');
 					$this->GRID['font_size']=9;
