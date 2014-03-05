@@ -95,7 +95,8 @@ class endingForm extends Formsheet{
 				$this->rightText(24.5,$y,$detail['ending_actual'],3,'');
 				$this->rightText(27.5,$y,$detail['variance_computer'],3,'');
 				$this->rightText(30,$y,$detail['variance_actual'],3,'');
-				$this->rightText(34,$y,$detail['remarks'],4,'');
+				
+				$this->rightText(34,$y,isset($detail['remarks'])?$detail['remarks']:'',4,'');
 				$y+=1;
 				
 			}
