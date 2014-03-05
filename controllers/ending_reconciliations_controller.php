@@ -74,8 +74,14 @@ class EndingReconciliationsController extends AppController {
 	
 	function report(){
 		array_shift($this->data['EndingReconciliationDetail']);
-		$data = $this->data;
-		$this->set(compact('data'));
+		//pr($this->data);exit;
+		
+		
+		$details = $this->EndingReconciliation->report($this->data['EndingReconciliation']['ref_no']);
+		//pr($details);exit;
+		
+		$data = $this->data;	
+		$this->set(compact('data','details'));
 		$this->layout='pdf';
 		$this->render();
 
