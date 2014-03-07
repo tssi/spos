@@ -17,9 +17,23 @@ class EndingReconciliationsController extends AppController {
 
 	function add() {
 		if (!empty($this->data)){
-			array_shift($this->data['EndingReconciliationDetail']);
 			$this->EndingReconciliation->create();
-			if ($this->EndingReconciliation->saveAll($this->data)){
+			array_shift($this->data['EndingReconciliationDetail']);
+			
+			
+			$details = array_chunk($this->data['EndingReconciliationDetail'], 100);
+			$this->EndingReconciliation->create();
+			
+			foreach($details as $d){
+				$flag=false;
+				if($this->EndingReconciliation->id){
+					$this->data['EndingReconciliation']['id'] = $this->EndingReconciliation->id;
+				}
+				$this->data['EndingReconciliationDetail'] = $d;
+				$flag = $this->EndingReconciliation->saveAll($this->data);
+			}
+			
+			if ($flag){
 				if($this->RequestHandler->isAjax()){
 					$response['status'] = 1;
 					$response['msg'] = '<img src="/canteen/img/icons/tick.png" />&nbsp; The ending reconciliation has been saved';
@@ -34,6 +48,8 @@ class EndingReconciliationsController extends AppController {
 			}else{
 				$this->Session->setFlash(__('The ending reconciliation could not be saved. Please, try again.', true));
 			}
+			
+			
 		}
 		$products = $this->EndingReconciliation->Product->find('list');
 		$this->set(compact('products'));
@@ -85,5 +101,9 @@ class EndingReconciliationsController extends AppController {
 		$this->layout='pdf';
 		$this->render();
 
+	}
+
+	function test(){
+	
 	}
 }
