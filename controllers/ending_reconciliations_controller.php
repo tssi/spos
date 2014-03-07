@@ -4,6 +4,13 @@ class EndingReconciliationsController extends AppController {
 	var $name = 'EndingReconciliations';
 	var $components = array('RequestHandler');
 
+	
+		
+	function beforeFilter(){ 
+		$this->Security->unlockedActions;
+	}  
+	 
+	
 	function index() {
 	}
 
