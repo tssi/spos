@@ -73,21 +73,15 @@ class EndingReconciliationsController extends AppController {
 	}
 	
 	function report(){
-		array_shift($this->data['EndingReconciliationDetail']);
-		//pr($this->data);exit;
+		$id = $this->data['EndingReconciliation']['id'];
 		
-		
-		$details = $this->EndingReconciliation->report($this->data['EndingReconciliation']['ref_no']);
-		//pr($details);exit;
+		$hdr = $this->EndingReconciliation->find('first',array('recursive'=>0,'conditions'=>array('EndingReconciliation.id'=>$id)));
+		$details = $this->EndingReconciliation->report($id);
 		
 		$data = $this->data;	
-		$this->set(compact('data','details'));
+		$this->set(compact('hdr','details'));
 		$this->layout='pdf';
 		$this->render();
 
-	}
-
-	function test(){
-	
 	}
 }
