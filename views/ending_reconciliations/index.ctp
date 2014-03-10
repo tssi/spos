@@ -36,6 +36,7 @@
 				<?php echo $this->Form->input('user',array('type'=>'hidden', 'id'=>false, 'value'=>$user['userFull']));?>
 				<?php echo $this->Form->input('type',array('type'=>'hidden', 'id'=>false, 'value'=>'MERCH'));?>
 				<?php echo $this->Form->input('ref_no',array('type'=>'hidden', 'id'=>'MERCH_REF_NO', 'value'=>'null'));?>
+				<?php echo $this->Form->input('id',array('type'=>'hidden', 'id'=>'Id'));?>
 				<!--Ending Reconciliation Inventory-->	
 				<div class="w100">
 					<div class="fLeft w50 classic soft">
@@ -153,7 +154,7 @@
 								<ul class="recordDatagrid on w100 h175px b1sg  nbLeft  nbRight">
 									<li class="mainInput">
 										<div class="fLeft w15 ">
-											<div class="fLeft w100">
+											<div class="fLeft w100">		
 												<div class="hide id_product">
 													<?php echo $this->Form->input('EndingReconciliationDetail.%.id_product',array('type'=>'hidden','id'=>false, 'label'=>false, 'class'=>'taRight', 'readonly'=>'readonly')); ?>
 												</div>
@@ -215,15 +216,17 @@
 							</div>
 						</div>
 						
+						<div class="fLeft pt5 Progress">
+							<pre><b>Progress: </b><span><span></pre>
+						</div>
 						<div class="fRight pt5 topaz">
-							<?php echo $this->Form->submit('Save',array('type'=>'button','class'=>'selected fwb submit-button','id'=>false));?>
+							<?php echo $this->Form->submit('Save',array('type'=>'button','class'=>'selected fwb','id'=>'PerLineSubmmittingButton'));?>
 						</div>
 						<div class="fClear"></div>
 					</div>
 					
 				</div>
 			<?php echo $this->Form->end(); ?>
-				
 			<br/>
 			<?php echo $this->Form->create('EndingReconciliation',array('action'=>'add', 'id'=>'recon_meal'));?>
 				<?php echo $this->Form->input('user',array('type'=>'hidden', 'id'=>false, 'value'=>$user['userFull']));?>
@@ -417,3 +420,7 @@
 	</div>
 </div>
 
+
+<?php echo $this->Form->create('EndingReconciliation',array('action'=>'report', 'id'=>'Report','target'=>'_blank'));?>
+	<?php echo $this->Form->input('id',array('id'=>'ReportEndingReconciliationId')); ?>
+<?php echo $this->Form->end(); ?>

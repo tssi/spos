@@ -3,7 +3,7 @@ $(document).ready(function(){
 	$('.wWider label').css('width','67px');
 	$('.wWider').css('width','48%');
 	
-	//--pop dialog constructor
+	//--POP DIALOG CONSTRUCTOR
     $('#myDialog').bind('pop-it', function(evt, args){
 		var _msg = args.msg;
 		var _title = args.title;
@@ -370,6 +370,7 @@ $(document).ready(function(){
 		$('#MealEndingDate').val(mealEnd);
 	}
 
+	/*
 	$('form').bind('formNeat_sucess',function(e,a){
 		var thisForm = a.form;
 		$('#myDialog').dialog('destroy');
@@ -412,6 +413,63 @@ $(document).ready(function(){
 			'modal': true
 		});
 	});
+	
+	*/
+	/*
+	$('#PerLineSubmmittingButton').click(function(){
+		$('#recon_merch li.mainInput').find('input').attr('disabled','disabled');
+		$('#recon_merch li.dynamicInput:not(li.dynamicInput:eq(0))').find('input').attr('disabled','disabled');
+		$('#recon_merch').ajaxSubmit({
+			success:function(data){
+				var json = $.parseJSON(data);
+				$('#Id,#ReportEndingReconciliationId').val(json.data.EndingReconciliation.id);
+				var last_li = $('#recon_merch li.dynamicInput:last').index();
 
-
+				$.each($('#recon_merch li.dynamicInput'),function(i,o){
+					var li_index  = $(o).index();
+					$('#recon_merch li.dynamicInput:not(li.dynamicInput:eq('+li_index+'))').find('input').attr('disabled','disabled')
+					$('#recon_merch').ajaxSubmit({
+						success:function(){
+							$('.Progress span').text(i);
+							if(last_li==li_index) $('#Report').submit();
+						}
+					});
+					$('#recon_merch li.dynamicInput').find('input').removeAttr('disabled');	
+				});
+			}
+		});
+	});
+	*/
+	
+	$('#PerLineSubmmittingButton').click(function(){
+		var records = $('#recon_merch li.dynamicInput');
+		var index= 0;
+		var chunk = 20;
+		async_submit(records, index,chunk);
+	});
+	function  async_submit(records, index, chunk){
+		//records array for dataset
+		//index for chunk counting
+		//chunk size for splitting records
+		var li_count =records.length;
+		var start = chunk*index; //Start index of chunk
+		var end =(start+chunk) - 1; //End index of chunk
+		var is_last = start > li_count; //Flag to determine if current chunk is_last
+		$('#recon_merch li.mainInput').find('input').attr('disabled','disabled');
+		$('#recon_merch li.dynamicInput input').attr('disabled','disabled');
+		$('#recon_merch li.dynamicInput').slice( start, end ).find('input').removeAttr('disabled');
+		$('#recon_merch').ajaxSubmit({
+			beforeSend:function(){
+				console.log(index,start,end,li_count);
+			},
+			success:function(data){
+					var json = $.parseJSON(data);
+					$('#Id,#ReportEndingReconciliationId').val(json.data.EndingReconciliation.id);
+					if(!is_last)  return async_submit(records, index+1); //Update index to point next chunk
+					else  $('#Report').submit(); //Generate print out if last chunk already
+			}
+		});
+	}
+	
+	
 });
