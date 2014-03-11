@@ -447,13 +447,16 @@ $(document).ready(function(){
 		var chunk = 20;
 		async_submit(records, index,chunk);
 	});
+	
 	function  async_submit(records, index, chunk){
 		//records array for dataset
 		//index for chunk counting
 		//chunk size for splitting records
 		var li_count =records.length;
 		var start = chunk*index; //Start index of chunk
-		var end =(start+chunk) - 1; //End index of chunk
+		var end =(start+chunk); //End index of chunk
+		
+		
 		var is_last = start > li_count; //Flag to determine if current chunk is_last
 		$('#recon_merch li.mainInput').find('input').attr('disabled','disabled');
 		$('#recon_merch li.dynamicInput input').attr('disabled','disabled');
@@ -465,7 +468,7 @@ $(document).ready(function(){
 			success:function(data){
 					var json = $.parseJSON(data);
 					$('#Id,#ReportEndingReconciliationId').val(json.data.EndingReconciliation.id);
-					if(!is_last)  return async_submit(records, index+1); //Update index to point next chunk
+					if(!is_last)  return async_submit(records, index+1,chunk); //Update index to point next chunk
 					else  $('#Report').submit(); //Generate print out if last chunk already
 			}
 		});
