@@ -448,6 +448,7 @@ $(document).ready(function(){
 		async_submit(records, index,chunk);
 	});
 	
+	var minutesTime='Calculating time';
 	function  async_submit(records, index, chunk){
 		//records array for dataset
 		//index for chunk counting
@@ -456,20 +457,34 @@ $(document).ready(function(){
 		var start = chunk*index; //Start index of chunk
 		var end =(start+chunk); //End index of chunk
 		
-		
 		var is_last = start > li_count; //Flag to determine if current chunk is_last
 		$('#recon_merch li.mainInput').find('input').attr('disabled','disabled');
 		$('#recon_merch li.dynamicInput input').attr('disabled','disabled');
 		$('#recon_merch li.dynamicInput').slice( start, end ).find('input').removeAttr('disabled');
+		
+		var STATUS_MSG = 'Saving <b>'+((!is_last)?start:li_count) +'</b> of <b>'+ li_count+'</b>';
+		$('#progress-bar').html('<center><img src="img/icons/loader.gif"/></br>'+STATUS_MSG+'</center>');
+		
 		$('#recon_merch').ajaxSubmit({
 			beforeSend:function(){
-				console.log(index,start,end,li_count);
+				//console.log(index,start,end,li_count);
+				$('#progress-bar').dialog({
+					modal:true,
+					title: 'Saving',
+					closeOnEscape: false,
+					open: function(event, ui){
+						$(this).parent().children().children(".ui-dialog-titlebar-close").hide();
+					},
+				});
 			},
 			success:function(data){
 					var json = $.parseJSON(data);
 					$('#Id,#ReportEndingReconciliationId').val(json.data.EndingReconciliation.id);
-					if(!is_last)  return async_submit(records, index+1,chunk); //Update index to point next chunk
-					else  $('#Report').submit(); //Generate print out if last chunk already
+					if(!is_last) return async_submit(records, index+1,chunk); //Update index to point next chunk
+					else  {
+						$('#progress-bar').dialog('destroy');
+						$('#Report').submit();	//Generate print out if last chunk already	
+					}				
 			}
 		});
 	}

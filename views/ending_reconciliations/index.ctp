@@ -28,6 +28,7 @@
 
 </style>
 <div id="myDialog"></div>
+<div id="progress-bar"></div>
 <div class="tab w100">
 	<div class="tab-header">Ending Reconciliation Inventory</div>
 	<div class="tab-content">
