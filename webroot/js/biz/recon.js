@@ -370,52 +370,6 @@ $(document).ready(function(){
 		$('#MealEndingDate').val(mealEnd);
 	}
 
-	/*
-	$('form').bind('formNeat_sucess',function(e,a){
-		var thisForm = a.form;
-		$('#myDialog').dialog('destroy');
-		var msg = $.parseJSON(a.data);
-		var button = {};
-		button.OK = function(){
-			
-			var msg = $.parseJSON(a.data);
-			var recon = msg.data.EndingReconciliation;
-			var button = {};
-			button.YES = function(){
-				$(this).dialog('destroy');
-				$(thisForm).attr('action','/canteen/ending_reconciliations/report');
-				switch(recon.type){
-					case 'MERCH': $('#MERCH_REF_NO').val(recon.id); break; //Attach Mechandise  Ref No
-					case 'MEALS': $('#MEALS_REF_NO').val(recon.id); break; //Attach Meals  Ref No
-				}
-				$(thisForm).attr('target','_blank');
-				$(thisForm).submit();
-				$(thisForm).attr('action','/canteen/ending_reconciliations/add');
-				$('#MERCH_REF_NO,#MEALS_REF_NO').val(''); //Reset Mechandise and Meals  Ref No
-				$(thisForm).removeAttr('target');
-			};
-			button.NO = function(){
-				$(this).dialog('destroy');
-			};
-			
-			$('#myDialog').trigger('pop-it', {
-				'title': 'Notification',
-				'msg': '<strong>Do you want to print?</strong>',
-				'button': button,
-				'modal': true
-			});
-			
-		};
-		$('#myDialog').trigger('pop-it', {
-			'title': 'Notification',
-			'msg': msg.msg,
-			'button': button,
-			'modal': true
-		});
-	});
-	
-	*/
-
 	$('#PerLineSubmmittingButton').click(function(){
 		var records = $('#recon_merch li.dynamicInput');
 		var index= 0;
@@ -463,6 +417,4 @@ $(document).ready(function(){
 			}
 		});
 	}
-	
-	
 });
