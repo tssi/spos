@@ -415,32 +415,7 @@ $(document).ready(function(){
 	});
 	
 	*/
-	/*
-	$('#PerLineSubmmittingButton').click(function(){
-		$('#recon_merch li.mainInput').find('input').attr('disabled','disabled');
-		$('#recon_merch li.dynamicInput:not(li.dynamicInput:eq(0))').find('input').attr('disabled','disabled');
-		$('#recon_merch').ajaxSubmit({
-			success:function(data){
-				var json = $.parseJSON(data);
-				$('#Id,#ReportEndingReconciliationId').val(json.data.EndingReconciliation.id);
-				var last_li = $('#recon_merch li.dynamicInput:last').index();
 
-				$.each($('#recon_merch li.dynamicInput'),function(i,o){
-					var li_index  = $(o).index();
-					$('#recon_merch li.dynamicInput:not(li.dynamicInput:eq('+li_index+'))').find('input').attr('disabled','disabled')
-					$('#recon_merch').ajaxSubmit({
-						success:function(){
-							$('.Progress span').text(i);
-							if(last_li==li_index) $('#Report').submit();
-						}
-					});
-					$('#recon_merch li.dynamicInput').find('input').removeAttr('disabled');	
-				});
-			}
-		});
-	});
-	*/
-	
 	$('#PerLineSubmmittingButton').click(function(){
 		var records = $('#recon_merch li.dynamicInput');
 		var index= 0;
