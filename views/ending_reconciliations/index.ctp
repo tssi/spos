@@ -216,10 +216,6 @@
 								</ul>	
 							</div>
 						</div>
-						
-						<div class="fLeft pt5 Progress">
-							<pre><b>Progress: </b><span><span></pre>
-						</div>
 						<div class="fRight pt5 topaz">
 							<?php echo $this->Form->submit('Save',array('type'=>'button','class'=>'selected fwb','id'=>'PerLineSubmmittingButton'));?>
 						</div>
