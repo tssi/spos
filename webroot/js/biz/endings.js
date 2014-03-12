@@ -62,7 +62,7 @@ $(document).ready(function(){
 					aggr['div.item_code input']=code;
 					aggr['div.desc input']=desc;
 					aggr['div.unit input']=unit;
-					aggr['div.qtyC input']=qty;
+					aggr['div.qty input']=qty;
 				source.push(aggr);  
 			});
 			//console.log(source);
