@@ -20,10 +20,10 @@ class endingForm extends Formsheet{
 	}
 	function hdr($hdr){
 		$metrics = array(
-			'base_x'=> 0.25,
+			'base_x'=> 0,
 			'base_y'=> 0.25,
 			'height'=> 0.75,
-			'width'=> 8,
+			'width'=> 8.5,
 			'cols'=> 40,
 			'rows'=> 5,
 		);
@@ -42,10 +42,10 @@ class endingForm extends Formsheet{
 		$dbL="===============================================";
 		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
 		$metrics = array(
-			'base_x'=> 0.25,
+			'base_x'=> 0,
 			'base_y'=> 1,
 			'height'=> 1.5,
-			'width'=> 8,
+			'width'=> 8.5,
 			'cols'=> 40,
 			'rows'=> 9,
 		);
@@ -62,24 +62,35 @@ class endingForm extends Formsheet{
 			
 			$this->GRID['font_size']=9;
 			$this->centerText(3.5,$y,'Beginning',3,'');
-			$this->centerText(3.5,$y+1,'Invty',3,'');
+			$this->centerText(23.5,$y,'Ending',3,'');
+			$this->centerText(29.5,$y,'Variance',3,'');
 			
+			$y+=1;
+			$this->centerText(2,$y,'Computer',3,'');
+			$this->centerText(5,$y,'Actual',3,'');
 			$this->centerText(8,$y,'Desc',10,'');
-			$this->centerText(30,$y,'Sold',4,'');
-			$this->centerText(34,$y,'Ending',4,'');
-			$this->centerText(34,$y+1,'Invty',4,'');
+			$this->centerText(18,$y,'Sold',4,'');
+			$this->centerText(22,$y,'Computer',3,'');
+			$this->centerText(25,$y,'Actual',3,'');
+			$this->centerText(28,$y,'Computer',3,'');
+			$this->centerText(31,$y,'Actual',3,'');
+			$this->centerText(34,$y,'Remarks',4,'');
 		
-			$y+=1.2;
+			$y+=0.2;
 			$this->GRID['font_size']=10;
 			$this->centerText(0,$y,$bL . $bL,40,'');
 			$this->GRID['font_size']=9;
 			$y+=1.5;
-			
 			foreach($details as $key=>$detail){
 				$this->rightText(1.5,$y,$detail['ending_reconciliation_details']['beginning_computer'],3,'');
-				$this->leftText(7,$y,$detail['products']['name'],'','');
-				$this->centerText(30,$y,$detail['ending_reconciliation_details']['sold'],4,'');
-				$this->centerText(34,$y,$detail['ending_reconciliation_details']['ending_computer'],4,'');
+				$this->rightText(4,$y,$detail['ending_reconciliation_details']['beginning_actual'],3,'');
+				$this->fitText(8,$y,$detail['products']['name'],3.5,'');
+				$this->rightText(16.5,$y,$detail['ending_reconciliation_details']['sold'],4,'');
+				$this->rightText(21.5,$y,$detail['ending_reconciliation_details']['ending_computer'],3,'');
+				$this->rightText(24.5,$y,$detail['ending_reconciliation_details']['ending_actual'],3,'');
+				$this->rightText(27.5,$y,$detail['ending_reconciliation_details']['variance_computer'],3,'');
+				$this->rightText(30,$y,$detail['ending_reconciliation_details']['variance_actual'],3,'');
+				$this->rightText(34,$y,isset($detail['ending_reconciliation_details']['remarks'])?$detail['ending_reconciliation_details']['remarks']:'',4,'');
 				$y+=1;
 			}
 			if(!$last_page){
