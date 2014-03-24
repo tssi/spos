@@ -46,8 +46,19 @@ $(document).ready(function(){
 		beforeSend:function(){
 			$('.food_Table tbody, .shelf_Table tbody, .salesPayment tbody').fadeOut();
 			$('.food_Table tbody, .shelf_Table tbody, .salesPayment tbody').empty();
+			
+			$('#dialog').dialog({
+				title:'Notification',
+				modal:true,
+				closeOnEscape: false,
+				open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
+			});
+			$('#dialog').html('<center><br/><img src="/canteen/img/icons/loader.gif"><br/><br/><strong> Loading...</strong><br/><br/></center>');
+						
 		},
 		success:function(data){
+			$('#dialog').dialog('destroy');
+			
 			//console.log($.parseJSON(data));
 			toPrint = null;
 			toPrint =$.toJSON($.parseJSON(data));

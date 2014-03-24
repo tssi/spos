@@ -11,6 +11,7 @@
 </style>
 
 <?php echo $this->Form->create('Sale', array('action'=>'daily_report'));?>
+<div id='dialog'></div>
 <div class='tab'>
 <div class='tab-header'>Collection Report</div>
 	<div class='tab-content'>
