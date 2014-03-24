@@ -9,7 +9,7 @@ $(document).ready(function(){
 	
 	var prodtype = $.trim($('div.productType').html());
 	
-		//--pop dialog constructor
+	//POP DIALOG CONSTRUCTOR
     $('#myDialog').bind('pop-it', function(evt, args){
 		var _msg = args.msg;
 		var _title = args.title;
@@ -30,7 +30,7 @@ $(document).ready(function(){
 		$('.ui-dialog-buttonset button:first').show();
 	});
 	
-	//datepicker
+	//DATEPICKER
 	$('.datepicker').datepicker({ 
 		dateFormat: 'yy-mm-dd',
 		destroyed: true,
@@ -58,7 +58,7 @@ $(document).ready(function(){
 	
 	$(".datepicker").datepicker('setDate', new Date());
 	
-	//auto Vendor
+	//AUTO VENDOR
 	$('.vendorAuto').livequery(function(){
 		var input =  $(this);		
 		input.autocomplete({
@@ -157,31 +157,20 @@ $(document).ready(function(){
 		});
 	})
 	
-	//$('.submit-button').attr('disabled','disabled');
-	
 	function computeNEPP(old_qty, new_qty, avg_p, new_pp ){
-		if(old_qty>0){
-			old_qty=0;
-		}
+		if(old_qty>0) old_qty=0;
 		var neep = ((old_qty*avg_p)+(new_qty*new_pp))/(old_qty+new_qty);
-		/* console.log('old_qty:', old_qty);
-		console.log('new_qty:', new_qty);
-		console.log('avg_p:', avg_p);
-		console.log('new_pp:', new_pp); */
 		return neep;
 	};
 	
+	//PREVENT RELOADING ON PRESSING ENTER KEY
 	$('#ReceivingVendorName, #ReceivingVendorId, #ReceivingDocNo').livequery(function(){
-			//prevent reloading on keying enter
-			$(this).bind('keypress',function(e){
-				if(e.which==13){
-					e.preventDefault();
-				 } 
-			});
-			
+		$(this).bind('keypress',function(e){
+			if(e.which==13) e.preventDefault(); 
 		});
+	});
 	
-	//Vendor Name Validation
+	//VENDOR NAME VALIDATION
 	$('#ReceivingVendorName').keypress(function(e){
 		var Desc = ssUtil.toProperCase($(this).val());
 		if(e.which==13){
@@ -198,36 +187,34 @@ $(document).ready(function(){
 					'button': button,
 					'modal': true
 				});
-			}
-			else if( $(this).val()!='' && $('#ReceivingVendorId').val()==''){
+			}else if( $(this).val()!='' && $('#ReceivingVendorId').val()==''){
 				var msg = '<center><strong>Vendor name does not exist.<br/>Do you want to add it?</strong></center>';
 				var button = {};
 				button.ADD = function() {
 					$(this).dialog('destroy');
-							var msg = '<strong>Vendor Name: &nbsp;</strong><input value ="'+Desc+'" readonly class="w100"/></div>';
-							var button = {};
-							button.OK = function() {
-								$('#VendorName').val(Desc);
-								$('#VendAdd').ajaxSubmit({
-									url:'/canteen/vendors/add/',
-									success:function(data){
-										var json = $.parseJSON(data);
-										$('#ReceivingVendorId').val(json.data.Vendor.id);
-									}
-								})
-								$(this).dialog('destroy');
-							};
-							button.CANCEL = function() {
-								$('#ReceivingVendorName').select();
-								$(this).dialog('destroy');
-							};
-							$('#myDialog').trigger('pop-it', {
-								'title': 'Add Vendor',
-								'msg': msg,
-								'button': button,
-								'modal': true
-							});
-					
+					var msg = '<strong>Vendor Name: &nbsp;</strong><input value ="'+Desc+'" readonly class="w100"/></div>';
+					var button = {};
+					button.OK = function() {
+						$('#VendorName').val(Desc);
+						$('#VendAdd').ajaxSubmit({
+							url:'/canteen/vendors/add/',
+							success:function(data){
+								var json = $.parseJSON(data);
+								$('#ReceivingVendorId').val(json.data.Vendor.id);
+							}
+						})
+						$(this).dialog('destroy');
+					};
+					button.CANCEL = function() {
+						$('#ReceivingVendorName').select();
+						$(this).dialog('destroy');
+					};
+					$('#myDialog').trigger('pop-it', {
+						'title': 'Add Vendor',
+						'msg': msg,
+						'button': button,
+						'modal': true
+					});
 				};
 				button.CANCEL = function() {
 					$('.ui-dialog-buttonset button:first').show();
@@ -244,15 +231,13 @@ $(document).ready(function(){
 		} 
 	});
 	
-	 $('.hdrReceive input').bind('blur',function(e){
-		if($(this).val()==''){
-			$('.submit-button').attr('disabled','disabled');
-		}else{
-			$('.submit-button').removeAttr('disabled');
-		}
+	//PREVENT SAVING IF SOME OF THE HEADER INPUT HAVE NO VALUE
+	$('.hdrReceive input').bind('blur',function(e){
+		if($(this).val()=='') $('.submit-button').attr('disabled','disabled');
+		else $('.submit-button').removeAttr('disabled');
 	}); 
 	
-	//Restore Default
+	//RESTORE DEFAULT
     $(document).bind('restore_defaults', function() {
 		$('#receiving .recordDatagrid').find('li input[type="text"]').removeAttr('readonly').removeAttr('valid').val('').removeClass('b1sCheri').removeClass('bgCheri');
 		$('#receiving .recordDatagrid li.mainInput').fadeOut(RECORD_SPEED);
@@ -273,7 +258,7 @@ $(document).ready(function(){
 		$('.submit-button').attr('disabled','disabled');
 	});
 	
-	//auto product
+	//AUTO PRODUCT
 	$('.productAuto').livequery(function(){
 		var input =  $(this);		
 		input.autocomplete({
@@ -282,9 +267,7 @@ $(document).ready(function(){
 				$(event.target).val(ui.item.label);
 				input.parents('li:first').find('div.itemcode input').val(ui.item.itemcode).blur();
 				input.parents('li:first').find('div.csr input').val(ui.item.selling_price).blur();
-				
-				//Getting average purchase prise
-				$.ajax({
+				$.ajax({//GETTING AVERAGE PURCHASE PRICE
 					type:'POST',
 					url:'/canteen/receivings/getAvgPP/'+ui.item.itemcode,
 					success:function(data){
@@ -293,12 +276,10 @@ $(document).ready(function(){
 						input.parents('li:first').find('div.app input').val(avgpp); 
 					}
 				});
-				
 				//$(event.target).focus().trigger('keypress',{'which':13});
 				return false;
 			}
-		}).keypress(function(){
-			//console.log(this);			
+		}).keypress(function(){		
 		   //var productDesc = $('div.desc div.input input').val();
 		   var productDesc = $(this).val();
 		   var myLink = window.location.protocol + "//" + window.location.host + "/" + 'canteen/products/search';
@@ -308,12 +289,7 @@ $(document).ready(function(){
 				type:'POST',
 				url: myLink,
 				data:{'data':{'Product':{'key':productDesc}}},
-				beforeSend:function(){
-					//console.log('key: ',productDesc);
-				},
 				success:function(data){
-					//try{
-					//console.log($.parseJSON(data));
 					var prod = $.parseJSON(data);
 					$.each(prod, function(c,o){
 						var itemsOf = {
@@ -324,22 +300,19 @@ $(document).ready(function(){
 						};
 						source.push(itemsOf);
 					})
-					//console.log('source: ',source);
 					$('.productAuto').autocomplete('option','source',source);
-					//}
 				}
 			});
 			return;
 		});
 	})
 
-	//moreThanZero class
+	//MORETHANZERO CLASS
 	$('#receiving .moreThanZero').live('blur', function(e,a){
 		var SELF = $(this);
 			if( parseInt($.trim(SELF.val())) <=0){
 				SELF.val('');
 				SELF.attr('valid','-1');
-				
 				var button = {};
 				button.OK = function() {
 					$(this).dialog('destroy');
@@ -351,32 +324,29 @@ $(document).ready(function(){
 					'button': button,
 					'modal': true
 				});
-			}else{
-				SELF.attr('valid','1')
 			}
+			else SELF.attr('valid','1')
 	});
 	
-	//on barcode trigger populate product data
+	//ON BARCODE TRIGGER POPULATE PRODUCT DATA
 	$('#itemCheck').bind('getResult', function(e,a){
 		var Li = $(a.self).parents('li:first');
 		var code = Li.find('div.itemcode input:first').val();
 		var units = Li.find('div.unit select:first').parent().html();
 		try{
 			var prod = a.data['0'];
-			//console.log(prod);
 			Li.find('div.unit select').val(prod.Product.unit_id);
 			Li.find('div.csr input').val(prod.Product.selling_price).blur();
 			Li.find('div.desc input').val(prod.Product.name);//.focus().trigger('keypress',{'which':13});
 			$.ajax({
-					type:'POST',
-					url:'/canteen/receivings/getAvgPP/'+prod.Product.item_code,
-					success:function(data){
-						var avgpp = $.parseJSON(data);
-						avgpp = avgpp.Product.avg_price
-						Li.find('div.app input').val(avgpp);
-					}
-				});
-				
+				type:'POST',
+				url:'/canteen/receivings/getAvgPP/'+prod.Product.item_code,
+				success:function(data){
+					var avgpp = $.parseJSON(data);
+					avgpp = avgpp.Product.avg_price
+					Li.find('div.app input').val(avgpp);
+				}
+			});
 		}catch(e){
 			var msg ='<center><strong>Product not found!<br /><br />Do you want to add this product?</strong></center>';
 			var button = {};
@@ -435,7 +405,6 @@ $(document).ready(function(){
 				
 				var button = {};
 				button.OK = function(){
-					
 					var prodType = $('div.dgForm .type select:first').val();
 					var prodDesc = $('div.dgForm .desc input:first').val();
 					var prodUnit = $('div.dgForm .unit select:first').val();
@@ -500,12 +469,10 @@ $(document).ready(function(){
 					'modal': true
 				});
 				$('.ui-dialog-buttonset button:first').show();
-				
 			};
 			button.NO = function() {
 				$(this).dialog('destroy');
 				Li.find('div.itemcode input:first').focus().blur().select();
-				
 			};
 			$('.ui-dialog-buttonset button:first').show();
 			$('#myDialog').trigger('pop-it', {
@@ -515,10 +482,9 @@ $(document).ready(function(){
 				'modal': true
 			});
 		}
-		
 	});
 	
-	// on form submit error
+	//ON FORM SUBMIT ERROR
 	$('#ReceivingAddForm').bind('form_error',function(evt,args){
 		//$('#ProductAddForm .uiNotify').html('Fill up required field or delete row').addClass('bgCheri').addClass('b1sCheri').fadeIn('slow').fadeOut('slow');
 		$('#ReceivingAddForm .uiNotify').html('Fill up required field or delete row');//.addClass('bgCheri').addClass('b1sCheri').fadeIn('slow').fadeOut('slow');
@@ -535,7 +501,7 @@ $(document).ready(function(){
 		});	
 	});
 	
-	// on form submit success
+	//ON FORM SUBMIT SUCCESS
 	$('#ReceivingAddForm').bind('formNeat_sucess',function(e,a){
 		var msg = $.parseJSON(a.data);
         console.log(msg);
@@ -575,7 +541,7 @@ $(document).ready(function(){
 		console.log('from error');
     });
 	
-	//trigger on new row
+	//TRIGGER ON NEW ROW
 	$('#receiving ul.recordDataGrid').bind('new_row',function(){
 		$(this).find('li:last div.itemcode .input input').removeAttr('readonly');
 		$(this).find('li:last div.qty .input input[old_qty]').removeAttr('old_qty');
@@ -583,7 +549,6 @@ $(document).ready(function(){
 		$(this).find('li:last div.rsrp .input input[markup-unit]').removeAttr('markup-unit');
 		$(this).find('li:last div.pp .input input[old_pp]').removeAttr('old_pp');
 	});
-	
 	
 	function triggerThis(obj,evt){
 		var Li = $(obj).parents('li:first');
@@ -737,7 +702,7 @@ $(document).ready(function(){
 	};
 	
 	var proceed =0; //to avoid dialog box overriding
-	//if any input or select blurred
+	//IF ANY INPUT OR SELECT BLURRED
 	$('#receiving ul.recordDatagrid input, #receiving ul.recordDatagrid select').live('blur',function(){
 		var input = $(this);
 		var THIS = this;
@@ -851,7 +816,7 @@ $(document).ready(function(){
 	
 	$('label[for="ReceivingDocNum"]').css('margin-left', '-73');
 	
-	//Cancel Button
+	//CANCEL BUTTON
 	$("#cancel_button, .cancel_button").click(function(){
 		$(document).trigger('restore_defaults');
 	});
@@ -1109,17 +1074,15 @@ $(document).ready(function(){
 		});
 	});
 	
-	//Auto for doc type
+	//AUTO FOR DOC TYPE
 	$('#ReceivingDocTypeId').livequery(function(){
 		var self =$(this);
 		self.bind('blur', function(){
-			var selectedIs = $.trim($('#ReceivingDocTypeId option:selected').text());
 			var index = self[0];
-				if (selectedIs.toLowerCase() =='none'){
-					$('#ReceivingDocNum').val('(Auto)');
-				}
+			if ($.trim($('#ReceivingDocTypeId option:selected').text()) =='NONE'){
+				$('#ReceivingDocNum').val('(Auto)');
+			}
 		});
-		
 	});
 		
 	$('#receiving .recordDatagrid').trigger('update_grid');
