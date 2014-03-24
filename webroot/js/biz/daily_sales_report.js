@@ -69,46 +69,48 @@ $(document).ready(function(){
 			$('#SaleFood').val(report.Total_Food);
 			$('#SaleShelf').val(report.Total_Shelf);
 			$('input').blur();
+			
+			//FOOD SUMMARY
 			var htm = '';
 			var totalIs= 0;
 			$.each(report.Total_Details.Food, function(c,o){
 				if(o.Is_SetDtl != 1){
-					o.Amount=parseFloat(o.Amount);
-					totalIs+=o.Total;
+					o.SellingPrice=parseFloat(o.SellingPrice);
+					totalIs+=parseFloat(o.Amount);;
 					htm+='<tr>';
 					htm+='<td class="taCenter">'+o.Qty+'</td>';
 					htm+='<td class="taLeft">'+o.Barcode+'</td>';
-					htm+='<td class="taLeft">'+o.Desc+'</td>';
-					htm+='<td class="taRight monetary">'+ssUtil.roundNumber(o.Amount,2)+'</td>';
-					htm+='<td class="taRight money">'+ssUtil.roundNumber(o.Total, 2)+'</td>';
+					htm+='<td class="taCenter">'+o.Desc+'</td>';
+					//htm+='<td class="taRight monetary">'+ssUtil.roundNumber(o.SellingPrice,2)+'</td>';
+					htm+='<td class="taRight money">'+ssUtil.roundNumber(o.Amount, 2)+'</td>';
 					htm+='</tr>';
 				}
 			});
 			
 			htm+='<tr>';
-			htm+='<td colspan=3></td>';
+			htm+='<td colspan=2></td>';
 			htm+='<td class="taRight"><strong>Total Amount:<strong></td>';
 			htm+='<td class="taRight money"><strong>'+ssUtil.roundNumber(totalIs, 2)+'<strong></td>';
 			htm+='</tr>';
 			
+			//MERCHANDISE SUMMARY
 			totalIs= 0;
 			var htm1 = '';
 			$.each(report.Total_Details.Shelf, function(c,o){
 				if(o.Is_SetDtl != 1){
-					totalIs+=o.Total;
+					totalIs+=parseFloat(o.Amount);
 					htm1+='<tr>';
 					htm1+='<td class="taCenter">'+o.Qty+'</td>';
 					htm1+='<td class="taLeft">'+o.Barcode+'</td>';
-					htm1+='<td class="taLeft">'+o.Desc+'</td>';
+					htm1+='<td class="taCenter">'+o.Desc+'</td>';
+					//htm1+='<td class="taRight money">'+ssUtil.roundNumber(o.Amount,2)+'</td>';
 					htm1+='<td class="taRight money">'+ssUtil.roundNumber(o.Amount,2)+'</td>';
-					htm1+='<td class="taRight money">'+ssUtil.roundNumber(o.Total,2)+'</td>';
 					htm1+='</tr>';
 				}
-				
 			});
 			
 			htm1+='<tr>';
-			htm1+='<td colspan=3></td>';
+			htm1+='<td colspan=2></td>';
 			htm1+='<td class="taRight"><strong>Total Amount:<strong></td>';
 			htm1+='<td class="taRight money"><strong>'+ssUtil.roundNumber(totalIs, 2)+'<strong></td>';
 			htm1+='</tr>';
@@ -118,7 +120,7 @@ $(document).ready(function(){
 			$('.shelf_Table tbody').append(htm1);
 			$('.food_Table tbody, .shelf_Table tbody').fadeIn();
 			
-			
+			//ByOR
 			$('.detailByOR').empty();
 			var ctr = 0;
 			var htmOr='';
@@ -129,7 +131,7 @@ $(document).ready(function(){
 				htmOr+='<th class="w10">QTY</th>';
 				htmOr+='<th class="w15 ">Code</th>';
 				htmOr+='<th class="w30 ">Desc</th>';
-				htmOr+='<th class="w10 ">Amount</th>';
+				htmOr+='<th class="w10 ">Selling Price</th>';
 				htmOr+='<th class="w10 ">Total</th>';
 				htmOr+='</thead>';
 				htmOr+='<tbody>';
@@ -140,7 +142,7 @@ $(document).ready(function(){
 						htmOr+='<tr>';
 						htmOr+='<td class="taCenter">'+object.Qty+'</td>';
 						htmOr+='<td class="taLeft">'+object.Barcode+'</td>';
-						htmOr+='<td class="taLeft">&nbsp;&nbsp;>'+object.Desc+'</td>';
+						htmOr+='<td class="taCenter">&nbsp;&nbsp;>'+object.Desc+'</td>';
 						htmOr+='<td class="taRight money">'+'0.00'+'</td>';
 						htmOr+='<td class="taRight money">'+'0.00'+'</td>';
 						htmOr+='</tr>';
@@ -148,10 +150,10 @@ $(document).ready(function(){
 						htmOr+='<tr>';
 						htmOr+='<td class="taCenter">'+object.Qty+'</td>';
 						htmOr+='<td class="taLeft">'+object.Barcode+'</td>';
-						htmOr+='<td class="taLeft">'+object.Desc+'</td>';
-						totalIs+=object.Total;
+						htmOr+='<td class="taCenter">'+object.Desc+'</td>';
+						totalIs+=parseFloat(object.Amount);
+						htmOr+='<td class="taRight money">'+ssUtil.roundNumber(object.SellingPrice,2)+'</td>';
 						htmOr+='<td class="taRight money">'+ssUtil.roundNumber(object.Amount,2)+'</td>';
-						htmOr+='<td class="taRight money">'+ssUtil.roundNumber(object.Total,2)+'</td>';
 						htmOr+='</tr>';
 					}
 				});

@@ -1,8 +1,8 @@
 <?php
 App::import('Vendor','formsheet');
 class detailsreportForm extends Formsheet{
-	protected static $_width = 11.5;
-	protected static $_height = 4.25;
+	protected static $_width = 8.5;
+	protected static $_height = 11.5;
 	protected static $_unit = 'in';
 	protected static $_orient = 'P';
 	protected static $_allot_subjects = 15;
@@ -24,28 +24,28 @@ class detailsreportForm extends Formsheet{
 	function hdr(){
 		$data = $this->data;
 		$metrics = array(
-			'base_x'=> 0,
+			'base_x'=> 0.75,
 			'base_y'=> 0.25,
 			'height'=> 1.5,
-			'width'=> 4.25,
-			'cols'=> 20,
+			'width'=> 7,
+			'cols'=> 40,
 			'rows'=> 9,
 		);
 		$this->section($metrics);
 		$this->GRID['font_size']=11;
-		$this->centerText(0,1,'HOLY TRINITY ACADEMY',20,'');
+		$this->centerText(0,1,'HOLY TRINITY ACADEMY',40,'');
 		$this->GRID['font_size']=10;
-		$this->centerText(0,2,'Calabash Road, Balic-Balic, Sampaloc, Manila',20,'');
-		$this->centerText(0,4,'Canteen Daily Report',20,'b');
-		$this->centerText(0,5,'(Details By Official Receipt)',20,'');
+		$this->centerText(0,2,'Calabash Road, Balic-Balic, Sampaloc, Manila',40,'');
+		$this->centerText(0,4,'Canteen Daily Report',40,'b');
+		$this->centerText(0,5,'(Details By Official Receipt)',40,'');
 		$this->leftText(1,7,'Total Sale:','b');
-		$this->rightText(8,7,number_format($data['Total_Sales'], 2, '.', ','),'');
+		$this->rightText(9,7,number_format($data['Total_Sales'], 2, '.', ','),'');
 		$this->leftText(1,8,'Food:','b');
-		$this->rightText(8,8,number_format($data['Total_Food'], 2, '.', ','),'');
+		$this->rightText(9,8,number_format($data['Total_Food'], 2, '.', ','),'');
 		$this->leftText(1,9,'Merchandise:','b');
-		$this->rightText(8,9,number_format($data['Total_Shelf'], 2, '.', ','),'');
+		$this->rightText(9,9,number_format($data['Total_Shelf'], 2, '.', ','),'');
 		$this->GRID['font_size']=9;
-		$this->rightText(19.5,6,'Date: '.$data['Date'],'');
+		$this->rightText(39.5,6,'Date: '.$data['Date'],'');
 	}
 	
 	
@@ -54,69 +54,69 @@ class detailsreportForm extends Formsheet{
 		$dbL="===============================================";
 		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
 		$metrics = array(
-			'base_x'=> 0,
+			'base_x'=> 0.75,
 			'base_y'=> 2,
 			'height'=> 1.5,
-			'width'=> 4.25,
-			'cols'=> 20,
+			'width'=> 7,
+			'cols'=> 40,
 			'rows'=> 9,
 		);
 		$this->section($metrics);
 		$y=0;
 		foreach($data['Total_byOR'] as $key=>$val){
 			$itm_count = count($val)+4;
-	
 			if(detailsreportForm::$_available_line < $itm_count){
 				//$this->rightText(19,55,'Page '.detailsreportForm::$_currpage,'','');
 				$this->createSheet();
 				detailsreportForm::$_available_line =  49;
 				detailsreportForm::$_currpage++;
 				$this->hdr();
-				
 				$y = 11;
 			}
 			
 			$this->GRID['font_size']=10;
-			$this->centerText(1,$y++,$dbL,18,'');
-			$this->centerText(0,$y++,'OR - '.$key,20,'b');
-			$this->centerText(1,$y++,$dbL,18,'');
+			$this->centerText(0,$y++,$dbL.$dbL,40,'');
+			$this->centerText(0,$y++,'OR - '.$key,40,'b');
+			$this->centerText(0,$y++,$dbL.$dbL,40,'');
 			$this->GRID['font_size']=9;
-			$this->leftText(1.25,$y,'Desc ','');
-			$this->centerText(10,$y,'Qty',3,'');
-			$this->centerText(13,$y,'Amount',3,'');
-			$this->centerText(16,$y,'Total',4,'');
+			$this->leftText(0.25,$y,'Desc ','');
+			$this->centerText(25,$y,'Qty',3,'');
+			$this->centerText(30,$y,'Selling Price',3,'');
+			$this->centerText(35,$y,'Amount',4,'');
 			$this->GRID['font_size']=10;
 			$y+=0.5;
-			$this->centerText(1,$y,$bL,18,'');
+			$this->centerText(0,$y,$bL.$bL,40,'');
 			$this->GRID['font_size']=9;
 			$y+=1.5;
-		
+			$totalIs=0;
 			foreach($val as $items){
 				if($items['Is_SetDtl']){
-					$this->leftText(1.5,$y,'>'.$items['Desc'],'');
-					$this->centerText(10,$y,$items['Qty'],3,'');
-					$this->rightText(12.5,$y,'0.00',3,'');
-					$this->rightText(14.5,$y++,'0.00',4,'');
+					$this->leftText(0.5,$y,'>'.$items['Desc'],'');
+					$this->centerText(25,$y,$items['Qty'],3,'');
+					$this->rightText(34.5,$y,'0.00','','');
+					$this->rightText(39.5,$y++,'0.00','','');
 				}else{
-					$this->leftText(1.25,$y,$items['Desc'],'');
-					$this->centerText(10,$y,$items['Qty'],3,'');
-					$this->rightText(12.5,$y,number_format($items['Amount'], 2, '.', ','),3,'');
-					$this->rightText(14.5,$y++,number_format($items['Total'], 2, '.', ','),4,'');
+					$totalIs += $items['Amount'];
+					$this->leftText(0.25,$y,$items['Desc'],'');
+					$this->centerText(25,$y,$items['Qty'],3,'');
+					$this->rightText(34.5,$y,number_format($items['SellingPrice'], 2, '.', ','),'','');
+					$this->rightText(39.5,$y++,number_format($items['Amount'], 2, '.', ','),'','');
 				}
-				
 				detailsreportForm::$_available_line--;
 			}
-			detailsreportForm::$_available_line-=4;
+			$this->rightText(39.5,$y++,'Total Amount:    '.number_format($totalIs, 2, '.', ','),'','');
+				
+			detailsreportForm::$_available_line-=5;
 			
 			
 		}
 		$y++;
 		$this->GRID['font_size']=10;
-		$this->centerText(1,$y++,$dbL,18,'');
+		$this->centerText(0,$y++,$dbL.$dbL,40,'');
 		$this->GRID['font_size']=9;
-		$this->centerText(0,$y++,'-- End of Daily Report --',20,'');
+		$this->centerText(0,$y++,'-- End of Daily Report --',40,'');
 		$this->GRID['font_size']=10;
-		$this->centerText(1,$y,$dbL,18,'');
+		$this->centerText(0,$y,$dbL.$dbL,40,'');
 		$this->GRID['font_size']=9;
 		//$this->rightText(19,65,'Page '.detailsreportForm::$_currpage,'','');
 	}

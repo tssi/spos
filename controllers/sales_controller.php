@@ -303,11 +303,8 @@ class SalesController extends AppController {
 	}
 	
 	function daily_report($byCashier=null){
-		
 		$Date= $this->data['Sale']['date'];
-		if(empty($Date)){
-			$Date = date('Y-m-d');
-		}
+		if(empty($Date)) $Date = date('Y-m-d');
 		
 		$fromDate= date("Y-m-d H:i:s",strtotime($Date.' 00:00:00'));
 		$toDate = date("Y-m-d H:i:s",strtotime($Date.'  23:59:59'));
@@ -365,10 +362,11 @@ class SalesController extends AppController {
 		}
 		
 		$daily = $this->Sale->SaleDetail->find('all', array('conditions'=>$conditions, 'fields'=>$field, 'joins'=>$join, 'recursive'=>2));
-		$conditions = array("Sale.created >=" =>$fromDate,
-						"Sale.created <=" =>$toDate,
-						);
 		
+		$conditions = array(
+							"Sale.created >=" =>$fromDate,
+							"Sale.created <=" =>$toDate,
+						);				
 		$dailySale = $this->Sale->find('all', array('conditions'=>$conditions));
 		
 		
@@ -383,21 +381,24 @@ class SalesController extends AppController {
 								'CASH'=>0.0,
 								'PREPAID'=>0.0,
 								'CHARGE'=>0.0,
-		);
+							);
+							
+		//pr($daily);exit;
 		for($q=0;$q<count($daily);$q++){
 			$index = (string)$daily[$q]['Sale']['id'];
 			$itemcode = (string)$daily[$q]['SaleDetail']['item_code'];
 			$data =array();
-			
-			if(is_null($daily[$q]['Prod']['product_type_id'])){ //to check if Meal type
-				$foodDex = $daily[$q]['SaleDetail']['item_code'];//Meals
+			$selling_price = $daily[$q]['SaleDetail']['amount']/$daily[$q]['SaleDetail']['qty'];
+				
+			if(is_null($daily[$q]['Prod']['product_type_id'])){ //MEAL TYPE
+				$foodDex = $daily[$q]['SaleDetail']['item_code'];
 				$foodSalesDex = $daily[$q]['SaleDetail']['sale_id'];
 				$data = array(
 								'Qty'=>$daily[$q]['SaleDetail']['qty'],
 								'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
 								'Desc'=>$daily[$q]['Menu']['name'],
-								'Amount'=>$daily[$q]['Menu']['selling_price'],
-								'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Menu']['selling_price'],
+								'SellingPrice'=>$daily[$q]['Menu']['selling_price'],
+								'Amount'=>$daily[$q]['SaleDetail']['amount'],
 								'Is_SetHdr'=>$daily[$q]['SaleDetail']['is_setmeal_hdr'],
 								'Is_SetDtl'=>$daily[$q]['SaleDetail']['is_setmeal_dtl']
 					);
@@ -406,21 +407,21 @@ class SalesController extends AppController {
 				}else{
 					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] !=1){
 						$food[$foodDex]['Qty']+=$data['Qty'];
-						$food[$foodDex]['Total']+=$data['Total'];
+						$food[$foodDex]['Amount']+=$data['Amount'];
 					}
 				}
 				if($daily[$q]['SaleDetail']['is_setmeal_dtl'] != 1){
-					$foodTotal+=$data['Total'];
+					$foodTotal+=$data['Amount'];
 				}				
-			}else{ // Merchandise
+			}else{ // MERCHANDISE TYPE
 				$prodDex = $daily[$q]['SaleDetail']['item_code'];
 				$prodSalesDex = $daily[$q]['SaleDetail']['sale_id'];
 				$data = array(
 								'Qty'=>$daily[$q]['SaleDetail']['qty'],
 								'Barcode'=>$daily[$q]['SaleDetail']['item_code'],
 								'Desc'=>$daily[$q]['Prod']['name'],
-								'Amount'=>$daily[$q]['Prod']['selling_price'],
-								'Total'=>$daily[$q]['SaleDetail']['qty']*$daily[$q]['Prod']['selling_price'],
+								'SellingPrice'=>$selling_price,
+								'Amount'=>$daily[$q]['SaleDetail']['amount'],
 								'Is_SetHdr'=>$daily[$q]['SaleDetail']['is_setmeal_hdr'],
 								'Is_SetDtl'=>$daily[$q]['SaleDetail']['is_setmeal_dtl']
 					);
@@ -429,12 +430,12 @@ class SalesController extends AppController {
 				}else{
 					if($daily[$q]['SaleDetail']['is_setmeal_dtl'] !=1){
 						$shelf[$prodDex]['Qty']+=$data['Qty'];
-						$shelf[$prodDex]['Total']+=$data['Total'];
+						$shelf[$prodDex]['Amount']+=$data['Amount'];
 					}
 				}
 				
 				if($daily[$q]['SaleDetail']['is_setmeal_dtl'] != 1){
-					$shelfTotal+=$data['Total'];
+					$shelfTotal+=$data['Amount'];
 				}
 								
 			}
@@ -446,26 +447,19 @@ class SalesController extends AppController {
 					array_push($byOr[$index],$data);
 			}else{
 				$match = 0;
-				
 				for($t=0;$t<count($byOr[$index]); $t++){
 					if($byOr[$index][$t]['Barcode']==$itemcode && $daily[$q]['SaleDetail']['is_setmeal_dtl'] ==0){
 						$byOr[$index][$t]['Qty']+=$data['Qty'];
-						$byOr[$index][$t]['Total']=$byOr[$index][$t]['Qty']*$byOr[$index][$t]['Amount'];
-					
+						$byOr[$index][$t]['Amount']=$byOr[$index][$t]['Qty']*$byOr[$index][$t]['SellingPrice'];
 						$match=1;								
 						break;
 					}
 				}
-				if (!$match){
-					array_push($byOr[$index],$data);
-				}
+				if (!$match) array_push($byOr[$index],$data);
 			}
-			//pr($byOr);
-			
 		}
 		
 	    for($r=0;$r<count($dailySale);$r++){
-			
 			foreach($dailySale[$r]['SalePayment'] as $salesPayment){
 				if($salesPayment['payment_type_id']==1){
 					$bySalesPayment['CASH']+=$salesPayment['amount'];
@@ -477,7 +471,6 @@ class SalesController extends AppController {
 					$bySalesPayment['CHARGE']+=$salesPayment['amount'];
 				}
 			}
-		
 		}
 
 		$report=array(
@@ -491,17 +484,12 @@ class SalesController extends AppController {
 				),
 			'Total_byOR'=>$byOr,
 			'bySalesPayment'=>$bySalesPayment
-			
-			);
+		);
 			
 			
 		if($this->RequestHandler->isAjax()){
 			echo json_encode($report);
 			exit();
-		}else{
-			pr($report);
-			exit();
-		
 		}
 	}
 	

@@ -64,10 +64,9 @@
 					<table class='smart_table w100 fsSmall food_Table'>
 						<thead>
 							<th class="w10">QTY</th>
-							<th class="w15 ">Code</th>
-							<th class="w30 ">Desc</th>
-							<th class="w10 ">Amount</th>
-							<th class="w10 ">Total</th>
+							<th class="w15">Code</th>
+							<th class="w30">Desc</th>
+							<th class="w10">Total</th>
 						</thead>
 						<tbody>
 							
@@ -78,10 +77,9 @@
 					<table class='smart_table w100 fsSmall shelf_Table'>
 						<thead>
 							<th class="w10">QTY</th>
-							<th class="w15 ">Code</th>
-							<th class="w30 ">Desc</th>
-							<th class="w10 ">Amount</th>
-							<th class="w10 ">Total</th>
+							<th class="w15">Code</th>
+							<th class="w30">Desc</th>
+							<th class="w10">Total</th>
 						</thead>
 						<tbody>	
 						</tbody>
