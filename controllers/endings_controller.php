@@ -96,10 +96,10 @@ class EndingsController extends AppController {
 	}
 
 	function findEndings(){
-		$Date = '2014-03-05';//date('Y-m-d');
+		$Date = date('Y-m-d');
 		
-		$fromDate= '2014-03-05 00:00:00';//date("Y-m-d H:i:s",strtotime($Date.' 00:00:00'));
-		$toDate = '2014-03-05 23:59:59';//date("Y-m-d H:i:s",strtotime($Date.'  23:59:59'));
+		$fromDate= date("Y-m-d H:i:s",strtotime($Date.' 00:00:00'));
+		$toDate = date("Y-m-d H:i:s",strtotime($Date.'  23:59:59'));
 		
 		$join =array(
 				array(
@@ -147,6 +147,7 @@ class EndingsController extends AppController {
 		
 		$daily = $this->Sale->SaleDetail->find('all', array('conditions'=>$conditions, 'fields'=>$field, 'joins'=>$join));
 		
+		//pr($daily);exit;
 		
 		$report = array();
 		$food = array();
@@ -211,12 +212,12 @@ class EndingsController extends AppController {
 			);
 			
 		
-		$beginning = $this->Ending->EndingDetail->find('all', array('conditions'=>array('Ending.created <'=> '2014-03-05 00:00:00',//date('Y-m-d 00:00:00'),
+		$beginning = $this->Ending->EndingDetail->find('all', array('conditions'=>array('Ending.created <'=> date('Y-m-d 00:00:00'),
 						'Ending.type'=>'MERCH'),
 				'order'=>array('EndingDetail.name ASC')));
 		
-		$ending = $this->Ending->EndingDetail->find('all', array('conditions'=>array('Ending.created >'=> '2014-03-05 00:00:00',//date('Y-m-d 00:00:00'),
-						'Ending.created <'=> '2014-03-05 23:59:59',//date('Y-m-d 23:59:59'),
+		$ending = $this->Ending->EndingDetail->find('all', array('conditions'=>array('Ending.created >'=> date('Y-m-d 00:00:00'),
+						'Ending.created <'=> date('Y-m-d 23:59:59'),
 						'Ending.type'=>'MERCH'),
 				'order'=>array('EndingDetail.name ASC')));
 		
@@ -293,12 +294,12 @@ class EndingsController extends AppController {
 		
 		
 		
-		$beginning_meals = $this->Ending->EndingDetail->find('all', array('conditions'=>array('Ending.created <'=>'2014-03-05 00:00:00',//date('Y-m-d 00:00:00'),
+		$beginning_meals = $this->Ending->EndingDetail->find('all', array('conditions'=>array('Ending.created <'=> date('Y-m-d 00:00:00'),
 						'Ending.type'=>'MEALS'),
 				'order'=>array('EndingDetail.name ASC')));
 		
-		$ending_meals = $this->Ending->EndingDetail->find('all', array('conditions'=>array('Ending.created >'=>'2014-03-05 00:00:00',//date('Y-m-d 00:00:00'),
-						'Ending.created <'=> '2014-03-05 23:59:59',//date('Y-m-d 23:59:59'),
+		$ending_meals = $this->Ending->EndingDetail->find('all', array('conditions'=>array('Ending.created >'=> date('Y-m-d 00:00:00'),
+						'Ending.created <'=> date('Y-m-d 23:59:59'),
 						'Ending.type'=>'MEALS'),
 				'order'=>array('EndingDetail.name ASC')));
 				
