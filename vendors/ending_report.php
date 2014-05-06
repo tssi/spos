@@ -2,7 +2,7 @@
 App::import('Vendor','formsheet');
 class endingForm extends Formsheet{
 	protected static $_width = 11.5;
-	protected static $_height = 4.25;
+	protected static $_height = 8.5;
 	protected static $_unit = 'in';
 	protected static $_orient = 'P';
 	protected static $_allot_subjects = 15;
@@ -24,32 +24,33 @@ class endingForm extends Formsheet{
 			'base_x'=> 0,
 			'base_y'=> 0.25,
 			'height'=> 1.5,
-			'width'=> 4.25,
-			'cols'=> 20,
+			'width'=> 8.5,
+			'cols'=> 40,
 			'rows'=> 9,
 		);
 		$this->section($metrics);
 		$this->GRID['font_size']=11;
-		$this->centerText(0,1,'HOLY TRINITY ACADEMY',20,'');
+		$this->centerText(0,1,'HOLY TRINITY ACADEMY',$metrics['cols'],'');
 		$this->GRID['font_size']=10;
-		$this->centerText(0,2,'Calabash Road, Balic-Balic, Sampaloc, Manila',20,'');
-		$this->centerText(0,4,'Canteen Daily Ending Report',20,'b');
+		$this->centerText(0,2,'Calabash Road, Balic-Balic, Sampaloc, Manila',$metrics['cols'],'');
+		$this->centerText(0,4,'Canteen Daily Ending Report',$metrics['cols'],'b');
 		
 		$this->GRID['font_size']=9;
 		$this->leftText(1,6,'Ref No: '.$this->data['Ending']['ref_no'],'');
-		$this->leftText(10,6,'Date: '.$date.' / '.date('h:i:s A'),'');
+		$this->rightText(39,6,'Date: '.$date.' / '.date('h:i:s A'),'');
 	
 	}
 	
 	function details($index=0,$page=1){
-		$dbL="===============================================";
-		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
+		$dbL="==================================================";
+		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
+		//$this->showLines = true;
 		$metrics = array(
 			'base_x'=> 0,
 			'base_y'=> 1,
 			'height'=> 1.5,
-			'width'=> 4.25,
-			'cols'=> 20,
+			'width'=> 8.5,
+			'cols'=> 40,
 			'rows'=> 9,
 		);
 		$this->section($metrics);
@@ -57,40 +58,42 @@ class endingForm extends Formsheet{
 		$y=2.8;
 		//Shelf
 		$this->GRID['font_size']=10;
-		$this->centerText(1,$y++,$dbL,18,'');
-		$this->centerText(0,$y,'Merchandise',20,'b');
+		$this->centerText(1,$y++,$dbL.$dbL,$metrics['cols']-2,'');
+		$this->centerText(0,$y,'Merchandise',$metrics['cols'],'b');
 		$y++;
-		$this->centerText(1,$y,$dbL,18,'');
+		$this->centerText(1,$y,$dbL.$dbL,$metrics['cols']-2,'');
 		$y+=0.8;
 		
 		$this->GRID['font_size']=9;
 		$this->leftText(1.25,$y,'Itemcode','');
-		$this->centerText(6,$y,'Description',3,'');
-		$this->centerText(15,$y,'Unit',3,'');
-		$this->centerText(16,$y,'Qty',4,'');
+		$this->centerText(7,$y,'Description',15,'');
+		$this->centerText(26,$y,'Unit',3,'');
+		$this->centerText(29,$y,'Beginning',3,'');
+		$this->centerText(32,$y,'Sale',3,'');
+		$this->centerText(35,$y,'Ending',3,'');
 		$y+=0.2;
 		$this->GRID['font_size']=10;
-		$this->centerText(1,$y,$bL,18,'');
+		$this->centerText(1,$y,$bL.$bL,$metrics['cols']-2,'');
 		$this->GRID['font_size']=9;
 		$y+=1.5;
 		$ln=1;
 		for($i=$index;$i<count($this->data['EndingDetail']);$i++,$ln++){
 			$detail = $this->data['EndingDetail'][$i];
 			$this->leftText(1.25,$y,$detail['item_code'],'');
-			$this->fitText(6,$y,$detail['name'],3.5,'');
-			$this->centerText(15,$y,isset($detail['unit_id'])?$detail['unit_id']:'---',3,'');
-			$this->rightText(19,$y,isset($detail['qty'])?$detail['qty']:'---','');
-			$this->drawLine(0.2+$y++,'h',array(17.5,1.5));
+			$this->fitText(7,$y,$detail['name'],15,'');
+			$this->centerText(26,$y,isset($detail['unit_id'])?$detail['unit_id']:'---',3,'');
+			$this->rightText(39,$y,isset($detail['qty'])?$detail['qty']:'---','');
+			$this->drawLine(0.2+$y++,'h',array(35.5,3.5));
 			if($ln==50){
 				$this->GRID['font_size']=10;
-				$this->centerText(1,$y++,$dbL,18,'');
+				$this->centerText(1,$y++,$dbL.$dbL,$metrics['cols']-2,'');
 				$this->GRID['font_size']=9;
-				$this->centerText(0,$y++,'-- See next page --',20,'');
+				$this->centerText(0,$y++,'-- See next page --',$metrics['cols'],'');
 				$this->GRID['font_size']=10;
-				$this->centerText(1,$y,$dbL,18,'');
+				$this->centerText(1,$y,$dbL.$dbL,$metrics['cols']-2,'');
 				$this->GRID['font_size']=9;	
 				$y+=2;
-				$this->leftText(16.5,$y,'Page '.$page,'','');
+				$this->centerText(0,$y,'Page '.$page,$metrics['cols'],'');
 				return array('index'=>$i+1,'page'=>$page+1);
 			}
 			
@@ -98,14 +101,14 @@ class endingForm extends Formsheet{
 		$y+=1.5;
 		$y+=2;
 		$this->GRID['font_size']=10;
-		$this->centerText(1,$y++,$dbL,18,'');
+		$this->centerText(1,$y++,$dbL.$dbL,$metrics['cols']-2,'');
 		$this->GRID['font_size']=9;
-		$this->centerText(0,$y++,'-- End of Daily Report --',20,'');
+		$this->centerText(0,$y++,'-- End of Daily Report --',$metrics['cols'],'');
 		$this->GRID['font_size']=10;
-		$this->centerText(1,$y,$dbL,18,'');
+		$this->centerText(1,$y,$dbL.$dbL,$metrics['cols']-2,'');
 		$this->GRID['font_size']=9;	
 		$y+=2;
-		$this->leftText(15.5,$y,'Page '.$page,'','');
+		$this->centerText(0,$y,'Page '.$page,$metrics['cols'],'');
 		return array('index'=>$i,'page'=>$page+1);
 	}
 	
