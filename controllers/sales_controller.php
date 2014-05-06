@@ -116,7 +116,7 @@ class SalesController extends AppController {
 
 				
 			
-			//
+			//SALE SAVING
 			if ($this->Sale->saveAll($this->data,array('validate'=>'first'))) {
 				$currentSale = $this->Sale->SalePayment->find('all', array('conditions'=>array('Sale.id'=>$this->Sale->id)));
 				
@@ -138,7 +138,7 @@ class SalesController extends AppController {
 						if($this->SopCgeTran->save($chargeTransaction)){
 							$bal = $this->SopCgeVal->findByCharge201Id($chAcount['Charge201']['id']);
 							$this->SopCgeVal->id = $bal['SopCgeVal']['id'];
-														$this->SopCgeVal->save(
+							$this->SopCgeVal->save(
 											array(
 												'SopCgeVal'=>array(
 													'charge201_id'=>$chAcount['Charge201']['id'],
