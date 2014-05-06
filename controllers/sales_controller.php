@@ -535,4 +535,5 @@ class SalesController extends AppController {
 		$this->layout='pdf';
 		$this->render();
 	}
+
 }

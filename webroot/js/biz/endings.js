@@ -23,7 +23,7 @@ $(document).ready(function(){
 		$('#myDialog').html(_msg);
 	});
 	
-	function populateProducts(daily_beginning){
+	function populateProducts(daily_beginning,total_sale_qty){
 		$.ajax({
 			url:'/canteen/products/findItem/ALL'+'/Product.name',
 			dataType:'json',
@@ -39,18 +39,11 @@ $(document).ready(function(){
 				$('#ending_Inventory ul.recordDataGrid').trigger('clear_grid');
 			},
 			success:function(data){
-			
-			console.log();
 			$('#myDialog').dialog('destroy');	
+		
+			//PREPARE DATA STRUCTURE
 			var source = [];
-			//Prepare data structure
 			$.each(data, function(ctr,obj){
-				//console.log(data);
-				
-				
-				
-				
-				
 				
 				if(obj.Product){
 					var idIs = obj.Product.id;
@@ -58,8 +51,8 @@ $(document).ready(function(){
 					var unit = obj.Unit.alias;
 					var code = obj.Product.item_code;
 					var ending_qty = obj.Product.qty;
-					
-					var beginning_qty=daily_beginning[code];
+					var beginning_qty=(typeof daily_beginning[code]  != "undefined")?daily_beginning[code]:'0.00';
+					var sale_qty=(typeof total_sale_qty[code]  != "undefined")?total_sale_qty[code]:'0.00';
 				}else{
 					var idIs= obj.Perishable.id;
 					var desc= obj.Perishable.name;
@@ -74,6 +67,7 @@ $(document).ready(function(){
 					aggr['div.unit input']=unit;
 					aggr['div.ending_qty input']=ending_qty;
 					aggr['div.beginning_qty input']=beginning_qty;
+					aggr['div.sale_qty input']=sale_qty;
 				source.push(aggr);  
 			});
 			//console.log(source);
@@ -85,16 +79,28 @@ $(document).ready(function(){
 	}
 	
 	
-	function get_daily_beginning(){
+	function get_daily_beginning(total_sale_qty){
 		$.ajax({
 			url:'/canteen/daily_beginning_inventories/get_daily_beginning',
 			dataType:'json',
 			success:function(daily_beginning){
-				populateProducts(daily_beginning);
+				populateProducts(daily_beginning,total_sale_qty);
 			}
 		});
 	}	
-	get_daily_beginning();
+	
+	
+	function get_total_sale_qty(){
+		$.ajax({
+			url:'/canteen/daily_beginning_inventories/get_total_sale_qty',
+			dataType:'json',
+			success:function(total_sale_qty){
+				get_daily_beginning(total_sale_qty);
+			}
+		});
+	}	
+	get_total_sale_qty();
+	
 	
 	
 	$('.input_mode').live('change', function(e,a){
@@ -104,7 +110,7 @@ $(document).ready(function(){
 			$('#ending_Inventory ul.recordDatagrid li.mainInput').hide();
 			$('#ending_Inventory ul.recordDatagrid li.mainInput input').val('');
 			$('#ending_Inventory ul.recordDatagrid li.mainInput input').attr('readonly','readonly');
-			populateProducts();
+			get_total_sale_qty();
 			
 		}else{
 			$('#ending_Inventory ul.recordDataGrid').trigger('clear_grid');

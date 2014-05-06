@@ -84,7 +84,6 @@ class EndingsController extends AppController {
 			if(empty($this->data['EndingDetail'][0]['item_code'])){
 					array_shift($this->data['EndingDetail']);		
 			}
-			//if(this->data[''])
 			
 			$data=$this->data;
 			$this->set('data',$data);

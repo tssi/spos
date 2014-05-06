@@ -2,6 +2,8 @@
 class DailyBeginningInventoriesController extends AppController {
 
 	var $name = 'DailyBeginningInventories';
+	var $uses = array('DailyBeginningInventory','SaleDetail');
+	
 	var $components = array('RequestHandler');
 
 	function index() {
@@ -70,5 +72,34 @@ class DailyBeginningInventoriesController extends AppController {
 			echo json_encode($beginning_qty);
 			exit();
 		}
+	}
+	
+		
+	function get_total_sale_qty(){
+			$Date= $this->data['Sale']['date'];
+			if(empty($Date)) $Date = date('Y-m-d');
+			
+			$fromDate= date("Y-m-d H:i:s",strtotime($Date.' 00:00:00'));
+			$toDate = date("Y-m-d H:i:s",strtotime($Date.'  23:59:59'));
+		
+			
+			$data = $this->SaleDetail->find('all',array(
+							'conditions'=>array(
+												"SaleDetail.created >=" =>$fromDate,
+												"SaleDetail.created <=" =>$toDate,
+												"SaleDetail.is_setmeal_hdr" =>0, 
+												"SaleDetail.is_setmeal_dtl"=>0 
+												),
+							'fields'=>array('SaleDetail.item_code','SUM(SaleDetail.qty) as total_sale_qty'),
+							'group'=>'SaleDetail.item_code'
+						));			
+		
+			$sale_qty = array();
+			foreach($data as $d){
+				$sale_qty[$d['SaleDetail']['item_code']] = $d[0]['total_sale_qty'];
+			}
+			
+			echo json_encode($sale_qty);
+			exit();
 	}
 }

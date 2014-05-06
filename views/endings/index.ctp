@@ -129,7 +129,7 @@
 											<div class="fLeft w50 beginning_qty">
 												<?php echo $this->Form->input('EndingDetail.%.beginning_qty',array('label'=>false, 'class'=>'numeric ','id'=>false, 'value'=>'X')); ?>
 											</div>
-											<div class="fRight w50 ">
+											<div class="fRight w50 sale_qty">
 												<?php echo $this->Form->input('EndingDetail.%.sale_qty',array('label'=>false, 'class'=>'numeric ','id'=>false, 'value'=>'X')); ?>
 											</div>
 											<div class="fClear"></div>

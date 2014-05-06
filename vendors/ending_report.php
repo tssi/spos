@@ -65,12 +65,12 @@ class endingForm extends Formsheet{
 		$y+=0.8;
 		
 		$this->GRID['font_size']=9;
-		$this->leftText(1.25,$y,'Itemcode','');
+		$this->leftText(1,$y,'Itemcode','');
 		$this->centerText(7,$y,'Description',15,'');
 		$this->centerText(26,$y,'Unit',3,'');
-		$this->centerText(29,$y,'Beginning',3,'');
-		$this->centerText(32,$y,'Sale',3,'');
-		$this->centerText(35,$y,'Ending',3,'');
+		$this->rightText(33,$y,'Beginning','','');
+		$this->rightText(36,$y,'Sale','','');
+		$this->rightText(39,$y,'Ending','','');
 		$y+=0.2;
 		$this->GRID['font_size']=10;
 		$this->centerText(1,$y,$bL.$bL,$metrics['cols']-2,'');
@@ -79,11 +79,13 @@ class endingForm extends Formsheet{
 		$ln=1;
 		for($i=$index;$i<count($this->data['EndingDetail']);$i++,$ln++){
 			$detail = $this->data['EndingDetail'][$i];
-			$this->leftText(1.25,$y,$detail['item_code'],'');
+			$this->leftText(1,$y,$detail['item_code'],'');
 			$this->fitText(7,$y,$detail['name'],15,'');
 			$this->centerText(26,$y,isset($detail['unit_id'])?$detail['unit_id']:'---',3,'');
-			$this->rightText(39,$y,isset($detail['qty'])?$detail['qty']:'---','');
-			$this->drawLine(0.2+$y++,'h',array(35.5,3.5));
+			$this->rightText(33,$y,isset($detail['beginning_qty'])?$detail['beginning_qty']:'---','');
+			$this->rightText(36,$y,isset($detail['sale_qty'])?$detail['sale_qty']:'---','');
+			$this->rightText(39,$y++,isset($detail['ending_qty'])?$detail['ending_qty']:'---','');
+			//$this->drawLine(0.2+$y++,'h',array(35.5,3.5));
 			if($ln==50){
 				$this->GRID['font_size']=10;
 				$this->centerText(1,$y++,$dbL.$dbL,$metrics['cols']-2,'');
