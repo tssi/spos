@@ -63,19 +63,37 @@
 					<div class='fClear'></div>
 				<hr/>
 					<div class="recordHeader pbtm btmShadow posRelative" style='padding-top: 7px;'>
-						<div class="fLeft w80 recordHeader">
-							<div class="fLeft w25">
-								<div class="fLeft w95 ">Item Code</div>
+						<div class="fLeft w65 recordHeader">
+							<div class="fLeft w77">
+								<div class="fLeft w32 ">
+									Item Code
+								</div>
+								<div class="fRight w68 ">
+									Item Description
+								</div>
+								<div class="fClear"></div>
 							</div>
-							<div class="fRight w75">
-								<div class="fLeft w80 ">Item Description</div>
-								<div class="fLeft w20 ">Unit</div>
-								<div class="fClear"></div>							
+							<div class="fRight w13">
+								Unit						
 							</div>
 							<div class="fClear"></div>
 						</div>
-						<div class="fRight w20 ">
-							<div class="fLeft w75 ">Qty</div>
+						<div class="fRight w35 ">
+							<div class="fLeft w60 ">
+								<div class="fLeft w42 ">
+									Beginning
+								</div>
+								<div class="fRight w58 ">
+									Sale
+								</div>
+								<div class="fClear"></div>
+							</div>
+							<div class="fRight w40 ">
+								<div class="fLeft w63 ">
+									Ending
+								</div>
+								<div class="fClear"></div>
+							</div>
 							<div class="fClear"></div>
 						</div>
 						<div class="fClear"></div>
@@ -84,34 +102,46 @@
 						<div class="iscrollWrapper">							
 							<ul class="recordDatagrid on w100 h175px b1sg  nbLeft  nbRight">
 								<li class="mainInput">
-									<div class="fLeft w80">
+									<div class="fLeft w65">
 										<div class="hide id">											
 											<?php echo $this->Form->input('EndingDetail.%.id_product',array('type'=>'hidden', 'id'=>false)); ?>
 										</div>
 										<div class="hide qtyC">											
 											<?php echo $this->Form->input('EndingDetail.%.computer_qty',array('type'=>'hidden', 'id'=>false)); ?>
 										</div>
-										<div class="fLeft w25">
-											<div class="fLeft w100 item_code">												
+
+										<div class="fLeft w90">
+											<div class="fLeft w25 item_code">
 												<?php echo $this->Form->input('EndingDetail.%.item_code',array('label'=>false,'id'=>false, 'frm'=>'#itemCheck', 'linkto'=>'#ProductItemCode', 'class'=>'ajax unique numeric', 'readonly'=>'readonly')); ?>
 											</div>
-										</div>
-										<div class="fRight w75">
-											<div class="fLeft w80 desc">
+											<div class="fRight w75 desc">
 												<?php echo $this->Form->input('EndingDetail.%.name',array('label'=>false, 'class'=>'productAuto','id'=>false, 'readonly'=>'readonly')); ?>
-											</div>
-											<div class="fRight w20 unit">
-												<?php echo $this->Form->input('EndingDetail.%.unit_id',array('type'=>'text','label'=>false,'id'=>false,'class'=>'required option', 'readonly'=>'readonly')); ?>
 											</div>
 											<div class="fClear"></div>
 										</div>
-									</div>
-									<div class="fRight w20">
-										<div class="fLeft w70 qty required">
-											<?php echo $this->Form->input('EndingDetail.%.qty',array('label'=>false, 'class'=>'numeric ','id'=>false, 'value'=>'X')); ?>
+										<div class="fRight w10 unit">
+											<?php echo $this->Form->input('EndingDetail.%.unit_id',array('type'=>'text','label'=>false,'id'=>false,'class'=>'required option', 'readonly'=>'readonly')); ?>				
 										</div>
-										<div class="fRight w30">
-											<a class="recordDelete taLeft" href="#">X</a>
+										<div class="fClear"></div>
+									</div>
+									<div class="fRight w35">
+										<div class="fLeft w60 ">
+											<div class="fLeft w50 beginning_qty">
+												<?php echo $this->Form->input('EndingDetail.%.beginning_qty',array('label'=>false, 'class'=>'numeric ','id'=>false, 'value'=>'X')); ?>
+											</div>
+											<div class="fRight w50 ">
+												<?php echo $this->Form->input('EndingDetail.%.sale_qty',array('label'=>false, 'class'=>'numeric ','id'=>false, 'value'=>'X')); ?>
+											</div>
+											<div class="fClear"></div>
+										</div>
+										<div class="fRight w40 ">
+											<div class="fLeft w75 ending_qty">
+												<?php echo $this->Form->input('EndingDetail.%.ending_qty',array('label'=>false, 'class'=>'numeric ','id'=>false, 'value'=>'X')); ?>
+											</div>
+											<div class="fLeft w25">
+												<a class="recordDelete taLeft" href="#">X</a>
+											</div>
+											<div class="fClear"></div>
 										</div>
 										<div class="fClear"></div>
 									</div>
