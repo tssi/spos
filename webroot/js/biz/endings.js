@@ -23,7 +23,7 @@ $(document).ready(function(){
 		$('#myDialog').html(_msg);
 	});
 	
-	function populateProducts(){
+	function populateProducts(daily_beginning){
 		$.ajax({
 			url:'/canteen/products/findItem/ALL'+'/Product.name',
 			dataType:'json',
@@ -39,30 +39,41 @@ $(document).ready(function(){
 				$('#ending_Inventory ul.recordDataGrid').trigger('clear_grid');
 			},
 			success:function(data){
+			
+			console.log();
 			$('#myDialog').dialog('destroy');	
 			var source = [];
 			//Prepare data structure
 			$.each(data, function(ctr,obj){
 				//console.log(data);
+				
+				
+				
+				
+				
+				
 				if(obj.Product){
 					var idIs = obj.Product.id;
 					var desc = obj.Product.name;
 					var unit = obj.Unit.alias;
 					var code = obj.Product.item_code;
-					var qty = obj.Product.qty;
+					var ending_qty = obj.Product.qty;
+					
+					var beginning_qty=daily_beginning[code];
 				}else{
 					var idIs= obj.Perishable.id;
 					var desc= obj.Perishable.name;
 					var unit = obj.Unit.alias;
 					var code = obj.Perishable.item_code;
-					var qty = obj.Perishable.qty;
+					var ending_qty = obj.Perishable.qty;
 				}
 				var aggr={};           
 					aggr['div.id input']=idIs;
 					aggr['div.item_code input']=code;
 					aggr['div.desc input']=desc;
 					aggr['div.unit input']=unit;
-					aggr['div.qty input']=qty;
+					aggr['div.ending_qty input']=ending_qty;
+					aggr['div.beginning_qty input']=beginning_qty;
 				source.push(aggr);  
 			});
 			//console.log(source);
@@ -72,6 +83,19 @@ $(document).ready(function(){
 		}
 		});
 	}
+	
+	
+	function get_daily_beginning(){
+		$.ajax({
+			url:'/canteen/daily_beginning_inventories/get_daily_beginning',
+			dataType:'json',
+			success:function(daily_beginning){
+				populateProducts(daily_beginning);
+			}
+		});
+	}	
+	get_daily_beginning();
+	
 	
 	$('.input_mode').live('change', function(e,a){
 		mode = $(this).find('input:checked').val();
@@ -133,7 +157,6 @@ $(document).ready(function(){
 		//$(document).trigger('restore_defaults');
 	});
 
-	populateProducts();
 
 	$('#EndingAddForm').bind('form_error',function(evt,args){
 		$('#EndingAddForm .uiNotify').html('Fill up required field or delete row');//.addClass('bgCheri').addClass('b1sCheri').fadeIn('slow').fadeOut('slow');
