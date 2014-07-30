@@ -201,7 +201,7 @@ class ProductsController extends AppController {
         if(!empty($id)){
 			if($id!='PI'){ // if not perishable
 				if(empty($orderBy)){
-					$orderBy = 'Product.item_code';
+					$orderBy = 'Product.name';
 				}
 				
 				//$order = array($orderBy);
