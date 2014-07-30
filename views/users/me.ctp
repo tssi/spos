@@ -11,7 +11,7 @@
 					$(FORM).find('input').removeAttr('disabled');
 					$(FORM).find('.password input').val('');
 					if(json_data.status==OK){
-						location.href="/isms/users/logout";
+						location.href="/canteen/users/logout";
 					}
 				},
 				beforeSend:function(e){
