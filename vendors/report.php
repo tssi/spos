@@ -26,7 +26,7 @@ class orForm extends Formsheet{
 			$this->Rect($metrics['base_x'],$metrics['base_y'],$metrics['width'],$metrics['height']);
 		}
 	}
-	function hdr($date){
+	function hdr($date,$cashier){
 		$metrics = array(
 			'base_x'=> 0.75,
 			'base_y'=> 0.25,
@@ -41,12 +41,13 @@ class orForm extends Formsheet{
 		$this->GRID['font_size']=10;
 		$this->centerText(0,2,'Calabash Road, Balic-Balic, Sampaloc, Manila',40,'');
 		$this->centerText(0,4,'Canteen Daily Report',40,'b');
-		$this->leftText(1,7,'Total Sale:','b');
+		$this->leftText(0,7,'Total Sale:','b');
 		$this->rightText(9,7,number_format($this->data['Total_Sales'], 2, '.', ','),'');
-		$this->leftText(1,8,'Food:','b');
+		$this->leftText(0,8,'Food:','b');
 		$this->rightText(9,8,number_format($this->data['Total_Food'], 2, '.', ','),'');
-		$this->leftText(1,9,'Merchandise:','b');
+		$this->leftText(0,9,'Merchandise:','b');
 		$this->rightText(9,9,number_format($this->data['Total_Shelf'], 2, '.', ','),'');
+		$this->leftText(0,10,'Cashier: '.$cashier,'b');
 		$this->GRID['font_size']=9;
 		$this->rightText(40,6,'Date: '.$date,'');
 	
