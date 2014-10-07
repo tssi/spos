@@ -502,6 +502,7 @@ class SalesController extends AppController {
 	function report_pdf(){
 		$user = $this->User->findById($this->data['Sale']['user_id']);
 		$cashier = 	$user['User']['userFull'];
+		
 
 	
 		$data = $this->data['Sale']['data'];
