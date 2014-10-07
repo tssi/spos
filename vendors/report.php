@@ -53,7 +53,7 @@ class orForm extends Formsheet{
 	
 	}
 	
-	function details(){
+	function details($cashier){
 		$dbL="===============================================";
 		$bL="_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
 		$metrics = array(
@@ -91,7 +91,7 @@ class orForm extends Formsheet{
 					orForm::$_currline++;
 					if(orForm::$_currline>orForm::$_max){
 						$this->createSheet();
-						$this->hdr($this->data['Date']);
+						$this->hdr($this->data['Date'],$cashier);
 						$y=10.8;
 						$this->GRID['font_size']=10;
 						$this->centerText(0,$y++,$dbL.$dbL,40,'');
