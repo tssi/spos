@@ -104,10 +104,11 @@ class disForm extends Formsheet{
 		);
 		$this->section($metrics);
 		$this->GRID['font_size']=9;
-		$max = 29;
-		$totalpage = (count($curr_data)!=$max)?ceil(count($curr_data)/$max):$max;
+		$max = 28;
+		$totalpage = (count($curr_data)!=$max)?ceil(count($curr_data)/$max):1;
 		
-		$line_count = 1;
+		
+		$line_count = 0;
 		$curr_page = 1;
 		$i = 1;
 		$y = 3;
@@ -129,12 +130,12 @@ class disForm extends Formsheet{
 				$this->leftText(2.25,$y,$data['menu_items']['menu_item_name'],'','');
 				$this->centerText($x,$y,$data['daily_menus']['approx_srv'],$x_ntvl,'');
 				$this->centerText($x+=$x_ntvl,$y,$data['daily_menus']['additional_approx_srv'],$x_ntvl,'');
-				$this->centerText($x+=$x_ntvl,$y,number_format($total_item, 2, '.', ''),$x_ntvl,'');
+				$this->centerText($x+=$x_ntvl,$y,number_format($total_item, 2, '.', ','),$x_ntvl,'');
 				$this->rightText(-0.5+$x+=$x_ntvl,$y,$data['0']['no_of_sold_item'],$x_ntvl,'');
-				$this->rightText(-0.5+$x+=$x_ntvl,$y,number_format($data['daily_menus']['srv_left'], 2, '.', ''),$x_ntvl,'');
+				$this->rightText(-0.5+$x+=$x_ntvl,$y,number_format($data['daily_menus']['srv_left'], 2, '.', ','),$x_ntvl,'');
 				$this->rightText(-0.5+$x+=$x_ntvl,$y,$data['daily_menus']['selling_price'],$x_ntvl,'');
-				$this->rightText(-0.5+$x+=$x_ntvl,$y,number_format($total, 2, '.', ''),$x_ntvl,'');
-				$this->rightText(-0.5+$x+=$x_ntvl,$y++,number_format($differences, 2, '.', ''),6.25,'');
+				$this->rightText(-0.5+$x+=$x_ntvl,$y,number_format($total, 2, '.', ','),$x_ntvl,'');
+				$this->rightText(-0.5+$x+=$x_ntvl,$y++,number_format($differences, 2, '.', ','),6.25,'');
 				$i++;
 			}
 			$line_count++;
@@ -142,7 +143,7 @@ class disForm extends Formsheet{
 				$this->createSheet();
 				$this->hdr($date);
 				$y = 3;
-				$line_count = 1;
+				$line_count = 0;
 				$this->data_table();
 				$this->rightText(52,34,'Page '.++$curr_page.' of '.$totalpage,'','');
 			}

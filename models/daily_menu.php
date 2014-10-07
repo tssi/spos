@@ -20,7 +20,7 @@ class DailyMenu extends AppModel {
 		)
 	);
 	
-	public function daily_inventory_sheet_hotmeal($date){
+	public function daily_inventory_sheet_hotmeal($date,$cashier){
 		return $this->query( 
 		"SELECT 
 			  `sale_details`.`item_code`,
@@ -32,7 +32,8 @@ class DailyMenu extends AppModel {
 			  `daily_menus`.`selling_price`,
 			  `daily_menus`.`srv_left`,
 			  `sale_details`.`is_setmeal_hdr`,
-			  `sale_details`.`is_setmeal_dtl` 
+			  `sale_details`.`is_setmeal_dtl` ,
+			  `sales`.`cashier` 
 			FROM
 			  `sale_details` 
 			  LEFT OUTER JOIN `products` 
@@ -50,10 +51,15 @@ class DailyMenu extends AppModel {
 				AND (
 				  DATE(`daily_menus`.date) = DATE(`sale_details`.created)
 				) 
+			 INNER JOIN `sales` 
+				ON (
+				  `sale_details`.`sale_id` = `sales`.`id`
+				) 
 			WHERE `sale_details`.`created` >= '$date' 
-			AND   NOT (`sale_details`.`is_setmeal_hdr`=0 AND 
-			  `sale_details`.`is_setmeal_dtl` =0 AND
-			   `menu_items`.`name`  IS NULL)
+				AND   NOT (`sale_details`.`is_setmeal_hdr`=0 AND 
+					`sale_details`.`is_setmeal_dtl` =0 AND
+					`menu_items`.`name`  IS NULL)
+				 AND `sales`.`cashier` = '$cashier' 
 			GROUP BY `sale_details`.`item_code`,
 			  `sale_details`.`is_setmeal_dtl`,
 			  `sale_details`.`is_setmeal_hdr` 
