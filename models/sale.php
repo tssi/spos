@@ -32,7 +32,7 @@ class Sale extends AppModel {
 		)
 	);
 	
-	public function daily_cashiers_report($date){
+	public function daily_cashiers_report($date,$cashier){
 		$sale = $this->query( 
 				"SELECT 
 				  `sale_details`.`item_code`,
@@ -47,9 +47,14 @@ class Sale extends AppModel {
 				  INNER JOIN `products` 
 					ON (
 					  `sale_details`.`item_code` = `products`.`item_code`
+					)
+				INNER JOIN `sales` 
+					ON (
+					  `sale_details`.`sale_id` = `sales`.`id`
 					) 
 				WHERE (
 					`sale_details`.`created` >= '$date'
+					AND `sales`.`cashier` = '$cashier'
 				  ) 
 				GROUP BY `sale_details`.`item_code` 
 				ORDER BY   `products`.`category_id`,`products`.`name`"
