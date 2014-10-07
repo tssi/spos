@@ -6,7 +6,7 @@
 		<?php echo $title_for_layout; ?>
 	</title>
 	<?php
-		echo $this->Html->meta('icon',$SystemsDefault['ISMS_ICON'], array('type' =>'icon'));
+		echo $this->Html->meta('icon',"\canteen\img\isms.ico.png", array('type' =>'icon'));
 		echo $this->Html->css('style/style');
 		echo $this->Html->script(array('ss/ssScript','ss/ssUtil'));
 	?>
