@@ -496,12 +496,23 @@ class SalesController extends AppController {
 	}
 	
 	function report(){
-	
+		$user =  $this->Auth->user();
+		if($user['User']['is_collector']){
+			$conditions =array('User.is_collector !='=>1);
+		}else{
+			$conditions =array('User.id'=>$user['User']['id']);
+		}
+		$cashiers = $this->User->find('list',array(
+										'conditions'=>$conditions,
+										'fields'=>array('User.id','User.username'),
+										'order'=>'User.username'
+										));				
+		$this->set(compact('cashiers'));
 	}
 	
 	function report_pdf(){
 		$user = $this->User->findById($this->data['Sale']['user_id']);
-		$cashier = 	$user['User']['userFull'];
+		$cashier = 	ucFirst($user['User']['last_name']).', '.ucFirst($user['User']['first_name']).' '.ucFirst($user['User']['middle_name'][0]).'.';
 
 	
 		$data = $this->data['Sale']['data'];

@@ -29,7 +29,7 @@ class orForm extends Formsheet{
 	function hdr($date,$cashier){
 		$metrics = array(
 			'base_x'=> 0.75,
-			'base_y'=> 0.25,
+			'base_y'=> 0.2,
 			'height'=> 1.5,
 			'width'=> 7,
 			'cols'=> 40,

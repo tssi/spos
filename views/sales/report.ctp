@@ -17,10 +17,16 @@
 	<div class='tab-content'>
 		<div class="canteen form formNeat w100">
 			<div class="wWider">
+				<div class="fLeft w74 classic soft">
+					<?php echo $this->Form->input('user_id', array('options'=>$cashiers,'label'=>'Cashier\'s Username','class'=>'w39'));?>
+				</div><div class='fClear'></div>
+					
 				<div class="fLeft w38 classic soft">
 					<?php echo $this->Form->input('date', array('class'=>'datepicker w39'));?>
 					<?php echo $this->Form->input('data', array('type'=>'hidden'));?>
-					<?php echo $this->Form->input('user_id', array('type'=>'hidden', 'value'=>$user['id']));?>
+					<?php
+					//echo $this->Form->input('user_id', array('type'=>'hidden', 'value'=>$user['id']));
+					?>
 					<?php echo $this->Form->input('is_collector', array('type'=>'hidden','id'=>'isCollector','value'=>$user['is_collector']));?>
 				</div>	
 				<div class="fRight w62 topaz pt5">	
