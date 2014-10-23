@@ -511,9 +511,13 @@ class SalesController extends AppController {
 	}
 	
 	function report_pdf(){
-		$user = $this->User->findById($this->data['Sale']['user_id']);
-		$cashier = 	$user['User']['userFull'];
-
+		if($this->data['Sale']['user_id'] == 'is_all_cashier'){
+			$cashier = 'ALL CASHIER';
+		}else{
+			$user = $this->User->findById($this->data['Sale']['user_id']);
+			$cashier = 	ucFirst($user['User']['last_name']).', '.ucFirst($user['User']['first_name']).' '.ucFirst($user['User']['middle_name'][0]).'.';
+		}
+	
 		$data = $this->data['Sale']['data'];
 		$data = json_decode($data, true);
 		$this->set(compact('data','cashier'));
