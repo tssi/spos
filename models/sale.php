@@ -33,6 +33,9 @@ class Sale extends AppModel {
 	);
 	
 	public function daily_cashiers_report($date,$cashier){
+		if($cashier == 'is_all_cashier') $additional_condition='';
+		else $additional_condition="AND `sales`.`cashier` = '".$cashier."'";
+
 		$sale = $this->query( 
 				"SELECT 
 				  `sale_details`.`item_code`,
@@ -54,7 +57,7 @@ class Sale extends AppModel {
 					) 
 				WHERE (
 					`sale_details`.`created` >= '$date'
-					AND `sales`.`cashier` = '$cashier'
+					".$additional_condition."
 				  ) 
 				GROUP BY `sale_details`.`item_code` 
 				ORDER BY   `products`.`category_id`,`products`.`name`"
