@@ -21,6 +21,9 @@ class DailyMenu extends AppModel {
 	);
 	
 	public function daily_inventory_sheet_hotmeal($date,$cashier){
+		if($cashier == 'is_all_cashier') $additional_condition='';
+		else $additional_condition="AND `sales`.`cashier` = '".$cashier."'";
+		
 		return $this->query( 
 		"SELECT 
 			  `sale_details`.`item_code`,
@@ -59,7 +62,7 @@ class DailyMenu extends AppModel {
 				AND   NOT (`sale_details`.`is_setmeal_hdr`=0 AND 
 					`sale_details`.`is_setmeal_dtl` =0 AND
 					`menu_items`.`name`  IS NULL)
-				 AND `sales`.`cashier` = '$cashier' 
+				".$additional_condition."
 			GROUP BY `sale_details`.`item_code`,
 			  `sale_details`.`is_setmeal_dtl`,
 			  `sale_details`.`is_setmeal_hdr` 

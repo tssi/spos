@@ -506,14 +506,20 @@ class SalesController extends AppController {
 										'conditions'=>$conditions,
 										'fields'=>array('User.id','User.username'),
 										'order'=>'User.username'
-										));				
+										));		
+
+		if($user['User']['is_collector']) $cashiers['is_all_cashier'] = 'ALL Cashier';
+		//pr($cashiers);exit;
 		$this->set(compact('cashiers'));
 	}
 	
 	function report_pdf(){
-		$user = $this->User->findById($this->data['Sale']['user_id']);
-		$cashier = 	ucFirst($user['User']['last_name']).', '.ucFirst($user['User']['first_name']).' '.ucFirst($user['User']['middle_name'][0]).'.';
-
+		if($this->data['Sale']['user_id'] == 'is_all_cashier'){
+			$cashier = 'ALL CASHIER';
+		}else{
+			$user = $this->User->findById($this->data['Sale']['user_id']);
+			$cashier = 	ucFirst($user['User']['last_name']).', '.ucFirst($user['User']['first_name']).' '.ucFirst($user['User']['middle_name'][0]).'.';
+		}
 	
 		$data = $this->data['Sale']['data'];
 		$data = json_decode($data, true);
@@ -545,8 +551,12 @@ class SalesController extends AppController {
 	}
 
 	function daily_cashiers_report(){
-		$date = $this->data['Sale']['date'];
+	
+		
+		
+		
 		$cashier = $this->data['Sale']['user_id'];
+		$date = $this->data['Sale']['date'];
 	
 		$curr_data = $this->Sale->daily_cashiers_report($date.' 00:00:00',$cashier);
 		$this->set(compact('curr_data','date'));

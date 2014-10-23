@@ -30,16 +30,18 @@ $(document).ready(function(){
     
 	$('#go').click(function(){
 		var isCollector = parseInt($('#isCollector').val());
+		
 		var urlIs='';
-		if(isCollector){
+		 //if(isCollector){
+		 if($('#SaleUserId').val() == "is_all_cashier"){
 			//console.log('isCollector', isCollector);
 			urlIs='/canteen/sales/daily_report/';
-			
-		}
-		if(!isCollector){
+		}else{	
 			//console.log('!isCollector', isCollector);
 			urlIs='/canteen/sales/daily_report/'+$('#SaleUserId').val();
 		}
+		
+		
 		//console.log(urlIs);
 		$('#SaleDailyReportForm').ajaxSubmit({
 		url:urlIs,
