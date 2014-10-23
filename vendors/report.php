@@ -144,7 +144,7 @@ class orForm extends Formsheet{
 					orForm::$_currline++;
 					if(orForm::$_currline>orForm::$_max){	
 						$this->createSheet();
-						$this->hdr($this->data['Date']);
+						$this->hdr($this->data['Date'],$cashier);
 						$y=10.8;
 						$this->GRID['font_size']=10;
 						$this->centerText(1,$y++,$dbL,18,'');

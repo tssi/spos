@@ -511,13 +511,9 @@ class SalesController extends AppController {
 	}
 	
 	function report_pdf(){
-		if($this->data['Sale']['user_id'] == 'is_all_cashier'){
-			$cashier = 'ALL CASHIER';
-		}else{
-			$user = $this->User->findById($this->data['Sale']['user_id']);
-			$cashier = 	ucFirst($user['User']['last_name']).', '.ucFirst($user['User']['first_name']).' '.ucFirst($user['User']['middle_name'][0]).'.';
-		}
-	
+		$user = $this->User->findById($this->data['Sale']['user_id']);
+		$cashier = 	$user['User']['userFull'];
+
 		$data = $this->data['Sale']['data'];
 		$data = json_decode($data, true);
 		$this->set(compact('data','cashier'));
@@ -548,8 +544,8 @@ class SalesController extends AppController {
 	}
 
 	function daily_cashiers_report(){
-		$cashier = $this->data['Sale']['user_id'];
 		$date = $this->data['Sale']['date'];
+		$cashier = $this->data['Sale']['user_id'];
 	
 		$curr_data = $this->Sale->daily_cashiers_report($date.' 00:00:00',$cashier);
 		$this->set(compact('curr_data','date'));
