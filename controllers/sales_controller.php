@@ -369,6 +369,10 @@ class SalesController extends AppController {
 							"Sale.created >=" =>$fromDate,
 							"Sale.created <=" =>$toDate,
 						);				
+		if(!empty($byCashier)){
+			$conditions['Sale.cashier ='] = $byCashier;
+		}				
+		
 		$dailySale = $this->Sale->find('all', array('conditions'=>$conditions));
 		
 		
