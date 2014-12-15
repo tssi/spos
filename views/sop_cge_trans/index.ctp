@@ -1,53 +1,74 @@
-<div class="sopCgeTrans index">
-	<h2><?php __('Sop Cge Trans');?></h2>
-	<table cellpadding="0" cellspacing="0">
-	<tr>
-			<th><?php echo $this->Paginator->sort('id');?></th>
-			<th><?php echo $this->Paginator->sort('date');?></th>
-			<th><?php echo $this->Paginator->sort('doc_number');?></th>
-			<th><?php echo $this->Paginator->sort('amount');?></th>
-			<th><?php echo $this->Paginator->sort('flag');?></th>
-			<th class="actions"><?php __('Actions');?></th>
-	</tr>
-	<?php
-	$i = 0;
-	foreach ($sopCgeTrans as $sopCgeTran):
-		$class = null;
-		if ($i++ % 2 == 0) {
-			$class = ' class="altrow"';
-		}
-	?>
-	<tr<?php echo $class;?>>
-		<td><?php echo $sopCgeTran['SopCgeTran']['id']; ?>&nbsp;</td>
-		<td><?php echo $sopCgeTran['SopCgeTran']['date']; ?>&nbsp;</td>
-		<td><?php echo $sopCgeTran['SopCgeTran']['doc_number']; ?>&nbsp;</td>
-		<td><?php echo $sopCgeTran['SopCgeTran']['amount']; ?>&nbsp;</td>
-		<td><?php echo $sopCgeTran['SopCgeTran']['flag']; ?>&nbsp;</td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $sopCgeTran['SopCgeTran']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $sopCgeTran['SopCgeTran']['id'])); ?>
-			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $sopCgeTran['SopCgeTran']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $sopCgeTran['SopCgeTran']['id'])); ?>
-		</td>
-	</tr>
-<?php endforeach; ?>
-	</table>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-	'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
-	));
-	?>	</p>
+<?php
+	echo $this->Html->script(array('ui/uiSmartTable','ui/uiInputNumeric','ui/uiCollapsible','form/formValidation','form/formNeat'));
+	echo $this->Html->css(array('ui/uiSmartTable','ui/uiCollapsible','ui/uiIScroll','form/formValidation','form/formNeat','form/formNeatCanteen','record/recordDatagrid','record/recordSearch'));
+?>
+<div class='tab'>
+	<div class='tab-header'>Charge Transaction</div>
+	<div class='tab-content'>
+		<div class="canteen form formNeat w100">
+			<div class='tab w90 mCenter'>
+				<h2 class="tab-header bgAqua taCenter tcWhite fsSmall txtShadow pad4"></h2>
+				<div class='tab-content'>
+					<table class='w100 smart_table fsSmall'>
+						<thead>
+							<th class="w10">Date</th>
+							<th class="w10">Transaction No.</th>
+							<th class="w10">Amount</th>
+							<th class="w10">Flag</th>
+							<th class="w10">ID No.</th>
+							<th class="w10">RFID</th>
+						</thead>
+						<tbody>
+							<td class="text-left"> Dec. 11,2014</td>
+							<td class="text-center"> 10000000</td>
+							<td class="text-center"> 10,000.00</td>
+							<td class="text-center"> 1</td>
+							<td class="text-center"> 030012</td>
+							<td class="text-center"> 3211513421</td>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<br/>
+			<div class="wWider">
+				<div class="fLeft w40 classic soft">
+					<?php echo $this->Form->input('id', array('label'=>'ID No','class'=>'w50'));?>
+				</div>
+				<div class='fClear'></div>	
+				<div class="fLeft w60 classic soft">
+					<?php echo $this->Form->input('name', array('class'=>''));?>
+				</div>	
+				<div class="fLeft w40 topaz pt2">	
+					<?php echo $this->Form->submit('Go',array('type'=>'button','id'=>'Go'));?>
+					<?php echo $this->Form->submit('Cancel',array('type'=>'button','id'=>'Cancel'));?>
+				</div>
+				<div class='fClear'></div>
+			</div>
+			<hr>
 
-	<div class="paging">
-		<?php echo $this->Paginator->prev('<< ' . __('previous', true), array(), null, array('class'=>'disabled'));?>
-	 | 	<?php echo $this->Paginator->numbers();?>
- |
-		<?php echo $this->Paginator->next(__('next', true) . ' >>', array(), null, array('class' => 'disabled'));?>
+			<div class='tab w90 mCenter'>
+				<h2 class="tab-header bgAqua taCenter tcWhite fsSmall txtShadow pad4"></h2>
+				<div class='tab-content'>
+					<table class='w100 smart_table fsSmall'>
+						<thead>
+							<th class="w10">Date</th>
+							<th class="w10">Transaction No.</th>
+							<th class="w10">Charge (+)</th>
+							<th class="w10">Payment (-)</th>
+							<th class="w10">Balance (=)</th>
+							<th class="w10">RFID</th>
+						</thead>
+						<tbody>
+							<td class="text-left"> Dec. 11,2014</td>
+							<td class="text-center">10000000</td>
+							<td class="text-center">10,000.00</td>
+							<td class="text-center">3,500.00</td>
+							<td class="text-center">6,500.00</td>
+							<td class="text-center">3211513421</td>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
-<div class="actions">
-	<h3><?php __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Sop Cge Tran', true), array('action' => 'add')); ?></li>
-	</ul>
 </div>

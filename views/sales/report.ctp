@@ -9,7 +9,6 @@
 		background: none;
 	}
 </style>
-
 <?php echo $this->Form->create('Sale', array('action'=>'daily_report'));?>
 <div id='dialog'></div>
 <div class='tab'>

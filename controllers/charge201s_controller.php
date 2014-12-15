@@ -163,11 +163,11 @@ class Charge201sController extends AppController {
 		
 		switch($category){
 			case "E":
-				$name = $this->Employee->getEmployeeById($employee);
+				$name = $this->Employee->findbyId($employee);
 				$name = $name['Employee']['full_name'];
 				break;
 			case "S":
-				$name = $this->Student->getStudentById($employee);
+				$name = $this->Student->findById($employee);
 				$name = $name['Student']['FullName'];
 				break;
 		}
@@ -191,15 +191,16 @@ class Charge201sController extends AppController {
 		
 		switch($cat){
 			case 'E':
-				$buyer = $this->Employee->getEmployeeById($ref);
+				$buyer = $this->Employee->findbyId($ref);
 			break;
 			case 'S':
-				$buyer = $this->Student->getStudentById($ref);
+				$buyer = $this->Student->findBySno($ref);
 			break;
 			default:
 			break;
 			
 		}
+		
 	
 		$charge = $this->Charge201->find('first', array('conditions'=>array(
 				'Charge201.reference'=>$ref,

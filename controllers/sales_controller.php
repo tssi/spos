@@ -59,8 +59,6 @@ class SalesController extends AppController {
 			}
 			//END
 			
-			
-			
 			//PREPARE SALE DETAILS
 			$newSaleDetail=array();
 			for($t=0;$t<count($this->data['SaleDetail']);$t++){
@@ -116,12 +114,13 @@ class SalesController extends AppController {
 			}
 			//END
 
-				
+			//pr($this->data);exit;
+			
 			
 			//SALE SAVING
 			if ($this->Sale->saveAll($this->data,array('validate'=>'first'))) {
 				$currentSale = $this->Sale->SalePayment->find('all', array('conditions'=>array('Sale.id'=>$this->Sale->id)));
-				
+				pr($currentSale);exit;
 				//GET CHARGED TO DEDUCT TO CREDIT
 				foreach($currentSale as $paymentIs){ 
 					//FOR CHARGE ACCOUNT
@@ -375,6 +374,22 @@ class SalesController extends AppController {
 		
 		$dailySale = $this->Sale->find('all', array('conditions'=>$conditions));
 		
+		$spamount = 0;
+		$sdamount = 0;
+		foreach($dailySale as $ds){
+			$spamount= $ds['SalePayment'][0]['amount'];
+			
+			foreach($ds['SaleDetail'] as $sd){
+				$sdamount+= $sd['amount'];
+			}
+			//UNCOMMENT THIS CODE FOR DEBUGGING THIS WILL COMPARE SALE PAYMENT AMOUNT VS SALE DETAILs TOTAL 
+			//pr('SP ID '.$ds['SalePayment'][0]['id']. ', SALE ID '.$ds['SalePayment'][0]['sale_id']);
+			//pr('SalePyment '.$spamount.', '.$sdamount);
+			//$sdamount=0;
+			
+		}
+		//pr($dailySale);
+		//exit;
 		
 		$report = array();
 		$food = array();
@@ -540,7 +555,7 @@ class SalesController extends AppController {
 	function employeeCharged(){
 		//$this->data['Sale']['buyer']=19;
 		if($this->RequestHandler->isAjax()){
-			echo json_encode($this->Employee->getEmployeeById($this->data['Sale']['buyer']));
+			echo json_encode($this->Employee->findbyId($this->data['Sale']['buyer']));
 			exit();
 		}
 	}

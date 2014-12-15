@@ -160,11 +160,11 @@ class Prepaid201sController extends AppController {
 		$ref_no=null;
 		switch($category){
 			case "E":
-				$name = $this->Employee->getEmployeeById($employee);
+				$name = $this->Employee->findbyId($employee);
 				$name = $name['Employee']['full_name'];
 				break;
 			case "S":
-				$name = $this->Student->getStudentById($employee);
+				$name = $this->Student->findById($employee);
 				$name = $name['Student']['FullName'];
 				break;
 		}
@@ -192,10 +192,10 @@ class Prepaid201sController extends AppController {
 		
 		switch($cat){
 			case 'E':
-				$buyer = $this->Employee->getEmployeeById($ref);
+				$buyer = $this->Employee->findbyId($ref);
 			break;
 			case 'S':
-				$buyer = $this->Student->getStudentById($ref);
+				$buyer = $this->Student->findById($ref);
 			break;
 			default:
 			break;

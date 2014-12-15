@@ -36,7 +36,6 @@ $(document).ready(function(e){
 	$('.recordDatagrid .SetMeal  a.recordDelete').live('click',function(){
 		var THIS =$(this).parents('li:first').attr('set-ctr');
 		$('[set-ctr='+THIS+']').remove();
-	
 	}); 
 	
 	function getSetMeal(menuitem_id,data,set_ctr){
@@ -101,8 +100,6 @@ $(document).ready(function(e){
 		if (allowCashiering){    
 			var data = [];
 			var obj = args.obj;
-			console.log(obj)
-
 			var qty = $('#qty').val();
 			var amount = ssUtil.roundNumber(obj['div.price input']*qty,2);    
 			obj['div.qty input']=qty;
@@ -118,7 +115,6 @@ $(document).ready(function(e){
 					$('#itemsSold ul.recordDataGrid li:last').removeClass('SetMeal').removeAttr('set-ctr');
 					$('#itemsSold ul.recordDataGrid li:last').find('.xDel').html('<a class="recordDelete" href="#">X</a>');
 					$('#itemsSold ul.recordDataGrid li:last').find('.desc input').removeClass('mLeft10px');
-					
 				}
 				$('#save_button').attr("disabled","disabled").parent().parent().removeClass('topaz');
 			}
@@ -542,6 +538,7 @@ $(document).ready(function(e){
 					$.ajax({
 						url:'/canteen/charge201s/checkCharges/'+$('#by').val()+'/'+empID,
 						type:'POST',
+						dataType:"json",
 						beforeSend:function(){
 							$('#SaleName').val('');
 							$('#dialog').dialog({
@@ -549,14 +546,11 @@ $(document).ready(function(e){
 								modal:true,
 								closeOnEscape: false,
 								open: function(event, ui){
-								
 								$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
 								buttons:{}
 							});
 							$('#dialog').html('<center><br/><img src="/canteen/img/icons/loader.gif"><br/><br/><strong> Checking ID...</strong><br/><br/></center>');
-						
 						},
-						dataType:"json",
 						success:function(z){
 							$('#dialog').dialog('destroy');
 							var exist=false;
@@ -570,67 +564,43 @@ $(document).ready(function(e){
 										title:'Notification',
 										modal:true,
 										closeOnEscape: false,
-										open: function(event, ui){
-										
-										$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
+										open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
 										buttons:{
 										'Back':function(){
 												$(this).dialog('destroy');
 												$('#SaleBuyer').select();
-												
 											}
 										}
 									});
 									$('#dialog').html('<center><br/><br/><strong> Insufficient Balance to proceed..</strong><br/><br/></center>');
-									
 								}
 							}else{
-								if(z.Buyer.Student){
-									try{
-										$('#SaleName').val(z.Buyer.Student.FullName);
-										creditLimit=z.SopCgeVal['0'].amount_balance;
-										exist=true;
-									}catch(e){
-										$('#dialog').dialog({
-										title:'Notification',
-										modal:true,
-										closeOnEscape: false,
-										open: function(event, ui){
-										
-										$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
-										buttons:{
+								$('#dialog').dialog({
+									title:'Notification',
+									modal:true,
+									closeOnEscape: false,
+									open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
+									buttons:{
 										'Back':function(){
 												$(this).dialog('destroy');
 												$('#SaleBuyer').select();
-												
 											}
 										}
-									});
-									$('#dialog').html('<center><br/><br/><strong> Insufficient Balance to proceed..</strong><br/><br/></center>');
-									
+								});
+								if(z.Buyer.Student){
+									console.log(z.Buyer.Student);
+									try{
+										$('#SaleName').val(z.Buyer.Student.FullName);
+										creditLimit=500;//z.SopCgeVal['0'].amount_balance;
+										exist=true;
+									}catch(e){
+										$('#dialog').html('<center><br/><br/><strong> Insufficient Balance to proceed..</strong><br/><br/></center>');
 									}
 								}else{
 									creditLimit=0;
-									$('#dialog').dialog({
-										title:'Notification',
-										modal:true,
-										closeOnEscape: false,
-										open: function(event, ui){
-										
-										$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
-										buttons:{
-										'Back':function(){
-												$(this).dialog('destroy');
-												$('#SaleBuyer').select();
-												
-											}
-										}
-									});
 									$('#dialog').html('<center><br/><br/><strong> ID, Not Existing!!</strong><br/><br/></center>');
-								
 								}
 							}
-							
 							if(exist){
 								////console.log(creditLimit);
 								if(creditLimit > 0){
@@ -638,48 +608,11 @@ $(document).ready(function(e){
 								}else{
 									allowCashiering = false;
 								}
-							
 								$('#qty').val(DEF_QTY).focus();
 								$('#description').focus();
 							}
-						},
-						error:function(){
-							$('#dialog').dialog({
-								title:'Notification',
-								modal:true,
-								closeOnEscape: false,
-								open: function(event, ui){
-									$(this).parent().children().children(".ui-dialog-titlebar-close").hide();// Hide close button
-								},
-								buttons:{
-										'Back':function(){
-											$(this).dialog('destroy');
-										}
-								}
-							});
-							$('#dialog').html('<center><br/><img src="/canteen/img/icons/loader.gif"><br/><br/><strong> Checking ID...</strong><br/><br/></center>');
-						
 						}
 					});
-				}else{
-					$('#dialog').dialog({
-								title:'Notification',
-								modal:true,
-								closeOnEscape: false,
-								open: function(event, ui){
-									$(this).parent().children().children(".ui-dialog-titlebar-close").hide();// Hide close button
-								},
-								buttons:{
-										'Back':function(){
-											$(this).dialog('destroy');
-											$('#SaleBuyer').focus();
-										}
-								}
-							});
-							$('#dialog').html('<center><br/><br/><strong>ID needed!</strong><br/><br/></center>');
-						
-				
-				
 				}
 			}
 			if (MODE =='PR'){
@@ -808,25 +741,6 @@ $(document).ready(function(e){
 						
 						}
 					});
-				}else{
-					$('#dialog').dialog({
-								title:'Notification',
-								modal:true,
-								closeOnEscape: false,
-								open: function(event, ui){
-									$(this).parent().children().children(".ui-dialog-titlebar-close").hide();// Hide close button
-								},
-								buttons:{
-										'Back':function(){
-											$(this).dialog('destroy');
-											$('#SaleBuyer').focus();
-										}
-								}
-							});
-							$('#dialog').html('<center><br/><br/><strong>ID needed!</strong><br/><br/></center>');
-						
-				
-				
 				}
 			}
 		}
@@ -1013,7 +927,6 @@ $(document).ready(function(e){
 			$.getJSON(ssUtil.cch_brk('/canteen/daily_menus/findDailyMenu/'+TODAY+''),
 				function(data){
 					source = [];
-					console.log(data);
 					if(data.length>0){
 						$.each(data, function(ctr,obj){
 						
