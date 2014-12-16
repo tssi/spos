@@ -4,6 +4,4 @@ class Employee extends AppModel {
 	var $virtualFields = array(
 			'full_name'=>'CONCAT (Employee.last_name,", ",Employee.first_name,", ",Employee.middle_name)'
 		);
-
-
 }

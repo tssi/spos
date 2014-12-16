@@ -113,14 +113,14 @@ class SalesController extends AppController {
 				unset($this->data['DailyBeginningInventory']);
 			}
 			//END
-
-			//pr($this->data);exit;
 			
 			
 			//SALE SAVING
 			if ($this->Sale->saveAll($this->data,array('validate'=>'first'))) {
 				$currentSale = $this->Sale->SalePayment->find('all', array('conditions'=>array('Sale.id'=>$this->Sale->id)));
-				pr($currentSale);exit;
+
+				
+				
 				//GET CHARGED TO DEDUCT TO CREDIT
 				foreach($currentSale as $paymentIs){ 
 					//FOR CHARGE ACCOUNT
@@ -135,7 +135,7 @@ class SalesController extends AppController {
 								'doc_number'=>$paymentIs['Sale']['id'],
 								'amount'=>$paymentIs['SalePayment']['amount'],
 								'flag'=>1,
-							);
+							);	
 						if($this->SopCgeTran->save($chargeTransaction)){
 							$bal = $this->SopCgeVal->findByCharge201Id($chAcount['Charge201']['id']);
 							$this->SopCgeVal->id = $bal['SopCgeVal']['id'];
@@ -181,6 +181,14 @@ class SalesController extends AppController {
 					}
 					//END
 				}
+				
+
+				
+				
+				
+				
+				
+				
 				
 				//UPDATE PRODUCT INVENTORY &|| DAILY MENU INVENTORY
 				foreach($this->data['SaleDetail'] as $dtl){

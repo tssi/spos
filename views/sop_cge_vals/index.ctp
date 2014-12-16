@@ -18,7 +18,7 @@
 	<tr<?php echo $class;?>>
 		<td><?php echo $sopCgeVal['SopCgeVal']['id']; ?>&nbsp;</td>
 		<td><?php echo $sopCgeVal['SopCgeVal']['amount_balance']; ?>&nbsp;</td>
-		<td><?php echo $sopCgeVal['SopCgeVal']['as_of_date']; ?>&nbsp;</td>
+		<td><?php echo $sopCgeVal['SopCgeVal']['modified']; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $sopCgeVal['SopCgeVal']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $sopCgeVal['SopCgeVal']['id'])); ?>
