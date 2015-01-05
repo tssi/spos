@@ -399,6 +399,8 @@ class ProductsController extends AppController {
 			$this->data['Product']['qty'] = $this->data['Product']['qty'] - $item_sales_count[0]['SUM(`SaleDetail`.`qty`)'];
 			
 		}
+		//REMOVE THIS AFTER INVENTORY HAS SET
+		$this->data['Product']['init_qty'] = $this->data['Product']['qty']
 		
 		if($this->Product->saveAll($this->data)){
 			if($this->RequestHandler->isAjax()){
