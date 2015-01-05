@@ -1,8 +1,14 @@
 <?php
 class Charge201 extends AppModel {
 	var $name = 'Charge201';
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
+	
+	var $virtualFields = array('str_category'=>"CASE category
+											WHEN 'E' THEN 'Employee'
+											WHEN 'S' THEN 'Student'
+										END ");
 
+	
+	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $hasMany = array(
 		'SopCgeTran' => array(
 			'className' => 'SopCgeTran',
@@ -30,6 +36,23 @@ class Charge201 extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		)
+	);
+	
+	var $belongsTo = array(
+		'Employee' => array(
+			'className' => 'Employee',
+			'foreignKey' => 'reference',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'Student' => array(
+			'className' => 'Student',
+			'foreignKey' => 'reference',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 	);
 
 }

@@ -4,9 +4,7 @@
 		<legend><?php __('Edit Charge201'); ?></legend>
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('reference');
 		echo $this->Form->input('status');
-		echo $this->Form->input('category');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

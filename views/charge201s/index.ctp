@@ -20,7 +20,7 @@
 		<td><?php echo $charge201['Charge201']['id']; ?>&nbsp;</td>
 		<td><?php echo $charge201['Charge201']['reference']; ?>&nbsp;</td>
 		<td><?php echo $charge201['Charge201']['status']; ?>&nbsp;</td>
-		<td><?php echo $charge201['Charge201']['category']; ?>&nbsp;</td>
+		<td><?php echo $charge201['Charge201']['str_category']; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $charge201['Charge201']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $charge201['Charge201']['id'])); ?>

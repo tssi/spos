@@ -8,7 +8,6 @@ class Charge201sController extends AppController {
 	function index() {
 		$this->Charge201->recursive = 0;
 		$this->set('charge201s', $this->paginate());
-		
 	}
 
 	function view($id = null) {
@@ -218,5 +217,20 @@ class Charge201sController extends AppController {
 		}
 	}
 
+	function getEmployee($reference_id=null){
+		$result = $this->Employee->find('first',array('conditions'=>array('Employee.id'=>$reference_id)));
+		
+		$this->Charge201->find('first',array('conditions'=>array('Charge201.reference'=>$reference_id)))?$result['hasCharge201']=true:$result['hasCharge201']=false;
+
+		
+		echo json_encode($result);
+		exit;
+	}
+	
+	function getStudent($reference_id=null){
+		$result = $this->Student->find('first',array('conditions'=>array('Student.Sno'=>$reference_id)));
+		echo json_encode($result);
+		exit;
+	}
 	
 }
