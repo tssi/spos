@@ -6,6 +6,8 @@ class SopCgeValsController extends AppController {
 	function index() {
 		$this->SopCgeVal->recursive = 0;
 		$this->set('sopCgeVals', $this->paginate());
+		
+		//pr($this->paginate());exit;
 	}
 
 	function view($id = null) {

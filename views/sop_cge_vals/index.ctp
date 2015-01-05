@@ -3,6 +3,7 @@
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>
+			<th><?php echo $this->Paginator->sort('charge201_id');?></th>
 			<th><?php echo $this->Paginator->sort('amount_balance');?></th>
 			<th><?php echo $this->Paginator->sort('as_of_date');?></th>
 			<th class="actions"><?php __('Actions');?></th>
@@ -17,6 +18,7 @@
 	?>
 	<tr<?php echo $class;?>>
 		<td><?php echo $sopCgeVal['SopCgeVal']['id']; ?>&nbsp;</td>
+		<td><?php echo $sopCgeVal['SopCgeVal']['charge201_id']; ?>&nbsp;</td>
 		<td><?php echo $sopCgeVal['SopCgeVal']['amount_balance']; ?>&nbsp;</td>
 		<td><?php echo $sopCgeVal['SopCgeVal']['modified']; ?>&nbsp;</td>
 		<td class="actions">
