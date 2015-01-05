@@ -536,8 +536,6 @@ $(document).ready(function(e){
 							if(z.Buyer.Employee){
 								try{
 									$('#SaleName').val(z.Buyer.Employee.full_name);
-									
-								
 									creditLimit=z.SopCgeVal['0'].amount_balance;
 									exist=true;
 								}catch(e){
@@ -546,7 +544,7 @@ $(document).ready(function(e){
 								}
 							}else if(z.Buyer.Student){;
 								try{
-									$('#SaleName').val(z.Buyer.Student.FullName);
+									$('#SaleName').val(z.Buyer.Student.full_name);
 									creditLimit=z.SopCgeVal['0'].amount_balance;
 									exist=true;
 								}catch(e){
@@ -554,7 +552,7 @@ $(document).ready(function(e){
 									$('#dialog').html('<center><br/><br/><strong> Insufficient Balance..</strong><br/><br/></center>');
 								}
 							}else{
-								//creditLimit=0;
+								creditLimit=0;
 								dialog_box('#SaleBuyer');
 								$('#dialog').html('<center><br/><b>Transaction Not Allowed. Invalid ID!</b><br/></center>');
 							
