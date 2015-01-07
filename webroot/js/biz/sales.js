@@ -776,6 +776,7 @@ $(document).ready(function(e){
 						$(document).trigger('restore_defaults');
 					}
 				});
+			$('#dialog').dialog('destroy');
 		}
 	});  
 	

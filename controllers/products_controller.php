@@ -224,8 +224,7 @@ class ProductsController extends AppController {
 					exit();
 				}
 				
-			}
-			elseif($id =='PI'){
+			}else if($id =='PI'){
 				if(empty($orderBy)){
 					$orderBy = 'Perishable.item_code';
 				}else{
@@ -236,7 +235,7 @@ class ProductsController extends AppController {
 				echo json_encode($perishables);
 				exit();
 			}
-      }
+		}
 	}
     
     function check(){
