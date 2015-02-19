@@ -504,11 +504,12 @@ $(document).ready(function(e){
 	});
 	
 	//OMNI BOX EVENT HANDLER
-	$('.omnibox').keypress(function(e){
-		if(e.which==13){
+	//$('.omnibox').keypress(function(e){
+	$('.omnibox').change(function(e){
+		//if(e.which==13){
 			switch(MODE){
-				case 'CH': checkOn='charge201s'; break;		
-				case 'PR': checkOn='prepaid201s'; break;
+				case 'CH': 	checkOn='charge201s'; break;		
+				case 'PR': 	checkOn='prepaid201s';break;
 			}
 			if (MODE =='CH'){
 				var ID = $.trim($('.omnibox').val());
@@ -570,7 +571,75 @@ $(document).ready(function(e){
 					});
 				}
 			}
-		}
+			
+			if (MODE =='PR'){
+				var ID = $.trim($('.omnibox').val());
+				if(ID!=""){
+					$.ajax({
+						url:'/canteen/'+checkOn+'/checkCharges/'+$('#by').val()+'/'+ID,
+						type:'POST',
+						dataType:"json",
+						beforeSend:function(){
+							$('#SaleName').val('');
+							$('#dialog').dialog({
+								title:'Loading',
+								modal:true,
+								closeOnEscape: false,
+								open: function(event, ui){$(this).parent().children().children(".ui-dialog-titlebar-close").hide();},// Hide close button
+							});
+							$('#dialog').html('<center><br/><img src="/canteen/img/icons/loader.gif"><br/><br/><strong> Checking ID...</strong><br/><br/></center>');
+						},
+						success:function(z){
+							var exist=false;
+							$('#dialog').dialog('destroy');
+							console.log(z);
+							if(z.Buyer.Employee){
+								try{
+									$('#SaleName').val(z.Buyer.Employee.full_name);
+									creditLimit=z.SopPpVal['0'].amount_balance;
+									exist=true;
+									$("#PrepaidBalance").html(parseFloat(creditLimit).toFixed(2));
+									$("#PrepaidBookButton").fadeIn();
+									$("#PrepaidBookWrapper").find('input,select').removeAttr('disabled');
+								}catch(e){
+									dialog_box('#SaleBuyer','Transaction Not Allowed');
+									$('#dialog').html('<center><br/><br/><strong> Insufficient Balance</strong><br/><br/></center>');
+									restore_prepaid_account_wrapper();
+								}
+							}else if(z.Buyer.Student){;
+								try{
+									$('#SaleName').val(z.Buyer.Student.full_name);
+									creditLimit=z.SopPpVal['0'].amount_balance;
+									exist=true;
+									$("#PrepaidBalance").html(parseFloat(creditLimit).toFixed(2));
+									$("#PrepaidBookButton").fadeIn();
+									$("#PrepaidBookWrapper").find('input,select').removeAttr('disabled');
+								}catch(e){
+									dialog_box('#SaleBuyer','Transaction Not Allowed');
+									$('#dialog').html('<center><br/><br/><strong> Insufficient Balance..</strong><br/><br/></center>');
+									restore_prepaid_account_wrapper();
+								}
+							}else{
+								creditLimit=0;
+								dialog_box('#SaleBuyer');
+								$('#dialog').html('<center><br/><b>Transaction Not Allowed. Invalid ID!</b><br/></center>');
+								restore_prepaid_account_wrapper();
+							}
+							if(exist){
+								if(creditLimit > 0){
+									allowCashiering = true;
+								}else{
+									allowCashiering = false;
+								}
+								
+								$('#qty').val(DEF_QTY).focus();
+								$('#description').focus();
+							}
+						}
+					});
+				}
+			}
+		//}
 	});
 	
 	//DONE BUTTON EVENT HANDLER
@@ -1155,5 +1224,114 @@ $(document).ready(function(e){
 				$('#prepaid').removeAttr('readonly').select();
 			}
 		}
+	}
+	
+	//PREPAID BOOK BUTTON EVENT HANDLER
+	$('#PrepaidBookButton').click(function(){
+		$('#PrepaidBookWrapper').fadeIn();
+ 	});
+
+	//CUSTOM FROM DATEPICKER
+	$("#PrepaidFromDate").datepicker({
+		dateFormat: 'yy-mm-dd',
+		maxDate: new Date(),
+        onSelect: function(selected) {
+          $("#PrepaidToDate").datepicker("option","minDate", selected);
+		  prepaid_account($('#PrepaidFilter').val(),$('#SaleBuyer').val(),$("#PrepaidFromDate").val(),$("#PrepaidToDate").val());
+        }
+    }).datepicker("setDate",new Date());
+   
+   //CUSTOM TO DATE
+	$("#PrepaidToDate").datepicker({
+		dateFormat: 'yy-mm-dd',
+		maxDate: new Date(),
+        onSelect: function(selected) {
+           $("#PrepaidFromDate").datepicker("option","maxDate", selected);
+		   prepaid_account($('#PrepaidFilter').val(),$('#SaleBuyer').val(),$("#PrepaidFromDate").val(),$("#PrepaidToDate").val());
+        }
+    }).datepicker("setDate",new Date());  
+	
+	//PREPAID FILTER EVENT HANDLER
+	$('#PrepaidFilter').live('change',function(){
+		var filter = $(this).val();
+		var buyer_id = $('#SaleBuyer').val();
+		
+		if(filter =="FrmStrt" || filter == "CurrMnth"){
+			$('#CustomWrapper').hide();
+			prepaid_account(filter,buyer_id,'','');
+		}else if(filter == 'Cstm'){
+			$('#CustomWrapper').show();
+			prepaid_account($('#PrepaidFilter').val(),$('#SaleBuyer').val(),$("#PrepaidFromDate").val(),$("#PrepaidToDate").val());
+		}else{
+			$('#CustomWrapper').hide();
+			$('#PrepaidBookWrapper table').hide();
+			$('#PrepaidBookWrapper table tbody').html('');
+		}
+	});
+	
+	//GET PREPAIR ACCOUNT
+	function prepaid_account(filter,buyer_id,from,to){
+		$.ajax({
+			url:ssUtil.cch_brk('/canteen/sales/prepaid_account'),
+			type:'POST',
+			dataType:'json',
+			data:{'data':{'filter':filter,'buyer_id':buyer_id,'from':from,'to':to}},
+			beforeSend:function(){
+				$('#PrepaidBookWrapper table').hide();
+				$('#PrepaidBookWrapper tablle tbody').html('');
+				$('#PrepaidBookLoading').html('Loading...');
+			},
+			success:function(json){
+				console.log(json);
+				if(json.length){
+					var html = '';
+					var total_credit = 0;
+					var total_debit = 0;
+					$.each(json,function(i,o){
+						switch(o.SopPpTran.flag){
+							case '0':html += '<tr>'+
+												'<td>'+o[0].date+'</td>'+
+												'<td>'+o.SopPpTran.doc_number+'</td>'+
+												'<td class="text-right">'+parseFloat(o[0].total_amount).toFixed(2)+'</td>'+
+												'<td>&nbsp;</td>'+
+												'<td>&nbsp;</td>'+
+											'</tr>'; 
+									total_debit+=o[0].total_amount;
+								break;
+							case '1':html += '<tr>'+
+												'<td>'+o[0].date+'</td>'+
+												'<td>'+o.SopPpTran.doc_number+'</td>'+
+												'<td>&nbsp;</td>'+
+												'<td class="text-right">'+parseFloat(o[0].total_amount).toFixed(2)+'</td>'+
+												'<td>&nbsp;</td>'+
+											'</tr>';
+									total_credit+=o[0].total_amount;
+								break;
+						}
+					});
+					$('#PrepaidBookWrapper table tbody').html(html);
+					$('#PrepaidBookWrapper table tfoot').html(	'<tr style="font-weight:bold">'+
+																	'<td colspan="2"></td>'+
+																	'<td class="text-right">'+parseFloat(total_debit).toFixed(2)+'</td>'+
+																	'<td class="text-right">'+parseFloat(total_credit).toFixed(2)+'</td>'+
+																	'<td class="text-right">'+parseFloat(total_credit-total_debit).toFixed(2)+'</td>'+
+																'</tr>');
+					
+					$('#PrepaidBookWrapper table').show();
+				}
+				$('#PrepaidBookLoading').html('');
+			}
+		});
+	}
+
+	//RESTORE PREPAID ACCOUNT WRAPPER
+	function restore_prepaid_account_wrapper(){
+		$('#PrepaidBookButton').hide();
+		$('#PrepaidBookWrapper').hide();
+		$('#CustomWrapper').hide();
+		$('#PrepaidBookLoading').html('');
+		$('#PrepaidBookWrapper table').hide();
+		$('#PrepaidBookWrapper table tbody').html('');
+		$("#PrepaidBookWrapper").find('input,select').attr('disabled','disabled');
 	}
 });
