@@ -598,7 +598,7 @@ $(document).ready(function(e){
 									$('#SaleName').val(z.Buyer.Employee.full_name);
 									creditLimit=z.SopPpVal['0'].amount_balance;
 									exist=true;
-									$("#PrepaidBalance").html(parseFloat(creditLimit).toFixed(2));
+									$("#PrepaidBalance").html(creditLimit);
 									$("#PrepaidBookButton").fadeIn();
 									$("#PrepaidBookWrapper").find('input,select').removeAttr('disabled');
 								}catch(e){
@@ -611,7 +611,7 @@ $(document).ready(function(e){
 									$('#SaleName').val(z.Buyer.Student.full_name);
 									creditLimit=z.SopPpVal['0'].amount_balance;
 									exist=true;
-									$("#PrepaidBalance").html(parseFloat(creditLimit).toFixed(2));
+									$("#PrepaidBalance").html(creditLimit);
 									$("#PrepaidBookButton").fadeIn();
 									$("#PrepaidBookWrapper").find('input,select').removeAttr('disabled');
 								}catch(e){
@@ -1285,39 +1285,42 @@ $(document).ready(function(e){
 				console.log(json);
 				if(json.length){
 					var html = '';
-					var total_credit = 0;
-					var total_debit = 0;
+					var total_credit = 0.00;
+					var total_debit = 0.00;
 					$.each(json,function(i,o){
 						switch(o.SopPpTran.flag){
 							case '0':html += '<tr>'+
-												'<td>'+o[0].date+'</td>'+
-												'<td>'+o.SopPpTran.doc_number+'</td>'+
-												'<td class="text-right">'+parseFloat(o[0].total_amount).toFixed(2)+'</td>'+
-												'<td>&nbsp;</td>'+
-												'<td>&nbsp;</td>'+
-											'</tr>'; 
-									total_debit+=o[0].total_amount;
+											'<td>'+o[0].date+'</td>'+
+											'<td class="text-right">'+o[0].total_amount+'</td>'+
+											'<td>&nbsp;</td>'+
+											'<td>&nbsp;</td>'+
+										'</tr>'; 
+								
+								
+									total_debit+= o[0].total_amount;
 								break;
 							case '1':html += '<tr>'+
 												'<td>'+o[0].date+'</td>'+
-												'<td>'+o.SopPpTran.doc_number+'</td>'+
 												'<td>&nbsp;</td>'+
-												'<td class="text-right">'+parseFloat(o[0].total_amount).toFixed(2)+'</td>'+
+												'<td class="text-right">'+o[0].total_amount+'</td>'+
 												'<td>&nbsp;</td>'+
 											'</tr>';
 									total_credit+=o[0].total_amount;
 								break;
-						}
+						} 
 					});
 					$('#PrepaidBookWrapper table tbody').html(html);
-					$('#PrepaidBookWrapper table tfoot').html(	'<tr style="font-weight:bold">'+
-																	'<td colspan="2"></td>'+
+					$('#PrepaidBookWrapper table tfoot').html(	'<tr>'+
+																	'<td class="text-right">TOTAL</td>'+
 																	'<td class="text-right">'+parseFloat(total_debit).toFixed(2)+'</td>'+
 																	'<td class="text-right">'+parseFloat(total_credit).toFixed(2)+'</td>'+
 																	'<td class="text-right">'+parseFloat(total_credit-total_debit).toFixed(2)+'</td>'+
 																'</tr>');
 					
 					$('#PrepaidBookWrapper table').show();
+				}else{
+					$('#PrepaidBookLoading').html('No Result Found');
+					return;
 				}
 				$('#PrepaidBookLoading').html('');
 			}

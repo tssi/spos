@@ -27,9 +27,24 @@
 	
 	#PrepaidBookWrapper table{
 		width:100%;
+		border-collapse: collapse;
+		font-size: 13px;
 	}
 	#PrepaidBookWrapper table thead{
 		background-color:darkturquoise;
+		border: 1px solid;
+		line-height: 25px;
+		font-weight: bold;
+		text-align: center;
+	}
+	
+	#PrepaidBookWrapper table tfoot{
+		line-height: 20px;
+		font-weight: bold;
+	}
+	
+	#PrepaidBookWrapper table td{
+		border: 1px solid;
 	}
 </style>
 
@@ -123,7 +138,7 @@
 						<?php echo $this->Form->input('filter',array('id'=>'PrepaidFilter','options'=>array('FrmStrt'=>'From start','CurrMnth'=>'Current Month','Cstm'=>'Custom'),'empty'=>'Select','disabled'=>'disabled'));?>
 					</div>
 					<div class="fRight w50" style="line-height: 0px;">
-						<h3 class="text-right" style="padding-right: 10px;">BALANCE: &nbsp; <span id="PrepaidBalance"></span></h3>
+						<h3 class="text-right" style="padding-right: 10px;">BALANCE AS OF TODAY: &nbsp; <span id="PrepaidBalance"></span></h3>
 					</div><div class="fClear"></div>
 					<div id="CustomWrapper" style="display:none">
 						<div class="fLeft w50  classic soft">	
@@ -140,7 +155,6 @@
 					<thead>
 						<tr>
 							<td>Date</td>
-							<td>Doc No.</td>
 							<td>Debit</td>
 							<td>Credit</td>
 							<td>Balance</td>
