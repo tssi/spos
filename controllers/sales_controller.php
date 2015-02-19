@@ -18,7 +18,8 @@ class SalesController extends AppController {
 					'Prepaid201',
 					'MenuItem',
 					'DailyBeginningInventory',
-					'User'
+					'User',
+					'Student',
 					);
 					
 
@@ -584,4 +585,133 @@ class SalesController extends AppController {
 		$this->render();
 	}
 
+	//PREPAID AND CHARGE PAYMENT
+	function payment(){
+		if (!empty($this->data)) {
+			//pr($this->data['Sale']['transaction_type']);exit;
+			
+				switch($this->data['Sale']['transaction_type']){
+				
+					case 'Prepaid':
+								//PREPAID201
+								$result = $this->Prepaid201->findById($this->data['Sale']['buyer_id']);
+								if(empty($result)){
+									$this->data['Prepaid201']['id'] = $this->data['Sale']['buyer_id']; //Update Prepaid Table (Remove Prepaid201 id incrementation)
+									$this->data['Prepaid201']['reference'] = $this->data['Sale']['buyer_id'];
+									$this->data['Prepaid201']['status'] = 1;
+									$this->data['Prepaid201']['category'] = ($this->data['Sale']['buyer_type'] == "Employee")?'E':'S';
+									$this->Prepaid201->save($this->data['Prepaid201']);
+								}
+					
+								//ACUMULATED
+								$result  = $this->SopPpVal->findByPrepaid201Id($this->data['Sale']['buyer_id']);
+								$amount_balance =  $this->data['Sale']['amount'];
+								if(!empty($result)){
+									$this->data['SopPpVal']['id'] = $result['SopPpVal']['id'];
+									$amount_balance =  $this->data['Sale']['amount']+$result['SopPpVal']['amount_balance'];
+								}
+								$this->data['SopPpVal']['amount_balance'] = $amount_balance;
+								$this->data['SopPpVal']['prepaid201_id'] =  $this->data['Sale']['buyer_id'];
+
+								//LEDGER
+								$this->data['SopPpTran']['amount'] = $this->data['Sale']['amount'];
+								$this->data['SopPpTran']['doc_number'] = $this->data['Sale']['or_no'];
+								$this->data['SopPpTran']['prepaid201_id'] = $this->data['Sale']['buyer_id'];
+								$this->data['SopPpTran']['flag'] = 1;
+								
+								if($this->SopPpVal->save($this->data['SopPpVal']) && $this->SopPpTran->save($this->data['SopPpTran'])){
+									$this->Session->setFlash(__('Prepaid has been saved', true));
+									$this->redirect(array('action' => 'payment'));
+								}else{
+									$this->Session->setFlash(__('Prepaid could not be saved. Please, try again.', true));
+								}
+							break;
+					case 'Charge' :
+							//CHARGE201
+							$result = $this->Charge201->findById($this->data['Sale']['buyer_id']);
+							if(empty($result)){
+								$this->data['Charge201']['id'] = $this->data['Sale']['buyer_id']; //Update Prepaid Table (Remove Charge201 id incrementation)
+								$this->data['Charge201']['reference'] = $this->data['Sale']['buyer_id'];
+								$this->data['Charge201']['status'] = 1;
+								$this->data['Charge201']['category'] = ($this->data['Sale']['buyer_type'] == "Employee")?'E':'S';
+								$this->Charge201->save($this->data['Charge201']);
+							}
+					
+							//ACUMULATED
+							$result  = $this->SopCgeVal->findByCharge201Id($this->data['Sale']['buyer_id']);
+							$amount_balance =  $this->data['Sale']['amount'];
+							if(!empty($result)){
+								$this->data['SopCgeVal']['id'] = $result['SopCgeVal']['id'];
+								$amount_balance =  $this->data['Sale']['amount']+$result['SopCgeVal']['amount_balance'];
+							}
+							$this->data['SopCgeVal']['amount_balance'] = $amount_balance;
+							$this->data['SopCgeVal']['charge201_id'] =  $this->data['Sale']['buyer_id'];
+
+							//LEDGER
+							$this->data['SopCgeTran']['amount'] = $this->data['Sale']['amount'];
+							$this->data['SopCgeTran']['doc_number'] = $this->data['Sale']['or_no'];
+							$this->data['SopCgeTran']['charge201_id'] = $this->data['Sale']['buyer_id'];
+							$this->data['SopCgeTran']['flag'] = 1;
+							
+							//SAVING
+							if($this->SopCgeVal->save($this->data['SopCgeVal']) && $this->SopCgeTran->save($this->data['SopCgeTran'])){
+								$this->Session->setFlash(__('Prepaid has been saved', true));
+								$this->redirect(array('action' => 'payment'));
+							}else{
+								$this->Session->setFlash(__('Prepaid could not be saved. Please, try again.', true));
+							}
+						break;
+				}
+		}
+	}
+	
+	function get_buyer_details(){
+		switch($this->data['buyer_type']){
+			case 'Employee': 
+					$result = $this->Employee->findById($this->data['buyer_id']);
+					break;
+			case 'Student': 
+					$result = $this->Student->findBySno($this->data['buyer_id']);
+					break;
+				
+		}
+		echo json_encode($result);
+		exit;
+	}
+
+
+	function prepaid_account(){
+	
+	
+		switch($this->data['filter']){
+			case 'FrmStrt': 
+				$conditions = array('SopPpTran.prepaid201_id'=>$this->data['buyer_id']);	
+				break;
+			case 'CurrMnth': 
+				$conditions = array('SopPpTran.prepaid201_id'=>$this->data['buyer_id'],'MONTH(SopPpTran.created)'=>date('m'));
+				break;
+			case 'Cstm':
+				$conditions = array(
+						"SopPpTran.prepaid201_id" =>$this->data['buyer_id'],
+						"SopPpTran.created >=" => date("Y-m-d H:i:s",strtotime($this->data['from'].' 00:00:00')),
+						"SopPpTran.created <=" => date("Y-m-d H:i:s",strtotime($this->data['to'].'  23:59:59')),
+					);
+				break;
+		}
+		
+		$fields = array(
+						'SopPpTran.id',
+						'SopPpTran.prepaid201_id',
+						'SopPpTran.doc_number',
+						'SUM(SopPpTran.amount) as total_amount',
+						'SopPpTran.flag',
+						'SopPpTran.created',
+						"DATE_FORMAT(SopPpTran.created,'%b. %e,%Y') AS `date`"
+					);
+		$group = array('MONTH(SopPpTran.created)','DAY(SopPpTran.created)','YEAR(SopPpTran.created)','SopPpTran.flag');
+		
+		$results = $this->SopPpTran->find('all',array('conditions'=>$conditions,'recursive'=>-1,'group'=>$group,'fields'=>$fields));	
+		echo json_encode($results);
+		exit;
+	}
 }
