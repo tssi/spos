@@ -7,6 +7,8 @@
 	cursor: not-allowed;
 }
 </style>
+<!-----------------------------	ALERT---------------------------->
+<!-----UPDATE PREPAID201 & CHARGE201 TABLE (REMOVE ID AUTO INCREMENTATION)----->
 <div class="tab">
 	<div class="tab-header">Sale Payment</div>
 	<div class="tab-content">
