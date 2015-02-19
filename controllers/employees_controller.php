@@ -65,4 +65,17 @@ class EmployeesController extends AppController {
 		echo json_encode($bal);
 		exit();
 	}
+
+	function search(){
+		$full_name = '%'.$this->data['Employee']['trimmed_name'].'%';
+		$search = $this->Employee->find('all',
+										array(	'conditions'=>array('Employee.full_name LIKE'=>$full_name),
+												'fields'=>array('Employee.id','Employee.full_name','Employee.first_name','Employee.last_name','Employee.middle_name')
+										)						
+								);
+		//pr($search);exit;
+		$this->set('search',$search);
+		$this->layout='json';
+		$this->render();
+	}
 }
