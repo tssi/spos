@@ -699,7 +699,7 @@ class SalesController extends AppController {
 				break;
 		}
 		
-		$fields = array(
+		$fields = '';/* array(
 						'SopPpTran.id',
 						'SopPpTran.prepaid201_id',
 						'SopPpTran.doc_number',
@@ -707,8 +707,8 @@ class SalesController extends AppController {
 						'SopPpTran.flag',
 						'SopPpTran.created',
 						"DATE_FORMAT(SopPpTran.created,'%b. %e,%Y') AS `date`"
-					);
-		$group = array('MONTH(SopPpTran.created)','DAY(SopPpTran.created)','YEAR(SopPpTran.created)','SopPpTran.flag');
+					); */
+		$group = '';//array('MONTH(SopPpTran.created)','DAY(SopPpTran.created)','YEAR(SopPpTran.created)','SopPpTran.flag');
 		
 		$results = $this->SopPpTran->find('all',array('conditions'=>$conditions,'recursive'=>-1,'group'=>$group,'fields'=>$fields));	
 		echo json_encode($results);

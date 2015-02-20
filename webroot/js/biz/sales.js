@@ -1285,36 +1285,44 @@ $(document).ready(function(e){
 				console.log(json);
 				if(json.length){
 					var html = '';
-					var total_credit = 0.00;
-					var total_debit = 0.00;
+					var total_credit = 0;
+					var total_debit = 0;
+					var total_balance = 0;
 					$.each(json,function(i,o){
+						var amount = parseFloat(o.SopPpTran.amount);
 						switch(o.SopPpTran.flag){
-							case '0':html += '<tr>'+
-											'<td>'+o[0].date+'</td>'+
-											'<td class="text-right">'+o[0].total_amount+'</td>'+
+							case '0':
+									total_balance -= amount;
+									total_debit += amount;
+									html+='<tr>'+
+											'<td>'+o.SopPpTran.created+'</td>'+
+											'<td>'+o.SopPpTran.doc_number+'</td>'+
+											'<td class="text-right">'+parseFloat(amount).toFixed(2)+'</td>'+
 											'<td>&nbsp;</td>'+
-											'<td>&nbsp;</td>'+
+											'<td class="text-right">'+parseFloat(total_balance).toFixed(2)+'</td>'+
 										'</tr>'; 
-								
-								
-									total_debit+= o[0].total_amount;
+									
 								break;
-							case '1':html += '<tr>'+
-												'<td>'+o[0].date+'</td>'+
+							case '1':
+									total_balance += amount;
+									total_credit  += amount;
+									html+='<tr>'+
+												'<td>'+o.SopPpTran.created+'</td>'+
+												'<td>'+o.SopPpTran.doc_number+'</td>'+
 												'<td>&nbsp;</td>'+
-												'<td class="text-right">'+o[0].total_amount+'</td>'+
-												'<td>&nbsp;</td>'+
+												'<td class="text-right">'+parseFloat(amount).toFixed(2)+'</td>'+
+												'<td class="text-right">'+parseFloat(total_balance).toFixed(2)+'</td>'+
 											'</tr>';
-									total_credit+=o[0].total_amount;
 								break;
-						} 
+						}
+						
 					});
 					$('#PrepaidBookWrapper table tbody').html(html);
 					$('#PrepaidBookWrapper table tfoot').html(	'<tr>'+
-																	'<td class="text-right">TOTAL</td>'+
+																	'<td colspan="2" class="text-right">TOTAL</td>'+
 																	'<td class="text-right">'+parseFloat(total_debit).toFixed(2)+'</td>'+
 																	'<td class="text-right">'+parseFloat(total_credit).toFixed(2)+'</td>'+
-																	'<td class="text-right">'+parseFloat(total_credit-total_debit).toFixed(2)+'</td>'+
+																	'<td class="text-right">'+parseFloat(total_balance).toFixed(2)+'</td>'+
 																'</tr>');
 					
 					$('#PrepaidBookWrapper table').show();

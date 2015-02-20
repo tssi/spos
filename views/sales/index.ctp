@@ -41,10 +41,13 @@
 	#PrepaidBookWrapper table tfoot{
 		line-height: 20px;
 		font-weight: bold;
+		font-size: 14px;
 	}
 	
 	#PrepaidBookWrapper table td{
 		border: 1px solid;
+		padding-left: 4px;
+		padding-right: 4px;
 	}
 </style>
 
@@ -155,6 +158,7 @@
 					<thead>
 						<tr>
 							<td>Date</td>
+							<td>Doc No.</td>
 							<td>Debit</td>
 							<td>Credit</td>
 							<td>Balance</td>
